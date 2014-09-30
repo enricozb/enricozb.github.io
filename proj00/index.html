@@ -8,21 +8,12 @@
     function setup()
     {
         createCanvas(640,1136);
-        w = 640/2 - 20;
-        h = 1136/2 - 20;
-        noStroke();
         fill(0);
     }
     function draw()
     {
         background(random(255))
-        push();
-        fill(255,120);
-        rect(0,0,width,height);
-        pop();
-        translate(w/2,h/2);
-        ellipse(w/2 * Math.cos(t * 10),h/2 * Math.sin(t),20,20);
-        t += speed;
+        ellipse(touchX,touchY,50,50)
     }
 
 </script>

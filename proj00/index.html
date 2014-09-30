@@ -7,7 +7,7 @@
     var h;
     function setup()
     {
-        createCanvas(windowWidth,windowHeight);
+        createCanvas(640,1136);
         w = windowWidth/2 - 20;
         h = windowHeight/2 - 20;
         noStroke();
@@ -15,6 +15,7 @@
     }
     function draw()
     {
+        background(random(255))
         push();
         fill(255,120);
         rect(0,0,width,height);

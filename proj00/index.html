@@ -13,7 +13,10 @@
     }
     function draw()
     {
-        background(random(255))
+        push()
+        fill(255,100)
+        rect(0,0,width,height)
+        pop()
         ellipse(touchX,touchY,50,50)
     }
 

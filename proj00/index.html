@@ -1,11 +1,27 @@
-<head>
-  <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
-  <script src="../p5/p5.min.js"></script>
-  <script src="sketch.js"></script>
-  <style> body {padding: 0; margin: 0} </style> <!-- this line removes any default padding -->
-</head>
+<script src="../p5/p5.min.js"></script>
+<script>
 
-<body>
-</body>
+    var t = 0.0;
+    var speed = .02;
+    var w;
+    var h;
+    function setup()
+    {
+        createCanvas(windowWidth,windowHeight);
+        w = windowWidth/2 - 20;
+        h = windowHeight/2 - 20;
+        noStroke();
+        fill(0);
+    }
+    function draw()
+    {
+        push();
+        fill(255,120);
+        rect(0,0,width,height);
+        pop();
+        translate(windowWidth/2,windowHeight/2);
+        ellipse(w/2 * Math.cos(t * 10),h/2 * Math.sin(t),20,20);
+        t += speed;
+    }
 
-
+</script>

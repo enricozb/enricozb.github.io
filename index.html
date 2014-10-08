@@ -8,13 +8,6 @@ body
     padding:0; margin:0;
 }
 
-canvas 
-{
-    margin: auto auto;
-    display: table;
-    vertical-align: center;
-    width: 100%;
-}
 
 </style>
 <script src="p5/p5.min.js"></script>
@@ -22,8 +15,9 @@ canvas
 
     function setup()
     {
-        createCanvas(500,500);
-        fill(0);
+        createCanvas(windowWidth,windowHeight)
+        fill(0)
+        noStroke()
     }
     function draw()
     {

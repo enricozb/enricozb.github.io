@@ -13,7 +13,7 @@ body
 <script src="p4/p4.min.js"></script>
 <script type="text/processing" data-processing-target="mycanvas">
 
-int num = 500;
+int num = 300;
 float[][] a = new float[num][3];
 float t = 0;
 void setup()
@@ -32,23 +32,23 @@ void setup()
 void draw()
 {
     background(0);
-    translate(width/2, height/2, 0);
+    translate(width/2, height/2, width/2);
     
     
-    rotateX(noise(t));
-    rotateY(noise(t + 10));
-    rotateZ(noise(t + 20));
+    rotateX(t);
+    rotateY(t);
+    rotateZ(t);
     
     
     for(int i = 0; i < num; i++)
     {
         pushMatrix();
         translate(a[i][0], a[i][1], a[i][2]);
-        ellipse(0, 0, 2,2);
+        ellipse(0, 0, 1,1);
         popMatrix();
     }
     
-    t += .01;
+    t += .001;
 }
 </script>
 <canvas id="mycanvas"></canvas>

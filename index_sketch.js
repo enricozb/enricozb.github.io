@@ -24,17 +24,18 @@ function playSound() {
 }
 
 function drawLoad() {
-	background(35);
-	translate(window.innerWidth/2, window.innerHeight/2);
+	fill(0,100)
+	translate(window.innerWidth/2, window.innerHeight/2)
+	rect(0,0,window.innerWidth,window.innerHeight)
 	for(var i = 0; i < 2*PI; i += radians(10))
 	{
-		fill(map((time + i + PI)%(PI*2), 0, 2 * PI, 0, 255), 200, 200);
-		var w = map((i + PI)%(PI*2), 0, 2 * PI, 0, 100) * s;
-		push();
-		translate(s * 100 * cos(i + sin(time + i)),s * 100 * sin(i + sin(time + i)));
-		rotate(i + sin(time + i));
-		rect(0,0,w,5 * s);
-		pop();
+		fill(map((time + i + PI)%(PI*2), 0, 2 * PI, 0, 255), 200, 200)
+		var w = map((i + PI)%(PI*2), 0, 2 * PI, 0, 100) * s
+		push()
+		translate(s * 100 * cos(i + sin(time + i)),s * 100 * sin(i + sin(time + i)))
+		rotate(i + sin(time + i))
+		rect(0,0,w,5 * s)
+		pop()
 	}
 	time += .07;
 }

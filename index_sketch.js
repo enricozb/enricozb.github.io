@@ -1,7 +1,8 @@
 var audio
 var peaks
-var PEAKLENGTH = 100000
-var bufferMax = 500
+var PADDING = window.innerWidth/10
+var PEAKLENGTH = 1000000
+var bufferMax = 100
 var first = true
 var time = 0.0
 var s = 2
@@ -10,7 +11,8 @@ function setup() {
 
 	colorMode(HSB, 255)
 	rectMode(CENTER)
-	noStroke()
+	strokeWeight(5)
+	//noStroke()
 	audio = new p5.SoundFile('assets/aphex.mp3',playSound)
 	//audio.play()
 }
@@ -31,7 +33,7 @@ function drawLoad() {
 		push();
 		translate(s * 100 * cos(i + sin(time + i)),s * 100 * sin(i + sin(time + i)));
 		rotate(i + sin(time + i));
-		rect(0,0,w,5 * s,10);
+		rect(0,0,w,5 * s);
 		pop();
 	}
 	time += .07;
@@ -49,15 +51,27 @@ function draw() {
 		return;
 	}
 	var amp = audio.getLevel()
-	var uamp = map(amp,0,1,0,400)
+	var uamp = map(amp,0,1,0,200)
 	var ctime = ~~(audio.currentTime()/audio.duration() * PEAKLENGTH)
 
 	background(uamp,100,100)
 	translate(0,window.innerHeight/2)
 	//text(ctime, 200,200)
+	beginShape()
 	for (var i = 0; i < bufferMax; i++) {
-		rect(map(i,0,bufferMax,0,window.innerWidth),map(peaks[i + ctime], 0, 1, 0,200),2,2)
+		fill(map(peaks[i + ctime], 0, 1, 0,400),200,200)
+		//noStroke()
+		stroke(map(peaks[i + ctime], 0, 1, 0,400),200,200)
+		//rect(map(i,0,bufferMax,0,window.innerWidth),map(peaks[i + ctime], 0, 1, 0,200),5,5)
+	
+		//beginShape()
+		//curveVertex(map(i,0,bufferMax,0,window.innerWidth),map(peaks[i + ctime-1], 0, 1, 0,200))
+		//curveVertex(map(i,0,bufferMax,0,window.innerWidth),map(peaks[i + ctime-1], 0, 1, 0,200))
+		//curveVertex(map(i,0,bufferMax,0,window.innerWidth),map(peaks[i + ctime], 0, 1, 0,200))
+		curveVertex(map(i,0,bufferMax,PADDING,window.innerWidth-PADDING),map(peaks[i + ctime], 0, 1, 0,200))
+	//endShape()
 	}
+	endShape()
 }
 
 function keyPressed() {

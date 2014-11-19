@@ -4,83 +4,11 @@
 <style>
 
 body
-{
+{ 
     padding:0; margin:0;
 }
 
-
 </style>
-<script src="p4/p4.min.js"></script>
-<script type="text/processing" data-processing-target="mycanvas">
-
-int num = 300;
-float[][] a = new float[num][3];
-float t = 0;
-void setup()
-{
-    size(window.innerWidth,window.innerHeight,OPENGL);
-    smooth(8);
-    float w = window.innerWidth/2.0;
-    float h = window.innerHeight/2.0;
-    for(int i = 0; i < num; i++)
-    {
-        a[i] = {random(-w,w), random(-w,w), random(-w,w)};
-    }
-    noStroke();
-}
-
-void draw()
-{
-    background(0);
-    translate(width/2, height/2, width/2);
-    
-    
-    rotateX(t);
-    rotateY(t);
-    rotateZ(t);
-    
-    
-    for(int i = 0; i < num; i++)
-    {
-        pushMatrix();
-        translate(a[i][0], a[i][1], a[i][2]);
-        ellipse(0, 0, 1,1);
-        popMatrix();
-    }
-    
-    t += .001;
-}
-</script>
-<canvas id="mycanvas"></canvas>
-<!--
-<script>
-
-    var num = 100
-
-    var arr = new Array(num);
-
-    for (var i = 0; i < num; i++) 
-    {
-      arr[i] = [random(-400,400),random(-400,400),random(-400,400)]
-    }
-
-    function setup()
-    {
-      createCanvas(windowWidth,windowWidth)
-      fill(255)
-    }
-    function draw()
-    {
-      background(0)
-      for(var i = 0; i < num; i++)
-      {
-        push()
-        translate(arr[i][0],arr[i][1],arr[i][2])
-        ellipse(0,0,10,10)
-        pop()
-      }
-    }
-
-</script>
--->
+<script src="p5/p5.min.js"></script>
+<script src="index_sketch.js"></script>
 </html>

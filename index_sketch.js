@@ -1,8 +1,8 @@
 var audio
 var peaks
 var PADDING = window.innerWidth/10
-var PEAKLENGTH = 1000000
-var bufferMax = 100
+var PEAKLENGTH = 2000000
+var bufferMax = 200
 var first = true
 var time = 0.0
 var s = 2
@@ -11,8 +11,8 @@ function setup() {
 
 	colorMode(HSB, 255)
 	rectMode(CENTER)
-	strokeWeight(5)
-	//noStroke()
+	//strokeWeight(5)
+	noStroke()
 	audio = new p5.SoundFile('assets/aphex.mp3',playSound)
 	//audio.play()
 }

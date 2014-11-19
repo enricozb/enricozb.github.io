@@ -1,8 +1,8 @@
 var audio
 var peaks
 var PADDING = window.innerWidth/10
-var PEAKLENGTH = 2000000
-var bufferMax = 200
+var PEAKLENGTH = 500000
+var bufferMax = 50
 var first = true
 var time = 0.0
 var s = 2
@@ -56,6 +56,7 @@ function draw() {
 
 	background(uamp,100,100)
 	translate(0,window.innerHeight/2)
+	strokeWeight(2)
 	//text(ctime, 200,200)
 	beginShape()
 	for (var i = 0; i < bufferMax; i++) {

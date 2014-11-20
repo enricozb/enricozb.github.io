@@ -1,8 +1,8 @@
 var audio
 var peaks
 var PADDING = window.innerWidth/10
-var PEAKLENGTH = 500000
-var bufferMax = 50
+var PEAKLENGTH = 1000000
+var bufferMax = 200
 var first = true
 var time = 0.0
 var s = 2
@@ -13,7 +13,7 @@ function setup() {
 	rectMode(CENTER)
 	//strokeWeight(5)
 	noStroke()
-	audio = new p5.SoundFile('assets/aphex.mp3',playSound)
+	audio = new p5.SoundFile('assets/flim.mp3',playSound)
 	//audio.play()
 }
 
@@ -52,19 +52,18 @@ function draw() {
 		return;
 	}
 	var amp = audio.getLevel()
-	var uamp = map(amp,0,1,0,200)
+	var uamp = map(amp,0,1,0,100)
 	var ctime = ~~(audio.currentTime()/audio.duration() * PEAKLENGTH)
-
 	background(uamp,100,100)
 	translate(0,window.innerHeight/2)
-	strokeWeight(2)
+	strokeWeight(1)
 	//text(ctime, 200,200)
 	beginShape()
 	for (var i = 0; i < bufferMax; i++) {
-		fill(map(peaks[i + ctime], 0, 1, 0,400),200,200)
+		//fill(map(peaks[i + ctime], 0, 1, 0,400),200,200)
 		//noStroke()
-		stroke(map(peaks[i + ctime], 0, 1, 0,400),200,200)
-		//rect(map(i,0,bufferMax,0,window.innerWidth),map(peaks[i + ctime], 0, 1, 0,200),5,5)
+		stroke(map(peaks[i + ctime], 0, 1, 0,400),100,200)
+		//rect(map(i,0,bufferMax,PADDING,window.innerWidth - PADDING),map(peaks[i + ctime], 0, 1, 0,200),3,3)
 	
 		//beginShape()
 		//curveVertex(map(i,0,bufferMax,0,window.innerWidth),map(peaks[i + ctime-1], 0, 1, 0,200))

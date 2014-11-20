@@ -24,9 +24,13 @@ function playSound() {
 }
 
 function drawLoad() {
-	fill(0,100)
+	background(0,100,100)
+	translate(0,window.innerHeight/2)
+	stroke(0,100,200)
+	line(PADDING, 0, PADDING + time, 0)
+
+	/*
 	translate(window.innerWidth/2, window.innerHeight/2)
-	rect(0,0,window.innerWidth,window.innerHeight)
 	for(var i = 0; i < 2*PI; i += radians(10))
 	{
 		fill(map((time + i + PI)%(PI*2), 0, 2 * PI, 0, 255), 200, 200)
@@ -38,6 +42,8 @@ function drawLoad() {
 		pop()
 	}
 	time += .07;
+	*/
+	time += 10;
 }
 
 function draw() {

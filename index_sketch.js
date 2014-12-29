@@ -24,7 +24,7 @@ function setup() {
 	time = 0.0
 	s = 2
 
-	audio = new p5.SoundFile('https://github.com/enricozb/enricozb.github.io/raw/master/assets/flim.mp3',play)
+	audio = new p5.SoundFile('assets/flim.mp3',play)
 }
 
 function play() {

@@ -1,121 +1,225 @@
-<html>
-<title>Enrico Borba</title>
+<!DOCTYPE html>
+
 <style>
-	@font-face { 
-		font-family: Segoe; src: url('Segoe.ttf'); 
-	} 
-	table {
-		width:600px;
-		margin: 10px auto;
-	}
-	td {
-		width:200px;
-		height:200px;
-		position:relative;
-	}
-	td:after{
-		content:'';
-		display:block;
-	}
-	td .content {
-		position:absolute;
-		top:0;
-		bottom:0;
-		left:0;
-		right:0;
-		background:gold;
-	}
-	body {
-		font-family: Segoe;
-		color: #DDDDDD;
-		background-color: #34495e;
-	}
-	hr {
-		color: #DDDDDD;
-		width: 30%;
-		height: 0.5px;
-		border: 0 none;
-		background-color:#DDDDDD;
-	}
-	img {
-		border: 0px solid;
-    	border-radius: 5px;
-	}
-	.detail {
-		color: #BBBBBB;
-		font-size: 10px;
-	}
 	.headerimg{
 		text-align:center;
 		margin-top:0px;
 		margin-bottom:0px;
 		padding:0px;
 	}
-	p { margin:0 }
 </style>
-
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+		<title>Blueprint: Google Grid Gallery</title>
+		<meta name="description" content="Blueprint: Blueprint: Google Grid Gallery" />
+		<meta name="keywords" content="google getting started gallery, image gallery, image grid, template, masonry" />
+		<meta name="author" content="Codrops" />
+		<link rel="shortcut icon" href="../favicon.ico">
+		<link rel="stylesheet" type="text/css" href="css/demo.css" />
+		<link rel="stylesheet" type="text/css" href="css/component.css" />
+		<script src="js/modernizr.custom.js"></script>
+	</head>
 	<body>
-	<br>
-		<div class="headerimg" >
-			<img src="headerimg.png" width="100" alt="Project 45">
-			<p>
-			Enrico Borba - Processing Projects
-			</p>
-			<p class="detail">
-			(Clearly not a web designer)
-			</p>
-			<br>
+		<div class="container">
+			<header class="clearfix">
+				<div class="headerimg" >
+					<img src="res/headerimg.png" width="100" alt="Project 45">
+					<br>
+					<h1>Enrico Borba - Processing Projects</h1>
+				</div>
+			</header>
+			<div id="grid-gallery" class="grid-gallery">
+				<section class="grid-wrap">
+					<ul class="grid">
+						<li class="grid-sizer"></li><!-- for Masonry column width -->
+						<li>
+							<figure>
+								<img src="res/56.gif" alt="img01"/>
+								<figcaption><h3>Project 56</h3></figcaption>
+							</figure>
+						</li>
+						<li>
+							<figure>
+								<img src="res/45.gif" alt="img02"/>
+								<figcaption><h3>Project 45</h3></figcaption>
+							</figure>
+						</li>
+						<li>
+							<figure>
+								<img src="res/54.gif" alt="img03"/>
+								<figcaption><h3>Project 54</h3></figcaption>
+							</figure>
+						</li>
+						<li>
+							<figure>
+								<img src="res/52.gif" alt="img04"/>
+								<figcaption><h3>Project 52</h3></figcaption>
+							</figure>
+						</li>
+						<li>
+							<figure>
+								<img src="res/41.gif" alt="img05"/>
+								<figcaption><h3>Project 41</h3></figcaption>
+							</figure>
+						</li>
+						<li>
+							<figure>
+								<img src="res/glass.gif" alt="img06"/>
+								<figcaption><h3>Google Glass</h3></figcaption>
+							</figure>
+						</li>
+						<li>
+							<figure>
+								<img src="res/57.gif" alt="img01"/>
+								<figcaption><h3>3D Game of Life</h3></figcaption>
+							</figure>
+						</li>
+						<li>
+							<figure>
+								<img src="res/62.gif" alt="img02"/>
+								<figcaption><h3>"3D" Camera</h3></figcaption>
+							</figure>
+						</li>
+						<li>
+							<figure>
+								<img src="res/45-2.gif" alt="img03"/>
+								<figcaption><h3>Project 45.5</h3></figcaption>
+							</figure>
+						</li>
+						<li>
+							<figure>
+								<img src="res/50.gif" alt="img04"/>
+								<figcaption><h3>Phi Flower</h3></figcaption>
+							</figure>
+						</li>
+						<li>
+							<figure>
+								<img src="res/bacteria.gif" alt="img05"/>
+								<figcaption><h3>Bacteria Simulation</h3></figcaption>
+							</figure>
+						</li>
+					</ul>
+				</section><!-- // grid-wrap -->
+				<section class="slideshow">
+					<ul>
+						<li>
+							<figure>
+								<figcaption>
+									<h3>Project 56</h3>
+									<p>This little animation was inspired by a band's logo, and is a graphical representation of a cosine wave riding another sinusodial wave.</p>
+								</figcaption>
+								<img src="res/56.gif" width="300px" alt="img01"/>
+							</figure>
+						</li>
+						<li>
+							<figure>
+								<figcaption>
+									<h3>Project 45</h3>
+									<p>Project 45 is another animation in my mathematical Processing series. This one is a 3D Lassajous curve, or a parametric function whose x, y, and z coordinates are defined by sine or cosine functions. It is a pleasing visualization of a beautiful mathematical construct.</p>
+								</figcaption>
+								<img src="res/45.gif" width="300px" alt="img02"/>
+							</figure>
+						</li>
+						<li>
+							<figure>
+								<figcaption>
+									<h3>Project 54</h3>
+									<p>Yet another "sketch" included in my mathematical series. This can be thought of a perpetual spring whose sides push forever.</p>
+								</figcaption>
+								<img src="res/54.gif" width="300px" alt="img03"/>
+							</figure>
+						</li>
+						<li>
+							<figure>
+								<figcaption>
+									<h3>Project 52</h3>
+									<p>Inspired by the bendability of any ordinary bracelet, I decided to recreate the effect of twisting a ring. This is the result, which is created entirely using a single, simple equation.</p>
+								</figcaption>
+								<img src="res/52.gif" width="300px" alt="img04"/>
+							</figure>
+						</li>
+						<li>
+							<figure>
+								<figcaption>
+									<h3>Project 41</h3>
+									<p>This "sketch" was more of an accident than anything, and this is why it may appear hectic. This effect is created by twisting a single bezier curve made up of a finite number of control points around the origin. The limitation of the software to create infinitely smooth curves is what gives rise to these complex patterns.</p>
+								</figcaption>
+								<img src="res/41.gif" width="300px" alt="img05"/>
+							</figure>
+						</li>
+						<li>
+							<figure>
+								<figcaption>
+									<h3>Google Glass + Processing</h3>
+									<p>Using Processing, and Google Glass, I created a simple interactive sphere, which reacts to the users orientation.</p>
+								</figcaption>
+								<img src="res/glass.gif" width="300px" alt="img06"/>
+							</figure>
+						</li>
+						<li>
+							<figure>
+								<figcaption>
+									<h3>3D Game of Life</h3>
+									<p>Obviously inspired by Conway's Game of Life, this "sketch" attempts to bring the same concept to another dimension. This is it's currently most stable form, where explosive growth is minimized. The "rules" of the game are different from Conway's original model. This is to accomodate the extra dimension and to prevent explosive growth.</p>
+								</figcaption>
+								<img src="res/57.gif" width="300px" alt="img01"/>
+							</figure>
+						</li>
+						<li>
+							<figure>
+								<figcaption>
+									<h3>"3D" Camera</h3>
+									<p>Using solely a Webcam, I attempted to create "false" 3D renderings of myself. Darker pixels are rendered further back, while lighter ones are rendered closer to the viewer. Works well with open mouths.</p>
+								</figcaption>
+								<img src="res/62.gif" width="300px" alt="img02"/>
+							</figure>
+						</li>
+						<li>
+							<figure>
+								<figcaption>
+									<h3>Project 45.5</h3>
+									<p>This is a variation on Project 45's Lassajous Curve. Instead of a point moving across a screen, these round "pixels" are lit at specific times and brightnesses to give the appeareance of movement. This is merely another effect that I was interesed in.</p>
+								</figcaption>
+								<img width="300px" src="res/45-2.gif" width="300px" alt="img03"/>
+							</figure>
+						</li>
+						<li>
+							<figure>
+								<figcaption>
+									<h3>Phi Flower</h3>
+									<p>Plants take in light from the sun. Their leaves must be as exposed to light as possible. Leaves on different "levels" cannot block out the sun of the other leaves beneath it. The solution to this leaf conundrum is Phi, the Golden Angle. An angle which, when used as the interval, minimizes the overlap of leaves.</p>
+								</figcaption>
+								<img src="res/50.gif" width="300px" alt="img04"/>
+							</figure>
+						</li>
+						<li>
+							<figure>
+								<figcaption>
+									<h3>Bacteria Simulation</h3>
+									<p>I was intrigued at how pathogenic bacteria could communicate mass and coordinated attacks on a host. I tried to simulate such a process using cells that secrete communication chemicals. When one cell receives a sufficient amount of these chemicals, it "activates" (signified by the green color), believing that there are sufficient cells to engage in the attack. All other cells touching it are then activated, and the attack begins.</p>
+								</figcaption>
+								<img src="res/bacteria.gif" width="300px" alt="img05"/>
+							</figure>
+						</li>
+					</ul>
+					<nav>
+						<span class="icon nav-prev"></span>
+						<span class="icon nav-next"></span>
+						<span class="icon nav-close"></span>
+					</nav>
+					<div class="info-keys icon">Navigate with arrow keys</div>
+				</section><!-- // slideshow -->
+			</div><!-- // grid-gallery -->
 		</div>
-		<div></div>
-        <div>
-			<table>
-				<tr>
-					<td style="text-align: center;">
-					<img src="45.gif" width="200" alt="Project 45">
-					</td>
-					<td style="text-align: center;">
-					<img src="54.gif" width="200" alt="Project 45.5">
-					</td>
-					<td style="text-align: center;">
-					<img src="52.gif" width="200" alt="MOSTEC Logo">
-					</td>
-				</tr>
-				<tr>
-					<td style="text-align: center;">
-					<img src="56.gif" width="200" alt="Project 41">
-					</td>
-					<td style="text-align: center;">
-					<img src="33.gif" width="200" alt="Google Glass">
-					</td>
-					<td style="text-align: center;">
-					<img src="41.gif" width="200" alt="Project 45">
-					</td>
-				</tr>
-				<tr>
-					<td style="text-align: center;">
-					<img src="glass.gif" width="200" alt="Project 62">
-					</td>
-					<td style="text-align: center;">
-					<img src="57.gif" width="200" alt="Game of Life 3D">
-					</td>
-					<td style="text-align: center;">
-					<img src="62.gif" width="200" alt="Project 45">
-					</td>
-				</tr>
-				<tr>
-					<td style="text-align: center;">
-					<img src="45-2.gif" width="200" alt="Project 45">
-					</td>
-					<td style="text-align: center;">
-					<img src="50.gif" width="200" alt="Project 45.5">
-					</td>
-					<td style="text-align: center;">
-					<img src="bacteria.gif" width="200" alt="MOSTEC Logo">
-					</td>
-				</tr>
-			</table>
-        </div>
-        <br>
-    </body>
-    
+		<script src="js/imagesloaded.pkgd.min.js"></script>
+		<script src="js/masonry.pkgd.min.js"></script>
+		<script src="js/classie.js"></script>
+		<script src="js/cbpGridGallery.js"></script>
+		<script>
+			new CBPGridGallery( document.getElementById( 'grid-gallery' ) );
+		</script>
+	</body>
 </html>

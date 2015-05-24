@@ -27,8 +27,12 @@ function draw() {
 			if(q === p) {
 				continue;
 			}
-			if(q.p.dist(p.p) < MAX_DIST){
+			var d = q.p.dist(p.p)
+			if(d < MAX_DIST){
+				push()
+				strokeWeight(map(d, 0, MAX_DIST, 1, 0))
 				line(q.p.x, q.p.y, p.p.x, p.p.y)
+				pop()
 			}
 		}
 		if(p.out()) {

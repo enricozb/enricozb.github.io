@@ -1,5 +1,5 @@
 var DIAMETER = 7
-var DENSITY = 0.00003858
+var DENSITY = 0.0001
 var MAX_DIST = 100
 var SPEED = 0.4
 var NUM

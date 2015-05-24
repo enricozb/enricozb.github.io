@@ -1,8 +1,8 @@
 var DIAMETER = 7
-var NUM = 50
+var DENSITY = 0.00003858
 var MAX_DIST = 100
 var SPEED = 0.4
-
+var NUM
 var parr = []
 
 function setup() {
@@ -11,6 +11,7 @@ function setup() {
 	c.parent("p5canvas")
 	fill(60)
 	stroke(60)
+	NUM = ~~(DENSITY * windowWidth * windowHeight)
 	for(var i = 0; i < NUM; i++) {
 		parr.push(new Pt(false))
 	}

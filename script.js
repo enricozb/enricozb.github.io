@@ -7,7 +7,8 @@ var parr = []
 
 function setup() {
 	devicePixelScaling(2)
-	createCanvas(windowWidth, windowHeight)
+	var c = createCanvas(windowWidth, windowHeight)
+	c.parent("p5canvas")
 	fill(60)
 	stroke(60)
 	for(var i = 0; i < NUM; i++) {

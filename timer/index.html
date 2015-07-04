@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+	<title>Timer</title>
+</head>
+<style type="text/css">
+	@font-face {
+		font-family: digital;
+		src: url('digital.otf');
+	}
+	body {
+		background-color: #076B6B;
+	}
+	#timer {
+			color: white;
+			font-family: "ubuntu";
+			font-size: 150pt;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			-moz-transform: translateX(-50%) translateY(-50%);
+			-webkit-transform: translateX(-50%) translateY(-50%);
+			transform: translateX(-50%) translateY(-50%);
+		}
+</style>
+
+<body>
+	<div id="timer">
+		0.000
+	</div>
+</body>
+<script type="text/javascript" src="jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="jquery-ui.min.js"></script>
+<script type="text/javascript" src="tock.min.js"></script>
+<script type="text/javascript" src="mousetrap.js"></script>
+<script type="text/javascript" src="timer.js"></script>
+
+</html>

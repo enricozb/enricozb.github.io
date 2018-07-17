@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css" integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js" integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/contrib/auto-render.min.js" integrity="sha384-aGfk5kvhIq5x1x5YdvCp4upKZYnA8ckafviDpmWEKp4afOZEqOli7gqSnh8I6enH" crossorigin="anonymous"></script>
+    <title>EZB - Functions</title>
+  </head>
+  <body>
+    <a id="home" href="../thoughts.html">←</a>
+    <div id="maindivalt">
+      <div id="title">
+        Functions
+      </div>
+      Somewhere in my senior year of High School, two friends and I were
+      wondering how one could write <ezb-code>min(x,y)</ezb-code> in math
+      notation using only binary operations and elementary functions. It took
+      us a little while to come up with something, but eventually we got this:
+
+      $$ \min(x, y) = \frac{x + y}{2} - \frac{\lvert x - y \rvert}{2} $$
+
+      This first part of this function finds the midpoint between $x$ and $y$.
+      Then, we travel half the distance between $x$ and $y$ toward $0$, thus
+      arriving at the smaller of the two numbers. It's pretty clear that
+      <ezb-code>max(x,y)</ezb-code> can be achieved by travelling toward
+      $\infty$ instead of toward $0$, like so:
+
+      $$ \max(x, y) = \frac{x + y}{2} + \frac{\lvert x - y \rvert}{2} $$
+
+      Curious to perform this &ldquo;mathematical translation&rdquo; on other
+      functions commonly used in programing, we wondered how this could be done
+      for equality, $\text{eq}(x,y)$.  Since we wanted to stick to functions on
+      the reals, we opted for <ezb-code>true</ezb-code> being $1$, and
+      <ezb-code>false</ezb-code> being $0$. Here's what one of us came up with,
+
+      $$ \text{eq}(x, y) = 1 - \left\lceil \frac{\lvert x - y \rvert}{\lvert x - y \rvert + 1} \right\rceil $$
+
+      Using the celing function might seem like &ldquo;cheating&rdquo;, but
+      it's important to remember that we were mostly trying to sidestep
+      functions defined in a piecewise/pattern-matching fashion. Thus, this
+      one-line arithmetic definition met our needs.
+      <br>
+      <br>
+      We kept going. Another useful function is <ezb-code>sign(x)</ezb-code>,
+      also known as <ezb-code>signum(x)</ezb-code>, that returns $-1$ if $x$ is
+      negative, $1$ if $x$ is positive, and $0$ if $x$ is $0$. Here's what we
+      came up with,
+
+      $$ \text{sign}(x) = \left\lfloor \frac{x}{\lvert x \rvert + 1} \right\rfloor +
+         \left\lceil \frac{x}{\lvert x \rvert + 1} \right\rceil $$
+
+      Now, what's the fun in doing all of this? Well, for me it was the fact
+      that in programming, arguments to a function (even as numbers) are
+      data, stored sequentially in memory. This mindset allows for easier
+      conceptualization of some operations over others. For example, how would
+      you write some code to reverse a number? Well, if the number was stored
+      in base 10 in memory, and not in binary, you could just copy the data
+      but in reverse order. Now, how would you write a <i>math function</i> to
+      reverse an integer? When I was first working on this stuff in High
+      School, the idea of doing this blew my mind. Control flow, time and
+      space complexity, a sequence of instructions, all of that was gone when
+      writing using just arithmetic operations.
+      <br>
+      <br>
+      Before showing you the function that we came up with to reverse a number,
+      we have to define two functions. First, $\text{len}(x, b)$, which gives
+      the number of digits in $x$ when written in base $b$.
+
+      $$ \text{len}(x, b) = \big\lceil \log_b(x + 1) \big\rceil $$
+
+      Then, we have $\text{at}(x, b, i)$, which gives the digit at index $i$
+      of $x$ when written in base $b$. This is zero-indexed and $i=0$ refers
+      to the least significant digit. For example $\text{at}(123, 10, 0) = 3$
+
+      $$ \text{at}(x, b, i) =
+        \left\lfloor \frac{\lvert x \rvert}{b^i} \right\rfloor
+        \text{ mod } b $$
+
+      Here, $\text{mod}$ is an operator, not the equivalence class. Now,
+      here's our definition of reverse,
+      $$ \text{rev}(x, b) =
+        \sum_{i = 0}^{\text{len}(x, b) - 1} \text{at}(x, b, i) \cdot
+          10^{\text{len}(x, b) - i - 1} $$
+
+      Let's break this down. The $\Sigma$ can be described as a
+      &ldquo;loop&rdquo;. We loop through all of the valid indices $i$ of the
+      digits in $x$. For each index $i$, we take the digit in $x$ at that
+      index and &ldquo;place&rdquo; it in a new number at a new index
+      $\text{len}(x, b) - i - 1$. Notice, this new index is exactly the index
+      of this digit in the reversed number.
+      <br>
+      <br>
+      What's even cooler is that we can translate our definition of
+      $\text{rev}$ <i>back into code</i>. Here's a snippet using Python,
+      <br>
+      <br>
+      <div class="code">
+        <ezb-import>from</ezb-import> math <ezb-import>import</ezb-import> *
+        <br>
+        <br>
+        <ezb-op>def</ezb-op> <ezb-builtin>len</ezb-builtin>(x, b):<br>
+        &nbsp;&nbsp;<ezb-op>return</ezb-op>
+          <ezb-builtin>ceil</ezb-builtin>(<ezb-builtin>log</ezb-builtin>(x
+          <ezb-op>+</ezb-op> <ezb-num>1</ezb-num>, b))
+        <br>
+        <br>
+        <ezb-op>def</ezb-op> <ezb-builtin>at</ezb-builtin>(x, b, i):<br>
+        &nbsp;&nbsp;<ezb-op>return</ezb-op>
+        <ezb-builtin>floor</ezb-builtin>(<ezb-builtin>abs</ezb-builtin>(x)
+        <ezb-op>/</ezb-op>
+        (b <ezb-op>**</ezb-op> i)) <ezb-op>%</ezb-op> b
+        <br>
+        <br>
+        <ezb-op>def</ezb-op> <ezb-builtin>rev</ezb-builtin>(x, b):<br>
+        &nbsp;&nbsp;<ezb-op>return</ezb-op>
+        <ezb-builtin>sum</ezb-builtin>(<ezb-builtin>at</ezb-builtin>(x, b, i)
+        <ezb-op>*</ezb-op> (<ezb-num>10</ezb-num> <ezb-op>**</ezb-op>
+        (<ezb-builtin>len</ezb-builtin>(x, b) <ezb-op>-</ezb-op>
+        i <ezb-op>-</ezb-op> <ezb-num>1</ezb-num>)) <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>for</ezb-op> i <ezb-op>in</ezb-op>
+        <ezb-builtin>range</ezb-builtin>(<ezb-builtin>len</ezb-builtin>(x, b)
+        <ezb-op>-</ezb-op> <ezb-num>1</ezb-num>))
+      </div>
+      <br>
+      Even though this is over 10x slower than the naive string-reversal
+      approach, it's still pretty cool that this can be done using only binary
+      operations.
+      <br>
+      <br>
+      Next, we'll talk about sorting the digits of an integer.
+    </div>
+    <script>
+      renderMathInElement(
+        document.body,
+        {
+          delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false},
+          ]
+        }
+      );
+    </script>
+  </body>
+</html>

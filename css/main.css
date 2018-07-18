@@ -74,6 +74,15 @@ body {
   padding: 0;
 }
 
+#subtitle {
+  font-size: 15pt;
+  text-align: center;
+  line-height: 1;
+  color: #555;
+  padding: 0;
+  margin-top: 10px;
+}
+
 #bigname {
   font-size: 60pt;
   text-align: center;
@@ -105,22 +114,26 @@ body {
   margin-bottom: 50px;
 }
 
-#toc-end {
+.toc-section-end {
   width: 100px;
 }
 
 .toc-section {
   margin: 0;
   font-size: 15pt;
+  font-weight: bold;
 }
 
-.toc-entry {
-  font-size: 13pt;
+.toc-subsection {
+  margin: 0;
+  font-size: 15pt;
+  padding-left: 10px;
 }
 
 .toc-entry-n {
   padding-left: 20px;
   width: 480px;
+  font-size: 13pt;
 
   float: left;
   overflow: hidden;
@@ -130,6 +143,7 @@ body {
 .toc-entry-d {
   text-align: center;
   width: 100px;
+  font-size: 13pt;
 
   float: left;
   overflow: hidden;
@@ -145,7 +159,8 @@ h1, h2, h3 {
 }
 
 .toc-entry-n:after {
-  content: "\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.";
+  text-align: right;
+  content: "\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.";
 }
 
 ul {
@@ -187,12 +202,13 @@ a:hover {
 }
 
 #codeblock {
+  text-align: left;
   font-family: monospace;
   font-size: 10pt;
   width: 400px;
   margin: 0 auto;
   padding: 5px;
-  line-height: 1.1;
+  line-height: 1.2;
   background: #eee;
   border-radius: 5px;
 }
@@ -258,8 +274,13 @@ ezb-num     { color: #2980b9; }
     margin-bottom: 14vw;
   }
 
+  #subtitle {
+    font-size: 5.4vw;
+    margin-top: 3.5vw;
+  }
+
   #home {
-    font-size: 6.1vw;
+    font-size: 12vw;
     line-width: 2vw;
     top: 4vw;
     left: 3vw;
@@ -270,26 +291,47 @@ ezb-num     { color: #2980b9; }
     margin-bottom: 7.5vw;
   }
 
-  #toc-end { width: 16vw; }
+  .toc-section-end {
+    width: 16vw;
+  }
 
   .toc-section { font-size: 6vw; }
-  .toc-entry { font-size: 5.2vw; }
+  .toc-subsection {
+    font-size: 6vw;
+    padding-left: 3vw;
+  }
 
   .toc-entry-n {
-    padding-left: 3vw;
-    width: 57vw;
+    font-size: 5.2vw;
+    padding-left: 6vw;
+    width: 56vw;
   }
 
   .toc-entry-d {
-    width: 30vw;
+    font-size: 5.2vw;
+    width: 28vw;
+  }
+
+  #footer-links {
+    font-size: 6vw;
+    padding-left: 8vw;
+    padding-right: 8vw;
+    padding-top: 8vw;
   }
 
   #links {
-    font-size: 3.6vw;
+    font-size: 5vw;
     padding-left: 8%;
     padding-right: 8%;
     padding-top: 4.8%;
     padding-bottom: 12.8%;
+  }
+
+  ezb-code {
+    font-size: 5vw;
+    padding-left: 0.8vw;
+    padding-right: 0.8vw;
+    border-radius: 1vw;
   }
 
   #codeblock {

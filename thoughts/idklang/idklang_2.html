@@ -1,0 +1,287 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../css/main.css">
+    <title>EZB - idklang</title>
+  </head>
+  <body>
+    <a id="home" href="../../thoughts.html">←</a>
+    <div id="maindivalt">
+      <div id="title">
+        idk-lang 2
+      </div>
+      <h1> Let's see some code! </h1>
+      The code samples I've provided here are subject to not be valid in
+      any future implementation of this language. I'm still trying to figure
+      everything out, and it's hard to go back and change
+      everywhere where I stated something about this language. So, I don't
+      think things will change much, but they will be left here to preserve
+      a record of progress, so I can see what this language really started
+      out as.
+      <h2> Literals </h2>
+      Here's what the literals look like:
+      <br>
+      <br>
+      <div class="code">
+        <ezb-num>1</ezb-num>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <ezb-cmt># Num</ezb-cmt> <br>
+
+        <ezb-num>2.0</ezb-num>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <ezb-cmt># Fractional</ezb-cmt> <br>
+
+        <ezb-num>3e4</ezb-num>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <ezb-cmt># Fractional</ezb-cmt> <br>
+
+        <ezb-num>5i</ezb-num>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <ezb-cmt># Complex</ezb-cmt> <br>
+
+        <ezb-num>True</ezb-num>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <ezb-cmt># Bool</ezb-cmt> <br>
+
+        <ezb-num>False</ezb-num>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <ezb-cmt># Bool</ezb-cmt> <br>
+
+        (<ezb-num>1</ezb-num>, <ezb-num>True</ezb-num>, <ezb-str>"a"</ezb-str>)
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <ezb-cmt># (Num, Bool, String)</ezb-cmt> <br>
+
+        [<ezb-num>1</ezb-num>,
+        <ezb-num>2</ezb-num>,
+        <ezb-num>3</ezb-num>]
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <ezb-cmt># [Num] or List&lt;Num&gt;</ezb-cmt> <br>
+
+        {<ezb-num>1</ezb-num>,
+        <ezb-num>2</ezb-num>,
+        <ezb-num>3</ezb-num>}
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <ezb-cmt># {Num} or Set&lt;Num&gt;</ezb-cmt> <br>
+
+        {<ezb-str>"a"</ezb-str>: <ezb-num>1</ezb-num>
+        <ezb-str>"b"</ezb-str>: <ezb-num>2</ezb-num>}
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <ezb-cmt># {String: Num} or Dict&lt;String, Num&gt;</ezb-cmt> <br>
+
+        <ezb-str>"Hello, World!"</ezb-str>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <ezb-cmt># String</ezb-cmt> <br>
+      </div>
+      <br>
+      Notice the types on the right of each literal expression.
+      <ezb-code>Num</ezb-code>, <ezb-code>Complex</ezb-code>, and
+      <ezb-code>Fractional</ezb-code> are all traits. The type of these
+      literals is similar to Haskell's typeclasses of the same name. They
+      represent the most general type that this literal can be. We'll talk
+      about traits in more detail in a later section. <ezb-code>Bool</ezb-code>
+      is a type with two constructors that take no arguments,
+      <ezb-code>True</ezb-code> and <ezb-code>False</ezb-code>.
+      <ezb-code>Lists</ezb-code> and <ezb-code>Sets</ezb-code> are
+      heterogenous, that is, they only hold objects of the same type. Lastly,
+      <ezb-code>String</ezb-code> is <i>not</i> a trait like
+      <ezb-code>Num</ezb-code> and friends, it is a proper class. It can be
+      instantiated, and cannot be inherited from, unlike traits. We'll talk
+      about classes in more detail in a later section.
+
+      <h2> Binary Operators </h2>
+      Here are some basic operators:
+      <br>
+      <br>
+      <div class="code">
+        <ezb-num>1</ezb-num> <ezb-op>+</ezb-op> <ezb-num>1</ezb-num>
+        &nbsp;&nbsp;&nbsp;
+        <ezb-cmt># 2</ezb-cmt><br>
+
+        <ezb-num>1</ezb-num> <ezb-op>-</ezb-op> <ezb-num>1</ezb-num>
+        &nbsp;&nbsp;&nbsp;
+        <ezb-cmt># 0</ezb-cmt><br>
+
+        <ezb-num>2</ezb-num> <ezb-op>*</ezb-op> <ezb-num>2</ezb-num>
+        &nbsp;&nbsp;&nbsp;
+        <ezb-cmt># 4</ezb-cmt><br>
+
+        <ezb-num>1</ezb-num> <ezb-op>/</ezb-op> <ezb-num>2</ezb-num>
+        &nbsp;&nbsp;&nbsp;
+        <ezb-cmt># 0.5</ezb-cmt><br>
+
+        <ezb-num>3</ezb-num> <ezb-op>^</ezb-op> <ezb-num>2</ezb-num>
+        &nbsp;&nbsp;&nbsp;
+        <ezb-cmt># 9</ezb-cmt><br>
+      </div>
+      <br>
+      Even though we haven't talked about idk-lang's type language yet, we
+      will use it here for a quick showcase of some of the features of this
+      language. The type of <ezb-code>+</ezb-code> is
+      <ezb-code>Addable a =&gt; a -&gt; a -&gt; a</ezb-code>. That is,
+      <ezb-code>+</ezb-code> takes in two objects of the same type
+      <ezb-code>a</ezb-code> where the type <ezb-code>a</ezb-code> must
+      inherit the trait <ezb-code>Addable</ezb-code>. Since
+      <ezb-code>Num</ezb-code> and <ezb-code>String</ezb-code> both inherit
+      <ezb-code>Addable</ezb-code>, the following expressions are both
+      valid,
+      <br>
+      <br>
+      <div class="code">
+        <ezb-num>10213674</ezb-num> <ezb-op>+</ezb-op> <ezb-num>7868297</ezb-num>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <ezb-cmt># 18081971</ezb-cmt><br>
+
+        <ezb-str>"Hello, "</ezb-str> <ezb-op>+</ezb-op>
+        <ezb-str>"World!"</ezb-str>
+        &nbsp;&nbsp;&nbsp;
+        <ezb-cmt># "Hello, World!"</ezb-cmt><br>
+      </div>
+      <br>
+      This shows one of the many advantages to using traits in a statically
+      typed environment. It prevents the creation of over-engineered
+      syntax to handle the &ldquo;overloading&rdquo; of operators on different
+      types.
+
+      <h2> Boolean Operators </h2>
+      Lastly, we have the boolean operators:
+      <br>
+      <br>
+      <div class="code">
+        <ezb-op>not</ezb-op> <ezb-num>True</ezb-num>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <ezb-cmt># False</ezb-cmt><br>
+
+        <ezb-num>True</ezb-num> <ezb-op>and</ezb-op> <ezb-num>False</ezb-num>
+        &nbsp;
+        <ezb-cmt># False</ezb-cmt><br>
+
+        <ezb-num>True</ezb-num> <ezb-op>or</ezb-op> <ezb-num>False</ezb-num>
+        &nbsp;&nbsp;
+        <ezb-cmt># True</ezb-cmt><br>
+      </div>
+      <br>
+      The operator <ezb-code>not</ezb-code> has type <ezb-code>Bool -&gt; Bool</ezb-code>.
+      The operators <ezb-code>and</ezb-code> and <ezb-code>or</ezb-code> both have type
+      <ezb-code>Bool -&gt; Bool -&gt; Bool</ezb-code>. These work as expected,
+      and because of how strict this language is, there is never an implicit
+      cast or coercion to any type, so these functions only work on booleans.
+
+      <h2>Comparison Operators</h2>
+      We've seen some basic binary operators: <ezb-code>+ - / * ^</ezb-code>. A
+      valid type for all of these operators is <ezb-code>Num a =&gt; a -&gt; a
+      -&gt; a</ezb-code>.  That is, they take in two objects of the same type
+      <ezb-code>a</ezb-code> that implement the trait <ezb-code>Num</ezb-code>,
+      and return an object of type <ezb-code>a</ezb-code> that also implements
+      that <ezb-code>Num</ezb-code>. These are called <i>Numeric operators</i>.
+      <br>
+      <br>
+      There is another group of operators called <i>Comparison operators</i>.
+      They all have type <ezb-code>a -&gt; a -&gt; Bool</ezb-code>. That is,
+      they take in two objects, both of type <ezb-code>a</ezb-code> and the
+      and they return a <ezb-code>Bool</ezb-code>. Now, <ezb-code>a</ezb-code>
+      are <i>type variables</i>, they represent any possible type.
+      For example, the following operators are <i>Comparison operators</i>
+      <br>
+      <br>
+      <div class="code">
+        <ezb-num>1</ezb-num> <ezb-op>=</ezb-op> <ezb-num>1</ezb-num>
+        &nbsp;&nbsp;&nbsp;
+        <ezb-cmt># True (structural equality)</ezb-cmt><br>
+
+        <ezb-num>1</ezb-num> <ezb-op>&lt;</ezb-op> <ezb-num>2</ezb-num>
+        &nbsp;&nbsp;&nbsp;
+        <ezb-cmt># True</ezb-cmt><br>
+
+        <ezb-num>1</ezb-num> <ezb-op>&gt;</ezb-op> <ezb-num>2</ezb-num>
+        &nbsp;&nbsp;&nbsp;
+        <ezb-cmt># False</ezb-cmt><br>
+
+        <ezb-num>1</ezb-num> <ezb-op>/=</ezb-op> <ezb-num>1</ezb-num>
+        &nbsp;&nbsp;
+        <ezb-cmt># False</ezb-cmt><br>
+      </div>
+      <br>
+      What is special about these operators is that they can be chained for
+      greater expressive power. For example, this is a valid use of these
+      operators,
+      <br>
+      <br>
+      <div class="code">
+        <ezb-num>1</ezb-num> <ezb-op>&lt;</ezb-op> <ezb-num>2</ezb-num>
+        <ezb-op>&lt;</ezb-op> <ezb-num>3</ezb-num>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <ezb-cmt># True</ezb-cmt><br>
+
+        <ezb-num>1</ezb-num> <ezb-op>&lt;</ezb-op> <ezb-num>2</ezb-num>
+        <ezb-op>&gt;</ezb-op> <ezb-num>3</ezb-num>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <ezb-cmt># False</ezb-cmt><br>
+
+        <ezb-num>1</ezb-num> <ezb-op>=</ezb-op> <ezb-num>1</ezb-num>
+        <ezb-op>&lt;</ezb-op> <ezb-num>3</ezb-num>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <ezb-cmt># True</ezb-cmt><br>
+      </div>
+      <br>
+      These chains are equivalent to checking that every adjacent pair of
+      arguments to each operator returns <ezb-code>True</ezb-code>. In the
+      case of function calls inside chains, they are only executed once
+      per chain.
+      <h2>Partial<span style="color:#bbb;">(ly applied)</span> operators</h2>
+      Another cool feature of operators is that they can be partially
+      applied, esentially equivalent to Haskell's
+      <a href="https://wiki.haskell.org/Section_of_an_infix_operator">operator sections</a>
+      except without any iterated section support. For example,
+      <br>
+      <br>
+      <div class="code">
+        (<ezb-op>&lt;</ezb-op><ezb-num>0</ezb-num>) &nbsp;
+        <ezb-cmt># A function that returns True if the input is less than
+          0</ezb-cmt> <br>
+
+        (<ezb-op>=</ezb-op><ezb-num>1</ezb-num>)
+        &nbsp;
+        <ezb-cmt># A function that returns True if the input is equal to
+          1</ezb-cmt> <br>
+
+        (<ezb-num>2</ezb-num><ezb-op>*</ezb-op>)
+        &nbsp;
+        <ezb-cmt># A function that multiplies its input by 2</ezb-cmt><br>
+      </div>
+      <br>
+      These can be really expressive when using maps or filters.
+      <br>
+      <br>
+      The next section is on <i>forms</i>, where we'll talk about assignment,
+      <ezb-code>if</ezb-code> expressions, and <ezb-code>where</ezb-code>
+      expressions.
+      <div id="footer-links">
+        <ul>
+          <li><a href="idklang_1.html">Previous</a></li>
+          <li><a href="idklang_3.html">Next</a></li>
+        </ul>
+      </div>
+
+    </div>
+    <script>
+      renderMathInElement(
+        document.body,
+        {
+          delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false},
+          ]
+        }
+      );
+    </script>
+  </body>
+</html>

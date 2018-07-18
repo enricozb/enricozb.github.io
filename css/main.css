@@ -189,16 +189,30 @@ a:hover {
   color: #8e44ed
 }
 
+.katex-display > .katex {
+    max-width: 100%;
+}
+
+.katex-display > .katex > .katex-html {
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
 .code {
   text-align: left;
   font-family: monospace;
   font-size: 10pt;
-  width: 100%;
+  width: 98%;
   margin: 0 auto;
   padding: 5px;
   line-height: 1.2;
   background: #eee;
   border-radius: 5px;
+  overflow-x: scroll;
+  white-space: nowrap;
 }
 
 #codeblock {
@@ -327,10 +341,15 @@ ezb-num     { color: #2980b9; }
     padding-bottom: 12.8%;
   }
 
-  ezb-code {
-    font-size: 5vw;
-    padding-left: 0.8vw;
-    padding-right: 0.8vw;
+  .katex-display > .katex > .katex-html {
+      padding-top: 0.8vw;
+      padding-bottom: 0.8vw;
+  }
+
+  .code {
+    font-size: 3.6vw;
+    width: 95%;
+    padding: 1.6vw;
     border-radius: 1vw;
   }
 
@@ -341,9 +360,10 @@ ezb-num     { color: #2980b9; }
     border-radius: 1vw;
   }
 
-  .code {
-    font-size: 2.5vw;
-    padding: 0.8%;
+  ezb-code {
+    font-size: 5vw;
+    padding-left: 0.8vw;
+    padding-right: 0.8vw;
     border-radius: 1vw;
   }
 

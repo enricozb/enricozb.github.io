@@ -35,5 +35,5 @@ def parse(filename):
 
 def to_html(filename):
     metadata, body = parse(filename)
-    print(renderer.render(metadata, body))
+    return renderer.render(metadata, body)
 

@@ -7,6 +7,7 @@
 [prev_post] idklang_3.html
 
 [body]
+
 # Forms
 It's important to note that in idk-lang, every syntactically valid
 construct is "known" as a _form_. There are two types of forms,
@@ -17,11 +18,12 @@ do not return a value. Expressions return a value.
 Assignment comes in two flavors... blah blah blah
 
 
-
 ```python
+from titty import bitty
+
 def function(*args, **kwargs):
   for i in range([1,2,3]):
-    print(i + 1)
+    print(i + 1 and True or False)
 ```
 
 

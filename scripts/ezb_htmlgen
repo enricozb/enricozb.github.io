@@ -1,19 +1,29 @@
+#! /usr/bin/python3
+
 import ezb
 
 import argparse
+import os
 import sys
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file",
+            required=True,
             help="post file to convert to html")
     return parser.parse_args(sys.argv[1:])
 
 
 def main():
     args = parse_args()
-    ezb.to_html(args.file)
+    outfile = f"{os.path.splitext(args.file)[0]}.html"
+
+    html = ezb.to_html(args.file)
+    with open(outfile, "w") as out:
+        out.write(html)
+
+    print(f"Wrote to {outfile}")
 
 
 if __name__ == "__main__":

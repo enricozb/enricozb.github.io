@@ -4,26 +4,54 @@ import ezb
 
 import argparse
 import os
+import pathlib
 import sys
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file",
-            required=True,
             help="post file to convert to html")
-    return parser.parse_args(sys.argv[1:])
+    parser.add_argument("-a", "--all",
+            action="store_true",
+            help="convert all .md files in thoughts_md to html")
+
+    args = parser.parse_args(sys.argv[1:])
+    if args.file or args.all:
+        return args
+
+    print("--file or --all must be passed in")
 
 
 def main():
     args = parse_args()
-    outfile = f"{os.path.splitext(args.file)[0]}.html"
+    if args is None:
+        return
 
-    html = ezb.to_html(args.file)
-    with open(outfile, "w") as out:
-        out.write(html)
+    if args.file:
+        outfile = f"{os.path.splitext(args.file)[0]}.html"
+        html = ezb.to_html(args.file)
+        with open(outfile, "w") as out:
+            out.write(html)
 
-    print(f"Wrote to {outfile}")
+        print(f"Wrote to {outfile}")
+
+    elif args.all:
+        if os.path.isdir("thoughts/") and os.path.isdir("thoughts_md/"):
+            for input_dir, _, files, in os.walk("thoughts_md/"):
+                input_dir = pathlib.Path(input_dir)
+                output_dir = pathlib.Path("thoughts/", *input_dir.parts[1:])
+                for file in map(pathlib.Path, files):
+                    input_file = pathlib.Path(input_dir, file)
+                    output_file = pathlib.Path(output_dir, f"{file.stem}.html")
+                    html = ezb.to_html(input_file)
+                    with open(output_file, "w") as out:
+                        out.write(html)
+
+                    print(f"Wrote to {output_file}")
+
+        else:
+            print("could not find 'thoughts_md/' folder in current directory")
 
 
 if __name__ == "__main__":

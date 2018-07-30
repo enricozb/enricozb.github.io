@@ -15,25 +15,26 @@
       <div id="title">
         Functions 1
       </div>
-      Somewhere in my senior year of High School, two friends and I were
-      wondering how one could write <ezb-code>min(x,y)</ezb-code> in math
-      notation using only binary operations and elementary functions. It took
-      us a little while to come up with something, but eventually we got this:
+      Somewhere in my senior year of high school, two friends and I were
+      wondering how one could write <ezb-code>min(x,y)</ezb-code> using
+      only binary arithmetic (non-comparison) operations and elementary
+      functions. It took us a little while to come up with something,
+      but eventually we got this:
 
       $$ \min(x, y) = \frac{x + y}{2} - \frac{\lvert x - y \rvert}{2} $$
 
       This first part of this function finds the midpoint between $x$ and $y$.
-      Then, we travel half the distance between $x$ and $y$ toward $0$, thus
-      arriving at the smaller of the two numbers. It's pretty clear that
+      Then, we travel half the distance between $x$ and $y$ toward $-\infty$,
+      thus arriving at the smaller of the two numbers. It's pretty clear that
       <ezb-code>max(x,y)</ezb-code> can be achieved by travelling toward
-      $\infty$ instead of toward $0$, like so:
+      $\infty$ instead of toward $-\infty$, like so:
 
       $$ \max(x, y) = \frac{x + y}{2} + \frac{\lvert x - y \rvert}{2} $$
 
       Curious to perform this &ldquo;mathematical translation&rdquo; on other
       functions commonly used in programing, we wondered how this could be done
-      for equality, $\text{eq}(x,y)$.  Since we wanted to stick to functions on
-      the reals, we opted for <ezb-code>true</ezb-code> being $1$, and
+      for equality, <ezb-code>x == y</ezb-code>.  Since we wanted to stick to
+      functions on the reals, we opted for <ezb-code>true</ezb-code> being $1$, and
       <ezb-code>false</ezb-code> being $0$. Here's what one of us came up with,
 
       $$ \text{eq}(x, y) = 1 - \left\lceil \frac{\lvert x - y \rvert}{\lvert x - y \rvert + 1} \right\rceil $$
@@ -59,10 +60,10 @@
       you write some code to reverse a number? Well, if the number was stored
       in base 10 in memory, and not in binary, you could just copy the data
       but in reverse order. Now, how would you write a <i>math function</i> to
-      reverse an integer? When I was first working on this stuff in High
-      School, the idea of doing this blew my mind. Control flow, time and
-      space complexity, a sequence of instructions, all of that was gone when
-      writing using just arithmetic operations.
+      reverse an integer? When I was first working on this stuff in, the idea
+      of doing this blew my mind. Control flow, time and space complexity, a
+      sequence of instructions, all of that was gone when writing using just
+      arithmetic operations.
       <div id="footer-links">
         <ul>
           <li><a href="../../thoughts.html">Thoughts</a></li>

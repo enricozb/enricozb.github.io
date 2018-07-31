@@ -212,7 +212,7 @@ a:hover {
   line-height: 1.2;
   background: #eee;
   border-radius: 5px;
-  overflow-x: scroll;
+  overflow-x: auto;
   white-space: nowrap;
 }
 

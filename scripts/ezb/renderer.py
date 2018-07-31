@@ -10,6 +10,8 @@ def tab_for_level(level):
 
 def tab_format(fmtstr, kwargs, level):
     tab = tab_for_level(level)
+    if fmtstr.startswith("<script>"):
+        return f"\n{tab}".join(fmtstr.splitlines())
     keys = {i[1] for i in Formatter().parse(fmtstr) if i[1] is not None}
     missing_attr = {k for k in keys if kwargs[k] is None}
     if missing_attr:

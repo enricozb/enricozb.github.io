@@ -1,0 +1,29 @@
+{
+    Math: {
+        Functions: {
+            introduction: [2018, 7, 17]
+            reverse: [2018, 7, 17]
+            sorting: [2018, 7, 31]
+            look-and-say: future
+        }
+    }
+
+    Programming: {
+        Mollusk: {
+            prelude: [2018, 7, 18]
+            "the code": future
+        }
+        idk-lang: {
+            introduction: [2018, 7, 12]
+            operators: [2018, 7, 18]
+            forms: [2018, 7, 18]
+            "loops & lambdas": future
+        }
+    }
+
+    Life: {
+        "Living in Japan": {
+            "work culture": future
+        }
+    }
+}

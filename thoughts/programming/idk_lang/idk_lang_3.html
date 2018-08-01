@@ -1,0 +1,288 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../../../css/main.css">
+    <title>EZB - idklang</title>
+  </head>
+  <body>
+    <a id="home" href="../../thoughts.html">←</a>
+    <div id="maindivalt">
+      <div id="title">
+        idk-lang 3
+      </div>
+      <h1> Forms </h1>
+      It's important to note that in idk-lang, every syntactically valid
+      construct is known as a <i>form</i>. There are two types of forms,
+      there are <i>statements</i> and there are <i>expressions</i>. Statements
+      do not return a value. Expressions return a value.
+      <h2>Assignment &amp; Blocks</h2>
+      Assignment comes in two flavors: a single-line assignment statement and
+      a multiline assignment statement. Single-line assignment statements
+      are (unsurprisingly) assignment occuring entirely on a single line.
+      Multiline assignment statements must be started by a newline, and
+      indented some amount of spaces to form a <i>block</i>. The last line
+      of the block must be an expression and that value is what will be used
+      for the assignment. Here are two valid assignment statements
+      <br>
+      <br>
+      <div class="code">
+        x<ezb-op>:</ezb-op> <ezb-num>1</ezb-num>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <ezb-cmt># `x` will be assigned `1`</ezb-cmt>
+        <br>
+        <br>
+        y_plus_z<ezb-op>:</ezb-op>
+        &nbsp;&nbsp;&nbsp;
+        <ezb-cmt># `y_plus_z` will be assigned `3`</ezb-cmt><br>
+        &nbsp; y<ezb-op>:</ezb-op> <ezb-num>1</ezb-num>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <ezb-cmt># `y` will be assigned `1`</ezb-cmt><br>
+        &nbsp; z<ezb-op>:</ezb-op> <ezb-num>2</ezb-num>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <ezb-cmt># `z` will be assigned `2`</ezb-cmt><br>
+        &nbsp; y <ezb-op>+</ezb-op> z
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <ezb-cmt># `y + z` returns `3`</ezb-cmt><br>
+      </div>
+      <br>
+      Assignment is a statement, and thus cannot be used as a value. For
+      example, <ezb-code>1 + (x: 1)</ezb-code> would be a syntax error because
+      <ezb-code>x: 1</ezb-code> does not return a value.
+      <br>
+      <br>
+      Also, in an attempt to have unified syntax, wherever a colon
+      <ezb-code>:</ezb-code> is syntactically valid, it can be followed by
+      a single-line form or a multiline list of forms. A multiline list of
+      forms is known as a <i>block</i> and must be indented with some amount
+      of tabs or spaces (but not both!).
+
+      <h2> Expression Forms </h2>
+      The following forms (<ezb-code>if</ezb-code>, <ezb-code>when</ezb-code>,
+      and <ezb-code>match</ezb-code>) are all expressions. Therefore, they
+      can be used on the right-hand side of a single-line assignment and as
+      the expression in the last line of the block of an assignment.
+
+      <h2> If Expression </h2>
+      The general syntax for <ezb-code>if</ezb-code> expressions look like
+      this, (very similar to Python's syntax)
+      <br>
+      <br>
+      <div class="code">
+        <ezb-op>if</ezb-op> a_boolean:<br>
+        &nbsp;&nbsp;return_value_if_true <br>
+        <ezb-op>else</ezb-op>:<br>
+        &nbsp;&nbsp;return_value_if_false <br>
+      </div>
+      <br>
+      Remember, since <ezb-code>if</ezb-code> is an expression, it returns
+      a value. The last value in the <ezb-code>if</ezb-code> or
+      <ezb-code>else</ezb-code> block is what is returned. For example,
+      <br>
+      <br>
+      <div class="code">
+        <ezb-op>if</ezb-op> x <ezb-op>&gt;=</ezb-op> <ezb-num>0</ezb-num>:<br>
+        &nbsp;&nbsp;x<br>
+        <ezb-op>else</ezb-op>:<br>
+        &nbsp;&nbsp;negative_x<ezb-op>:</ezb-op> -x<br>
+        &nbsp;&nbsp;negative_x<br>
+      </div>
+      <br>
+      This expression (rather verbosely) evaluates to the absolute value of
+      <ezb-code>x</ezb-code>.
+      <h2> When Expression </h2>
+      <ezb-code>when</ezb-code> expressions are a generalized version of
+      <ezb-code>if</ezb-code> expressions. They can take a list of boolean
+      expressions and code to execute. It's easier to explain with an
+      example,
+      <br>
+      <br>
+      <div class="code">
+        <ezb-op>when</ezb-op>:<br>
+        &nbsp;&nbsp;x <ezb-op>=</ezb-op> y: <ezb-str>"equal"</ezb-str><br>
+        &nbsp;&nbsp;abs(x <ezb-op>-</ezb-op> y) <ezb-op>&lt;</ezb-op>
+          <ezb-num>1</ezb-num>: <ezb-str>"close"</ezb-str><br>
+        &nbsp;&nbsp;<ezb-op>else</ezb-op>: <ezb-str>"far"</ezb-str><br>
+      </div>
+      <br>
+      This mostly reads like english: <i>When x and y are equal: return
+        "equal". When the absolute value of their difference is less than one:
+        return "close". Otherwise: return "far"</i>.
+      <br>
+      <br>
+      Notice, the first true boolean that is ecountered is the one whose branch
+      will be executed. For example,
+      <br>
+      <br>
+      <div class="code">
+        <ezb-op>when</ezb-op>:<br>
+        &nbsp;&nbsp;<ezb-num>True</ezb-num>: <ezb-str>"which"</ezb-str><br>
+        &nbsp;&nbsp;<ezb-num>True</ezb-num>: <ezb-str>"branch"</ezb-str><br>
+        &nbsp;&nbsp;<ezb-num>True</ezb-num>: <ezb-str>"will"</ezb-str><br>
+        &nbsp;&nbsp;<ezb-num>True</ezb-num>: <ezb-str>"execute"</ezb-str><br>
+        &nbsp;&nbsp;<ezb-num>True</ezb-num>: <ezb-str>"first?"</ezb-str><br>
+      </div>
+      <br>
+      will return <ezb-code>"which"</ezb-code>.
+      <h2> Parameterized When Expression </h2>
+      <ezb-code>when</ezb-code> expressions are more than just multiple if
+      expressions, they can also pass paremeters to functions for a more
+      expressive piece of code.  For example,
+      <br>
+      <br>
+      <div class="code">
+        <ezb-op>when</ezb-op> x, y:<br>
+        &nbsp;&nbsp;(<ezb-op>&lt;</ezb-op>): <ezb-str>"less than"</ezb-str><br>
+        &nbsp;&nbsp;(<ezb-op>&gt;</ezb-op>): <ezb-str>"greater than"</ezb-str><br>
+        &nbsp;&nbsp;(<ezb-op>=</ezb-op>): <ezb-str>"equal"</ezb-str><br>
+      </div>
+      <br>
+      Here, <ezb-code>x</ezb-code> and <ezb-code>y</ezb-code> are passed to
+      the functions in each branch, until one evaluates to
+      <ezb-code>True</ezb-code>. If a <ezb-code>when</ezb-code>
+      expression is missing an <ezb-code>else</ezb-code> branch, the compiler
+      will complain if it can't figure out that the <ezb-code>when</ezb-code>
+      expression is exhaustive. That is, if the compiler can't tell that at
+      least one of the branches of the <ezb-code>when</ezb-code> expression
+      will return <ezb-code>True</ezb-code>, it will raise a compilation error.
+      <br>
+      <br>
+      Parameterized <ezb-code>when</ezb-code> expressions can take any number
+      of parameters. Here's one with one parameter using operator sections
+      that evaluates to the sign of <ezb-code>x</ezb-code>
+      <br>
+      <br>
+      <div class="code">
+        <ezb-op>when</ezb-op> x:<br>
+        &nbsp;&nbsp;(<ezb-op>&lt;</ezb-op> <ezb-num>0</ezb-num>):
+          <ezb-str>-1</ezb-str><br>
+        &nbsp;&nbsp;(<ezb-op>=</ezb-op> <ezb-num>0</ezb-num>):
+          <ezb-str>0</ezb-str><br>
+        &nbsp;&nbsp;(<ezb-op>&gt;</ezb-op> <ezb-num>0</ezb-num>):
+          <ezb-str>1</ezb-str><br>
+      </div>
+      <h2> Match Expressions </h2>
+      The last expression form is a <ezb-code>match</ezb-code> expression.
+      It's similar to the pattern matching facilities in other languages, but
+      maybe slightly more advanced. A <ezb-code>match</ezb-code> expression
+      is made up of a value and several patterns to test the value against.
+      Here's an example match statement that computes the boolean expression
+      <ezb-code>x or y</ezb-code>,
+      <br>
+      <br>
+      <div class="code">
+        <ezb-op>match</ezb-op> x, y:<br>
+        &nbsp;&nbsp;(_, <ezb-num>True</ezb-num>): <ezb-num>True</ezb-num> <br>
+        &nbsp;&nbsp;(<ezb-num>True</ezb-num>, _): <ezb-num>True</ezb-num> <br>
+        &nbsp;&nbsp;<ezb-op>else</ezb-op>: <ezb-num>False</ezb-num> <br>
+      </div>
+      <br>
+      Here, the <ezb-code>match</ezb-code> expression tests the tuple
+      <ezb-code>x, y</ezb-code> against possible patterns. The underscore
+      <ezb-code>_</ezb-code>, or any other variable name for that matter,
+      matches against any object. Thus, the pattern
+      <ezb-code>(_, True)</ezb-code> matches against all 2-tuples that have
+      their second element as <ezb-code>True</ezb-code>.
+      <br>
+      <br>
+      <ezb-code>match</ezb-code> expressions also have <i>disjunctive
+        patterns</i> meaning that multiple patterns can be matched in one
+      branch. For example, this expression returns <ezb-code>True</ezb-code> is
+      one of the elements is <ezb-code>0</ezb-code>,
+      <br>
+      <br>
+      <div class="code">
+        <ezb-op>match</ezb-op> x, y:<br>
+        &nbsp;&nbsp;(_, <ezb-num>0</ezb-num>) <ezb-op>or</ezb-op>
+        (<ezb-num>0</ezb-num>, _): <ezb-num>True</ezb-num> <br>
+        &nbsp;&nbsp;<ezb-op>else</ezb-op>: <ezb-num>False</ezb-num> <br>
+      </div>
+      <br>
+      <ezb-code>match</ezb-code> expressions also have <ezb-code>if</ezb-code>
+      and <ezb-code>when</ezb-code> guards. These are useful for finer
+      grained logic against matched values. For example, let's say we have a
+      tuple <ezb-code>person</ezb-code> with type <ezb-code>(String,
+        Int)</ezb-code> representing the name and age of an individual. Then
+      we can have the following <ezb-code>match</ezb-code> expression.
+      <br>
+      <br>
+      <div class="code">
+        <ezb-op>match</ezb-op> person:<br>
+        &nbsp;&nbsp;(name, age) <ezb-op>if</ezb-op> age <ezb-op>&lt;</ezb-op> 20:
+        <ezb-str>f"</ezb-str>{name}<ezb-str> is a teenager"</ezb-str><br>
+        &nbsp;&nbsp;(name, age) <ezb-op>if</ezb-op> age <ezb-op>&lt;</ezb-op> 75:
+        <ezb-str>f"</ezb-str>{name}<ezb-str> is an adult"</ezb-str><br>
+        &nbsp;&nbsp;(name, age):
+        <ezb-str>f"</ezb-str>{name}<ezb-str> is a senior"</ezb-str><br>
+      </div>
+      <br>
+      As you can hopefully see, <ezb-code>if</ezb-code> guards are pretty
+      useful. However, as you can also hopefully see, multiple if guards begin
+      to get pretty verbose, even if they are doing conditionals on the same
+      portion of the pattern. There has to be a better way! In the same way
+      that you can use <ezb-code>when</ezb-code> expressions as multiple
+      <ezb-code>if</ezb-code> expressions, you can use
+      <ezb-code>when</ezb-code> <i>guards</i> as multiple
+      <ezb-code>if</ezb-code> <i>guards</i>! Here's a cleaner version of the
+      code above,
+      <br>
+      <br>
+      <div class="code">
+        <ezb-op>match</ezb-op> person:<br>
+        &nbsp;&nbsp;(name, age) <ezb-op>when</ezb-op> age: <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;(<ezb-op>&lt;</ezb-op> 20):
+          <ezb-str>f"</ezb-str>{name}<ezb-str> is a teenager"</ezb-str><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;(<ezb-op>&lt;</ezb-op> 75):
+          <ezb-str>f"</ezb-str>{name}<ezb-str> is an adult"</ezb-str><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>else</ezb-op>:
+          <ezb-str>f"</ezb-str>{name}<ezb-str> is a senior"</ezb-str><br>
+      </div>
+      <br>
+      <i>Note</i>: the <ezb-code>when</ezb-code> <i>guards</i> need not be
+      exhaustive. If a <ezb-code>when</ezb-code> guard fails to find a branch
+      that evaluates to <ezb-code>True</ezb-code>, the entire pattern matching
+      branch fails and moves onto the next branch. Because of this, the
+      <ezb-code>else</ezb-code> clause in the example above could be on either
+      the <ezb-code>when</ezb-code> guard block or as the final clause in
+      the <ezb-code>match</ezb-code> expression.
+      <br>
+      <br>
+      The last feature of <ezb-code>match</ezb-code> expressions is being
+      able to have multiple instances of the same variable in one pattern.
+      Here's an example of a <ezb-code>match</ezb-code> expression that
+      evaluates to <ezb-code>True</ezb-code> if the 2-tuple
+      <ezb-code>tup</ezb-code> contains two elements that are equal to
+      eachother,
+      <br>
+      <br>
+      <div class="code">
+        <ezb-op>match</ezb-op> tup:<br>
+        &nbsp;&nbsp;(x, x): <ezb-num>True</ezb-num> <br>
+        &nbsp;&nbsp;else: <ezb-num>False</ezb-num> <br>
+      </div>
+      <br>
+      This is exactly equivalent to
+      <br>
+      <br>
+      <div class="code">
+        <ezb-op>match</ezb-op> tup:<br>
+        &nbsp;&nbsp;(x, y) <ezb-op>if</ezb-op> x <ezb-op>=</ezb-op> y:
+          <ezb-num>True</ezb-num> <br>
+        &nbsp;&nbsp;else: <ezb-num>False</ezb-num> <br>
+      </div>
+      <br>
+      Thus the additional constraints on <ezb-code>tup</ezb-code> having two
+      elements that are of the same type and that inherit from
+      <ezb-code>Equatable</ezb-code> will apply.
+      <br>
+      <br>
+      The next section is on loops and lambdas.
+      <div id="footer-links">
+        <ul>
+          <li><a href="idk_lang_2.html">Previous</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </body>
+</html>

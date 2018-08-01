@@ -109,6 +109,62 @@ body {
   padding-bottom: 80px;
 }
 
+#comments {
+  font-size: 13pt;
+  font-style: italic;
+  color: #777;
+}
+
+.commenter {
+  font-size: 13pt;
+  color: #222;
+  margin-bottom: 5px;
+}
+
+.comment {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-left: 1px solid #aaa;
+}
+
+.button {
+  font-family: monospace;
+  font-size: 12pt;
+  background: #eee;
+  border-radius: 5px;
+  padding:0;
+  padding-left: 5px;
+  padding-right: 5px;
+  border: 1px solid gray;
+  margin-top: 20px;
+}
+
+.button:hover {
+  background: #ccc;
+}
+
+textarea {
+  color: #666;
+}
+
+textarea:focus {
+  color: #000;
+}
+
+textarea,
+textarea:focus,
+textarea:active,
+textarea:hover {
+  outline:0px !important;
+  -webkit-appearance: none;
+}
+
 #toc {
   width: 600px;
   margin-bottom: 50px;
@@ -280,6 +336,7 @@ ezb-num     { color: #2980b9; }
   #maindivalt {
     width: 90%;
     font-size: 5vw;
+    margin-bottom: 7.5vw;
   }
   #bigname { font-size: 12.1vw; }
 

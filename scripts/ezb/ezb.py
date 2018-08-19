@@ -25,7 +25,7 @@ def parse_metadata(file):
     num_dirs = len(Path(file.name).parts) - 1
     up_path = "../" * num_dirs
     metadata["css_file"] = f"{up_path}css/main.css"
-    metadata["thoughts_file"] = f"{up_path}thoughts"
+    metadata["thoughts_file"] = f"{up_path}thoughts/index.html"
 
     if metadata["prev_post"] == "ezb.io/thoughts":
         metadata["prev_post"] = metadata["thoughts_file"]

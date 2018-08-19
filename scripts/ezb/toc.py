@@ -13,11 +13,11 @@ toc_header = """
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="css/main.css">
     <title>EZB - Thoughts</title>
   </head>
   <body>
-    <a id="home" href="../index.html">&larr;</a>
+    <a id="home" href="index.html">&larr;</a>
     <div id="maindivalt">
       <div id="title">
         Thoughts
@@ -52,7 +52,7 @@ def entry_html(name, link, date):
             if not os.path.isfile(f"thoughts/{link}"):
                 print(f"Warning: linking to non-existent file {link}")
             y, m, d = date
-            link_str = f'<a href="{link}">{name}</a>'
+            link_str = f'<a href="thoughts/{link}">{name}</a>'
             date_str = f"{y}.{m:02d}.{d:02d}"
             future_str = ""
         elif future:

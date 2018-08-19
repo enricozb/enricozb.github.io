@@ -126,6 +126,7 @@ body {
 
 .toc-subsection {
   margin: 0;
+  width: 500px;
   font-size: 15pt;
   padding-left: 10px;
 }
@@ -312,6 +313,7 @@ ezb-num     { color: #2980b9; }
 
   .toc-section { font-size: 6vw; }
   .toc-subsection {
+    width: 50vw;
     font-size: 6vw;
     padding-left: 3vw;
   }

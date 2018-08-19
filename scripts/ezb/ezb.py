@@ -22,15 +22,16 @@ def parse_metadata(file):
                 raise RuntimeError(f"Invalid attribute '{key}'")
             metadata[key] =  ' '.join(words[1:])
 
-    if "thoughts.html" in metadata["prev_post"]:
-        metadata["prev_name"] = "Thoughts"
-    else:
-        metadata["prev_name"] = "Previous"
-
     num_dirs = len(Path(file.name).parts) - 1
     up_path = "../" * num_dirs
     metadata["css_file"] = f"{up_path}css/main.css"
-    metadata["thoughts_file"] = f"{up_path}thoughts/thoughts.html"
+    metadata["thoughts_file"] = f"{up_path}thoughts"
+
+    if metadata["prev_post"] == "ezb.io/thoughts":
+        metadata["prev_post"] = metadata["thoughts_file"]
+        metadata["prev_name"] = "Thoughts"
+    else:
+        metadata["prev_name"] = "Previous"
 
 
     if metadata["post_subtitle"] is not None:

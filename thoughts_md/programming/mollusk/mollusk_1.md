@@ -3,7 +3,7 @@
 [post_title] Mollusk
 [post_subtitle] 🐠 + 🐚 = 🌈
 
-[prev_post] ../../thoughts.html
+[prev_post] ezb.io/thoughts
 
 [body]
 # Prelude

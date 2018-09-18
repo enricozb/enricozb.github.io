@@ -4,6 +4,8 @@ import os
 
 from pathlib import Path
 
+katex_version = "0.10.0-rc.1"
+
 def parse_metadata(file):
     metadata = dict.fromkeys([
         "title", "post_title", "post_subtitle",
@@ -25,6 +27,10 @@ def parse_metadata(file):
     num_dirs = len(Path(file.name).parts) - 1
     up_path = "../" * num_dirs
     metadata["css_file"] = f"{up_path}css/main.css"
+    metadata["katex_css_file"] = f"{up_path}katex-{katex_version}/katex.min.css"
+    metadata["katex_js_file"] = f"{up_path}katex-{katex_version}/katex.min.js"
+    metadata["autorender_js_file"] = f"{up_path}katex-{katex_version}/contrib/auto-render.min.js"
+    metadata["thoughts_file"] = f"{up_path}thoughts.html"
     metadata["thoughts_file"] = f"{up_path}thoughts.html"
 
     if metadata["prev_post"] == "ezb.io/thoughts":

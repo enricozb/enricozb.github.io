@@ -24,7 +24,7 @@ Other common relations can be defined as follows:
     \text{geq}(x, y) &= 1 - \text{lt}(x, y)
 \end{aligned}
 
-where the equations are `x < y`, `x > y`, `x <= y`, and `x >= y`>, respectively.
+where the equations are `x < y`, `x > y`, `x <= y`, and `x >= y`, respectively.
 "Calling" these relations each time get cumbersome, so we will be using a
 notation inspired by the
 [Iverson Bracket](https://en.wikipedia.org/wiki/Iverson_bracket)
@@ -42,34 +42,40 @@ defined, so that we are always using only binary & elementary operations
 Since the primary "data" that we are working with are
 integers, a sorting function would be one that sorts the digits within
 an integer. For example,
-$$ \text{sort}(31524) = 54321 $$
+$$ \text{sort}_{10}(31524_{10}) = 54321_{10} $$
 The reason we sort in "decreasing" order is twofold:
 Since the digit at index $i = 0$ is the rightmost digit, sorting in this
 direction would mean that iterating from $i = 0$ to
-$\text{len}(x, b) - 1$ would traverse the digits in increasing order.
+$\text{len}_b(x) - 1$ would traverse the digits in increasing order.
 Furthermore, we sort in this order to preserve $0$'s. If we
 sorted in the other direction, $1001$ and $101$ would look the same when
-sorted, which is not a desirable quality.
+sorted in base $10$, which is not a desirable quality.
 
 # Implementation
 Sorting follows pretty naturally after reversing. Reversing is simply
 taking every digit of a number and placing it at a new index. Sorting
-is the exact same thing, except that function that decides the new
+is the exact same thing, except that the function that decides the new
 indices is different. That is,
-$$ \text{sort}(x, b) =
-\sum_{i = 0}^{\text{len}(x, b) - 1} \text{at}(x, b, i) \cdot
-  10^{\sigma(x, b, i)} $$
-where $\sigma(x, b, i)$ returns the index of the digit $i$ of $x$
-in base $b$ when sorted. Notice this is exactly $\text{rev}$ when
 
-$$\sigma_{rev}(x, b, i) = \text{len}(x, b) - i - 1$$
+\begin{aligned}
+  \text{sort}_b(x) =
+  \sum_{i = 0}^{\text{len}_b(x) - 1} \text{at}_b(x, i) \cdot
+    b^{\sigma(x, i, b)}
+\end{aligned}
 
-Now, what would $\sigma_{sort}(x, b, i)$ be? A reasonable guess for
-would be the number of digits in $x$ less than $\text{at}(x, b, i)$.
+where $\sigma(x, i, b)$ returns the new index of the digit at index $i$ of
+$x$ in base $b$. Notice this is exactly $\text{rev}$ when
+
+$$\sigma_{rev}(x, i, b) = \text{len}_b(x) - i - 1$$
+
+Now, what would $\sigma_{sort}(x, i, b)$ be? A reasonable guess for
+would be the number of digits in $x$ less than $\text{at}(x, i, b)$.
 That is,
 
-$$\sigma_{sort}(x, b, i) = \sum_{j = 0}^{\text{len}(x, b) - 1}
-[\text{at}(x, b, j) < \text{at}(x, b, i)] $$
+\begin{aligned}
+  \sigma_{sort}(x, i, b) = \sum_{j = 0}^{\text{len}_b(x) - 1}
+    [\text{at}_b(x, j) < \text{at}_b(x, i)]
+\end{aligned}
 
 This doesn't work for numbers with duplicate digits, however, as this
 would send both instances of the digit $3$ in the number
@@ -77,31 +83,46 @@ $1233$ to the same index.
 
 
 What we ended up coming up with was this: $\sigma_{sort}$ would be the
-number of digits in $x$ strictly less than $\text{at}(x, b, i)$
-*plus* the number of instances of the digit $\text{at}(x, b, i)$ at
+number of digits in $x$ strictly less than $\text{at}_b(x, i)$
+*plus* the number of instances of the digit $\text{at}_b(x, i)$ at
 indices less than $i$. That is,
 
 \begin{aligned}
-  \sigma_{eq}(x, b, i) &= \sum_{j = 0}^{i - 1}
-    [\text{at}(x, b, j) = \text{at}(x, b, i)] \\
+  \sigma_{eq}(x, i, b) &= \sum_{j = 0}^{i - 1}
+    [\text{at}_b(x, j) = \text{at}_b(x, i)] \\
 
-  \sigma_{lt}(x, b, i) &= \sum_{j = 0}^{\text{len}(x, b) - 1}
-  [\text{at}(x, b, j) < \text{at}(x, b, i)] \\
+  \sigma_{lt}(x, i, b) &= \sum_{j = 0}^{\text{len}_b(x) - 1}
+  [\text{at}_b(x, j) < \text{at}_b(x, i)] \\
 
-  \sigma_{sort}(x, b, i) &= \sigma_{eq}(x, b, i) + \sigma_{lt}(x, b, i)
-
+  \sigma_{sort}(x, i, b) &= \sigma_{eq}(x, i, b) + \sigma_{lt}(x, i, b)
 \end{aligned}
 
 Now we can define $\text{sort}$ as,
-$$ \text{sort}(x, b) =
-\sum_{i = 0}^{\text{len}(x, b) - 1} \text{at}(x, b, i) \cdot
-  10^{\sigma(x, b, i)} $$
+
+\begin{aligned}
+  \text{sort}_b(x) =
+    \sum_{i = 0}^{\text{len}_b(x) - 1} \text{at}_b(x, i) \cdot
+      b^{{\sigma_{sort}}(x, i, b)}
+\end{aligned}
+
+An interesting side note here is that, in some sense, this sort is
+[stable](https://stackoverflow.com/questions/1517793/what-is-stability-in-sorting-algorithms-and-why-is-it-important).
+Obviously integers don't really have any sense of identity. Every $1$
+is the same as every other $1$ in the pool of integers $\mathbb{Z}$.
+If digits did have some sort of identity, as they do in computers,
+then this sorting function would be considered stable.
 
 Similar to what we did in [Functions 2](functions_2.html)
 we can convert this definition to code. Here's an example in Python,
 
 ```python
 from math import *
+
+def len(x, b):
+  return ceil(log(x + 1, b))
+
+def at(x, i, b):
+  return floor(abs(x) / (b ** i)) % b
 
 def sign(x):
     return floor(x / (abs(x) + 1)) + ceil(x / (abs(x) + 1))
@@ -112,16 +133,33 @@ def eq(x, y):
 def lt(x, y):
     return eq(-1, sign(x - y))
 
-def sigma_eq(x, b, i):
-    return sum(eq(at(x, b, j), at(x, b, i)) for j in range(0, i))
+def sigma_eq(x, i, b):
+    return sum(eq(at(x, j, b), at(x, i, b)) for j in range(0, i))
 
-def sigma_lt(x, b, i):
-    return sum(lt(at(x, b, j), at(x, b, i)) for j in range(0, len(x, b)))
+def sigma_lt(x, i, b):
+    return sum(lt(at(x, j, b), at(x, i, b)) for j in range(0, len(x, b)))
 
-def sigma_sort(x, b, i):
-    return sigma_eq(x, b, i) + sigma_lt(x, b, i)
+def sigma_sort(x, i, b):
+    return sigma_eq(x, i, b) + sigma_lt(x, i, b)
 
 def sort(x, b):
-    return sum(at(x, b, i) * 10 ** sigma_sort(x, b, i)
+    return sum(at(x, i, b) * b ** sigma_sort(x, i, b)
             for i in range(len(x, b)))
 ```
+
+And again let's test it out to see if it works:
+
+```python
+`Keyword.Import]>>>` sort(18081971, 10)
+98871110
+`Keyword.Import]>>>` f"{401888:o}"
+'1420740'
+`Keyword.Import]>>>` f"{sort(401888, 8):o}"
+'7442100'
+```
+
+Sweet! Looks like we can sort integers now. Next we'll probably talk
+about making a Look and Say function $L(x)$, that takes in an integer
+$x$ and outputs the next term in the
+[Look and Say sequence](https://en.wikipedia.org/wiki/Look-and-say_sequence).
+

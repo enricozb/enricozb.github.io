@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#!/usr/bin/env python3
 
 import ezb
 
@@ -47,13 +47,14 @@ def main():
     if args.file:
         output_file = f"{os.path.splitext(args.file)[0]}.html"
         generate_file(args.file, output_file)
-
     elif args.all:
         if os.path.isdir("thoughts/") and os.path.isdir("thoughts_md/"):
             generate_files()
             ezb.toc.generate_toc("thoughts_md/thoughts.hjson", "thoughts.html")
         else:
             print("could not find 'thoughts_md/' folder in current directory")
+    else:
+        print("No action done.")
 
 
 if __name__ == "__main__":

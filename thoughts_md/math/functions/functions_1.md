@@ -14,10 +14,10 @@ us a little while to come up with something, but eventually we got this:
 $$ \min(x, y) = \frac{x + y}{2} - \frac{\lvert x - y \rvert}{2} $$
 
 This first part of this function finds the midpoint between $x$ and $y$.
-Then, we travel half the distance between $x$ and $y$ toward $0$, thus
+Then, we travel half the distance between $x$ and $y$ toward $-\infty$, thus
 arriving at the smaller of the two numbers. It's pretty clear that
 `max(x,y)` can be achieved by travelling toward
-$\infty$ instead of toward $0$, like so:
+$+\infty$ instead of toward $-\infty$, like so:
 
 $$ \max(x, y) = \frac{x + y}{2} + \frac{\lvert x - y \rvert}{2} $$
 

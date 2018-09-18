@@ -1,6 +1,8 @@
 [title] EZB - Functions
 
 [post_title] Functions 1
+[post_subtitle] Introduction
+
 [prev_post] ezb.io/thoughts
 [next_post] functions_2.html
 

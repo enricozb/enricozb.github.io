@@ -1,7 +1,10 @@
 [title] EZB - Functions
 
 [post_title] Functions 3
+[post_subtitle] Sorting an Integer
+
 [prev_post] functions_2.html
+[next_post] functions_4.html
 
 [body]
 

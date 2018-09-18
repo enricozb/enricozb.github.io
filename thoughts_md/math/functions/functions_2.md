@@ -1,6 +1,8 @@
 [title] EZB - Functions
 
 [post_title] Functions 2
+[post_subtitle] Reversing an Integer
+
 [prev_post] functions_1.html
 [next_post] functions_3.html
 

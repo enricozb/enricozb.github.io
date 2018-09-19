@@ -128,26 +128,26 @@ def at(x, i, b):
   return floor(abs(x) / (b ** i)) % b
 
 def sign(x):
-    return floor(x / (abs(x) + 1)) + ceil(x / (abs(x) + 1))
+  return floor(x / (abs(x) + 1)) + ceil(x / (abs(x) + 1))
 
 def eq(x, y):
-    return 1 - ceil(abs(x - y) / (abs(x - y) + 1))
+  return 1 - ceil(abs(x - y) / (abs(x - y) + 1))
 
 def lt(x, y):
-    return eq(-1, sign(x - y))
+  return eq(-1, sign(x - y))
 
 def sigma_eq(x, i, b):
-    return sum(eq(at(x, j, b), at(x, i, b)) for j in range(0, i))
+  return sum(eq(at(x, j, b), at(x, i, b)) for j in range(0, i))
 
 def sigma_lt(x, i, b):
-    return sum(lt(at(x, j, b), at(x, i, b)) for j in range(0, len(x, b)))
+  return sum(lt(at(x, j, b), at(x, i, b)) for j in range(0, len(x, b)))
 
 def sigma_sort(x, i, b):
-    return sigma_eq(x, i, b) + sigma_lt(x, i, b)
+  return sigma_eq(x, i, b) + sigma_lt(x, i, b)
 
 def sort(x, b):
-    return sum(at(x, i, b) * b ** sigma_sort(x, i, b)
-            for i in range(len(x, b)))
+  return sum(at(x, i, b) * b ** sigma_sort(x, i, b)
+    for i in range(len(x, b)))
 ```
 
 And again let's test it out to see if it works:
@@ -155,10 +155,10 @@ And again let's test it out to see if it works:
 ```python
 `Keyword.Import]>>>` sort(18081971, 10)
 98871110
-`Keyword.Import]>>>` f"{401888:o}"
-'1420740'
-`Keyword.Import]>>>` f"{sort(401888, 8):o}"
-'7442100'
+`Keyword.Import]>>>` sort(0o1420740, 8) == 0o7442100
+True
+`Keyword.Import]>>>` sort(0xcafebabe, 16) == 0xfeecbbaa
+True
 ```
 
 Sweet! Looks like we can sort integers now. Next we'll probably talk

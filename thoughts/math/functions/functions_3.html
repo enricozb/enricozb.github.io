@@ -117,26 +117,26 @@
       &nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>floor</ezb-builtin>(<ezb-builtin>abs</ezb-builtin>(x)&nbsp;<ezb-op>/</ezb-op>&nbsp;(b&nbsp;<ezb-op>*</ezb-op><ezb-op>*</ezb-op>&nbsp;i))&nbsp;<ezb-op>%</ezb-op>&nbsp;b<br>
       <br>
       <ezb-op>def</ezb-op>&nbsp;<ezb-builtin>sign</ezb-builtin>(x):<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>floor</ezb-builtin>(x&nbsp;<ezb-op>/</ezb-op>&nbsp;(<ezb-builtin>abs</ezb-builtin>(x)&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-num>1</ezb-num>))&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-builtin>ceil</ezb-builtin>(x&nbsp;<ezb-op>/</ezb-op>&nbsp;(<ezb-builtin>abs</ezb-builtin>(x)&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-num>1</ezb-num>))<br>
+      &nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>floor</ezb-builtin>(x&nbsp;<ezb-op>/</ezb-op>&nbsp;(<ezb-builtin>abs</ezb-builtin>(x)&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-num>1</ezb-num>))&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-builtin>ceil</ezb-builtin>(x&nbsp;<ezb-op>/</ezb-op>&nbsp;(<ezb-builtin>abs</ezb-builtin>(x)&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-num>1</ezb-num>))<br>
       <br>
       <ezb-op>def</ezb-op>&nbsp;<ezb-builtin>eq</ezb-builtin>(x,&nbsp;y):<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-num>1</ezb-num>&nbsp;<ezb-op>-</ezb-op>&nbsp;<ezb-builtin>ceil</ezb-builtin>(<ezb-builtin>abs</ezb-builtin>(x&nbsp;<ezb-op>-</ezb-op>&nbsp;y)&nbsp;<ezb-op>/</ezb-op>&nbsp;(<ezb-builtin>abs</ezb-builtin>(x&nbsp;<ezb-op>-</ezb-op>&nbsp;y)&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-num>1</ezb-num>))<br>
+      &nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-num>1</ezb-num>&nbsp;<ezb-op>-</ezb-op>&nbsp;<ezb-builtin>ceil</ezb-builtin>(<ezb-builtin>abs</ezb-builtin>(x&nbsp;<ezb-op>-</ezb-op>&nbsp;y)&nbsp;<ezb-op>/</ezb-op>&nbsp;(<ezb-builtin>abs</ezb-builtin>(x&nbsp;<ezb-op>-</ezb-op>&nbsp;y)&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-num>1</ezb-num>))<br>
       <br>
       <ezb-op>def</ezb-op>&nbsp;<ezb-builtin>lt</ezb-builtin>(x,&nbsp;y):<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>eq</ezb-builtin>(<ezb-op>-</ezb-op><ezb-num>1</ezb-num>,&nbsp;<ezb-builtin>sign</ezb-builtin>(x&nbsp;<ezb-op>-</ezb-op>&nbsp;y))<br>
+      &nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>eq</ezb-builtin>(<ezb-op>-</ezb-op><ezb-num>1</ezb-num>,&nbsp;<ezb-builtin>sign</ezb-builtin>(x&nbsp;<ezb-op>-</ezb-op>&nbsp;y))<br>
       <br>
       <ezb-op>def</ezb-op>&nbsp;<ezb-builtin>sigma_eq</ezb-builtin>(x,&nbsp;i,&nbsp;b):<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>sum</ezb-builtin>(<ezb-builtin>eq</ezb-builtin>(<ezb-builtin>at</ezb-builtin>(x,&nbsp;j,&nbsp;b),&nbsp;<ezb-builtin>at</ezb-builtin>(x,&nbsp;i,&nbsp;b))&nbsp;<ezb-op>for</ezb-op>&nbsp;j&nbsp;<ezb-op>in</ezb-op>&nbsp;<ezb-builtin>range</ezb-builtin>(<ezb-num>0</ezb-num>,&nbsp;i))<br>
+      &nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>sum</ezb-builtin>(<ezb-builtin>eq</ezb-builtin>(<ezb-builtin>at</ezb-builtin>(x,&nbsp;j,&nbsp;b),&nbsp;<ezb-builtin>at</ezb-builtin>(x,&nbsp;i,&nbsp;b))&nbsp;<ezb-op>for</ezb-op>&nbsp;j&nbsp;<ezb-op>in</ezb-op>&nbsp;<ezb-builtin>range</ezb-builtin>(<ezb-num>0</ezb-num>,&nbsp;i))<br>
       <br>
       <ezb-op>def</ezb-op>&nbsp;<ezb-builtin>sigma_lt</ezb-builtin>(x,&nbsp;i,&nbsp;b):<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>sum</ezb-builtin>(<ezb-builtin>lt</ezb-builtin>(<ezb-builtin>at</ezb-builtin>(x,&nbsp;j,&nbsp;b),&nbsp;<ezb-builtin>at</ezb-builtin>(x,&nbsp;i,&nbsp;b))&nbsp;<ezb-op>for</ezb-op>&nbsp;j&nbsp;<ezb-op>in</ezb-op>&nbsp;<ezb-builtin>range</ezb-builtin>(<ezb-num>0</ezb-num>,&nbsp;<ezb-builtin>len</ezb-builtin>(x,&nbsp;b)))<br>
+      &nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>sum</ezb-builtin>(<ezb-builtin>lt</ezb-builtin>(<ezb-builtin>at</ezb-builtin>(x,&nbsp;j,&nbsp;b),&nbsp;<ezb-builtin>at</ezb-builtin>(x,&nbsp;i,&nbsp;b))&nbsp;<ezb-op>for</ezb-op>&nbsp;j&nbsp;<ezb-op>in</ezb-op>&nbsp;<ezb-builtin>range</ezb-builtin>(<ezb-num>0</ezb-num>,&nbsp;<ezb-builtin>len</ezb-builtin>(x,&nbsp;b)))<br>
       <br>
       <ezb-op>def</ezb-op>&nbsp;<ezb-builtin>sigma_sort</ezb-builtin>(x,&nbsp;i,&nbsp;b):<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>sigma_eq</ezb-builtin>(x,&nbsp;i,&nbsp;b)&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-builtin>sigma_lt</ezb-builtin>(x,&nbsp;i,&nbsp;b)<br>
+      &nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>sigma_eq</ezb-builtin>(x,&nbsp;i,&nbsp;b)&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-builtin>sigma_lt</ezb-builtin>(x,&nbsp;i,&nbsp;b)<br>
       <br>
       <ezb-op>def</ezb-op>&nbsp;<ezb-builtin>sort</ezb-builtin>(x,&nbsp;b):<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>sum</ezb-builtin>(<ezb-builtin>at</ezb-builtin>(x,&nbsp;i,&nbsp;b)&nbsp;<ezb-op>*</ezb-op>&nbsp;b&nbsp;<ezb-op>*</ezb-op><ezb-op>*</ezb-op>&nbsp;<ezb-builtin>sigma_sort</ezb-builtin>(x,&nbsp;i,&nbsp;b)<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>for</ezb-op>&nbsp;i&nbsp;<ezb-op>in</ezb-op>&nbsp;<ezb-builtin>range</ezb-builtin>(<ezb-builtin>len</ezb-builtin>(x,&nbsp;b)))<br>
+      &nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>sum</ezb-builtin>(<ezb-builtin>at</ezb-builtin>(x,&nbsp;i,&nbsp;b)&nbsp;<ezb-op>*</ezb-op>&nbsp;b&nbsp;<ezb-op>*</ezb-op><ezb-op>*</ezb-op>&nbsp;<ezb-builtin>sigma_sort</ezb-builtin>(x,&nbsp;i,&nbsp;b)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>for</ezb-op>&nbsp;i&nbsp;<ezb-op>in</ezb-op>&nbsp;<ezb-builtin>range</ezb-builtin>(<ezb-builtin>len</ezb-builtin>(x,&nbsp;b)))<br>
       
       </div>
       <p>And again let's test it out to see if it works:</p>
@@ -144,10 +144,10 @@
       <div class="code">
       <ezb-import>>></ezb-import><ezb-import>></ezb-import>&nbsp;<ezb-builtin>sort</ezb-builtin>(<ezb-num>18081971</ezb-num>,&nbsp;<ezb-num>10</ezb-num>)<br>
       <ezb-num>98871110</ezb-num><br>
-      <ezb-import>>></ezb-import><ezb-import>></ezb-import>&nbsp;f<ezb-str>"</ezb-str><ezb-str>{401888:o}</ezb-str><ezb-str>"</ezb-str><br>
-      <ezb-str>'</ezb-str><ezb-str>1420740</ezb-str><ezb-str>'</ezb-str><br>
-      <ezb-import>>></ezb-import><ezb-import>></ezb-import>&nbsp;f<ezb-str>"</ezb-str><ezb-str>{</ezb-str><ezb-str>sort(401888,&nbsp;8):o}</ezb-str><ezb-str>"</ezb-str><br>
-      <ezb-str>'</ezb-str><ezb-str>7442100</ezb-str><ezb-str>'</ezb-str><br>
+      <ezb-import>>></ezb-import><ezb-import>></ezb-import>&nbsp;<ezb-builtin>sort</ezb-builtin>(<ezb-num>0o1420740</ezb-num>,&nbsp;<ezb-num>8</ezb-num>)&nbsp;<ezb-op>==</ezb-op>&nbsp;<ezb-num>0o7442100</ezb-num><br>
+      <ezb-num>True</ezb-num><br>
+      <ezb-import>>></ezb-import><ezb-import>></ezb-import>&nbsp;<ezb-builtin>sort</ezb-builtin>(<ezb-num>0xcafebabe</ezb-num>,&nbsp;<ezb-num>16</ezb-num>)&nbsp;<ezb-op>==</ezb-op>&nbsp;<ezb-num>0xfeecbbaa</ezb-num><br>
+      <ezb-num>True</ezb-num><br>
       
       </div>
       <p>Sweet! Looks like we can sort integers now. Next we'll probably talk

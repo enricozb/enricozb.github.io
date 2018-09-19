@@ -35,7 +35,7 @@ sequence that grows indefinitely.
 
 # The Function Definition
 How would you make _this_ into a function using only the constructs we've
-introduced? This post will be longer than usuall because of the many parts
+introduced? This post will be longer than usual because of the many parts
 required to complete this task. It's not that daunting, but it's going to
 take a bit of explaining on my part.
 
@@ -62,7 +62,7 @@ the most common sequence. For example,
 \end{aligned}
 
 This is the function we want to write out. Let's start off with some
-convenience definitions first.
+intuition first to get our feet wet.
 
 # Grouping
 When visually computing the next Look & Say number, we group consecutive
@@ -78,7 +78,7 @@ we would have
   11244 \to {_11_01_12_14_04_1} \to 101101
 \end{aligned}
 
-Notice, this is equivalent to placing $1$s between digits that differ and
+This is equivalent to placing $1$s between digits that differ and
 $0$s between digits that are the same. Finally pad this number with $1$s
 on the left and right side of the entire integer. Here's how we can do this:
 
@@ -89,7 +89,8 @@ on the left and right side of the entire integer. Here's how we can do this:
   G(x) &= 1 + 10^{\text{len}(x)} + G_{inner}(x) \cdot 10
 \end{aligned}
 
-_Note 1: I've omitted the base $b$ subscript as it's assumed to be $10$._
+_Note_ : I've omitted the base $b$ subscript as it's assumed to be $10$.
+This will be done throughout the rest of this post.
 
 
 The keen eye will notice that we haven't defined $\text{neq}$ yet, and
@@ -123,15 +124,15 @@ because when concatenating $x$ to $y$, we need to know the length of $y$. This
 is difficult if you're building up a number via concatenation. In the sorting
 case this was easy because each iteration of the loop we would add only one
 digit. Here we may add a variable number of digits since $j - i$ could be _any_
-value. Thus, we need a function to count the length of the Look & Say number
-we have built _so far_, up until group $i$, so that we can concatenate
-properly.
+positive integer. Thus, we need a function to count the length of the Look &
+Say number we have built _so far_, up until group $i$, so that we can
+concatenate properly.
 
 Some useful values are: The number of $1$s in $G(x)$ is one greater than the
 number of groups of digits in $x$. The number of $0$s in between two $1$s
 in $G(x)$ is one less than the number of digits in that group. In a group
-bounded by $1$s at indices $i, j$, the length that group contributes to
-the next Look & Say number is $\text{len}(j - i) + 1$.
+bounded by $1$s at indices $i, j$ where $i < j$, the length that group
+contributes to the next Look & Say number is $\text{len}(j - i) + 1$.
 
 ## Formalizing
 When iterating through $G(x)$, we only really care about performing operations
@@ -141,17 +142,18 @@ where the $1$s are. Thus, we can start off with
   L(x) = \sum_{i = 0}^{\text{len}(G(x)) - 2} at(G(x), i) \cdot [\dots]
 \end{aligned}
 
-_Note_: The last index is subtracted by $2$ because the last $1$ is not the
-start boundary of a group, but instead and an end.
+_Note_: The upper bound of the sum is subtracted by $2$ because the last $1$ in
+$G(x)$ is not the start boundary of a group, but instead and the end.
 
-where $[\dots]$ represents stuff we still need to write. The
+The $[\dots]$ represents stuff we still need to write. The
 $\text{at}(G(x), i)$ serves as discarding the computations in $[\dots]$ when
 the digit at index $i$ is $0$.
 
 Now, as we said in the previous section, we need to find the index of the next
-$1$, and then concatenate that and the corresponding digit in $x$ to our
-ongoing computation. If $G_{len}(x, i)$ is the length of the group at index $i$
-and $\sigma(x, i)$ is new index of the group length & digit pair, then we have
+$1$, use that to compute the length of the group, and then concatenate that
+length and the corresponding digit in $x$ to our ongoing computation. If
+$G_{len}(x, i)$ is the length of the group at index $i$ and $\sigma(x, i)$ is
+new index of the group length & digit pair, then we have
 
 \begin{aligned}
   \sigma(x, i) &= [\dots] \\
@@ -163,14 +165,13 @@ and $\sigma(x, i)$ is new index of the group length & digit pair, then we have
 
 ## Tackling $\sigma$
 I think $\sigma(x, i)$ is pretty easy assuming we already have $G_{len}$. It's
-essentially the number of digits that have been concatenated already. Thus, the
-sum of all of the _lengths_ of $G_{len}$s and groups less than $i$. This is
-because having a group of length $10$ adds $3$ new digits, to $L(x)$: the group
-length ($10$), and the corresponding group digit. Thus, this can be written as
+essentially the number of digits that have been concatenated already. Thus,
+it's the sum of all of the _lengths_ of $L_{pair}$s for indices less than $i$,
+since that's what we're concatenating together. Thus, we would write this as
 
 \begin{aligned}
   \sigma(x, i) = \sum_{j = 0}^{i - 1} at(G(x), j) \cdot
-    (\text{len}(G_{len}(x, j)) + 1)
+    (\text{len}(L_{pair}(x, j)))
 \end{aligned}
 
 _Note_: again, we don't care about indices where $G(x)$ is $0$.
@@ -200,7 +201,7 @@ more understandable:
   &\downarrow \text{reverse} \\
   b = 11&01 \\
   &\downarrow \text{compute} \\
-  \text{len}(a) &- \text{len}(b) = 2
+  1 + \text{len}(a) &- \text{len}(b) = 3
 \end{aligned}
 
 We would write that like this:
@@ -245,34 +246,34 @@ def rev(x, b):
     for i in range(len(x, b)))
 
 def sign(x):
-    return floor(x / (abs(x) + 1)) + ceil(x / (abs(x) + 1))
+  return floor(x / (abs(x) + 1)) + ceil(x / (abs(x) + 1))
 
 def neq(x, y):
-    return ceil(abs(x - y) / (abs(x - y) + 1))
+  return ceil(abs(x - y) / (abs(x - y) + 1))
 
 def G_inner(x):
-    return sum(neq(at(x, i, 10), at(x, i + 1, 10)) * 10 ** i
-        for i in range(len(x, 10) - 1))
+  return sum(neq(at(x, i, 10), at(x, i + 1, 10)) * 10 ** i
+    for i in range(len(x, 10) - 1))
 
 def G(x):
-    return 1 + 10 ** len(x, 10) + G_inner(x) * 10
+  return 1 + 10 ** len(x, 10) + G_inner(x) * 10
 
 def sigma(x, i):
-    return sum(at(G(x), j, 10) * (len(G_len(x, j), 10) + 1)
-        for j in range(i))
+  return sum(at(G(x), j, 10) * (len(L_pair(x, j), 10))
+    for j in range(i))
 
 def G_tr(x, i):
-    return floor(G(x) / 10 ** (i + 1))
+  return floor(G(x) / 10 ** (i + 1))
 
 def G_len(x, i):
-    return 1 + len(G_tr(x, i), 10) - len(rev(G_tr(x, i), 10), 10)
+  return 1 + len(G_tr(x, i), 10) - len(rev(G_tr(x, i), 10), 10)
 
 def L_pair(x, i):
-    return G_len(x, i) * 10 + at(x, i, 10)
+  return G_len(x, i) * 10 + at(x, i, 10)
 
 def L(x):
-    return sum(at(G(x), i, 10) * L_pair(x, i) * 10 ** sigma(x, i)
-        for i in range(len(G(x), 10) - 1))
+  return sum(at(G(x), i, 10) * L_pair(x, i) * 10 ** sigma(x, i)
+    for i in range(len(G(x), 10) - 1))
 ```
 
 Does it work?
@@ -302,11 +303,21 @@ Hmmm... Well, I guess that makes sense right? We could interpret this as there
 being no $0$s, hence we'd expect $L(0) = 00 = 0$. Fair enough.
 
 ```python
-`Keyword.Import]>>>` L(0)
+`Keyword.Import]>>>` L(-1)
 ValueError: math domain error
 ```
 Ah, this is because $\text{len}$ relies on $\log$, whose domain is only the
-non-negative reals. No real way around that I think.
+positive reals. $\text{len}(0) = 0$, but is undefined for any smaller integer.
+No real way around that I think.
+
+```python
+`Keyword.Import]>>>` L(211111111113)
+1210113
+```
+
+Notice this handles groups of length greater than $9$ just fine. As we'd
+hopefully expect, $L(21111111113)$ results in reading "one $2$, ten $1$s,
+and one $3$", which is the output we get. (This is just me showing off).
 
 # Conclusion
 This was a pretty fun "adventure" to go on as a high schooler. I previously saw
@@ -316,17 +327,17 @@ still am) just a kid. It took me about 2-3 weeks to come up with this and make
 sure it actually worked.
 
 I'm not sure how much further we can go with this. I was thinking if it's possible
-to make a function $L_i(s, i)$ that can take a seed $s$ and an index $i$ without
-using the super-function notation. That is, this could be written as
+to make a function $L_{idx}(s, i)$ that can take a seed $s$ and an index $i$
+without using the super-function notation. That is, this could be written as
 
 \begin{aligned}
-  L_i(s, i) = L^{(i)}(s)
+  L_{idx}(s, i) = L^{(i)}(s)
 \end{aligned}
 
 but I was wondering if there was a way to do this without introducing any new
 notation. I haven't come up with anything yet though.
 
 On the next (and likely last) functions post, we'll talk about stuff I haven't
-figured out and maybe gloss over the other interesting functions I haven't yet
-mentioned.
+figured out yet and maybe gloss over the other interesting functions I haven't
+yet mentioned.
 

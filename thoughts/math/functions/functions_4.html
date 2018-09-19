@@ -45,7 +45,7 @@
       
       <h1>The Function Definition</h1>
       <p>How would you make <em>this</em> into a function using only the constructs we've
-      introduced? This post will be longer than usuall because of the many parts
+      introduced? This post will be longer than usual because of the many parts
       required to complete this task. It's not that daunting, but it's going to
       take a bit of explaining on my part.</p>
       
@@ -68,7 +68,7 @@
         L(4444) &= 44 \\
         &\vdots
       \end{aligned}$$<p>This is the function we want to write out. Let's start off with some
-      convenience definitions first.</p>
+      intuition first to get our feet wet.</p>
       
       <h1>Grouping</h1>
       <p>When visually computing the next Look &amp; Say number, we group consecutive
@@ -82,7 +82,7 @@
       
       $$\begin{aligned}
         11244 \to {_11_01_12_14_04_1} \to 101101
-      \end{aligned}$$<p>Notice, this is equivalent to placing $1$s between digits that differ and
+      \end{aligned}$$<p>This is equivalent to placing $1$s between digits that differ and
       $0$s between digits that are the same. Finally pad this number with $1$s
       on the left and right side of the entire integer. Here's how we can do this:</p>
       
@@ -91,7 +91,8 @@
         \sum_{i = 0}^{\text{len}(x) - 2}
           [\text{at}(x, i) \ne \text{at}(x, i + 1)] \cdot 10^i \\
         G(x) &= 1 + 10^{\text{len}(x)} + G_{inner}(x) \cdot 10
-      \end{aligned}$$<p><em>Note 1: I've omitted the base $b$ subscript as it's assumed to be $10$.</em></p>
+      \end{aligned}$$<p><em>Note</em> : I've omitted the base $b$ subscript as it's assumed to be $10$.
+      This will be done throughout the rest of this post.</p>
       
       <p>The keen eye will notice that we haven't defined $\text{neq}$ yet, and
       therefore should not be able to use $\neq$, but, it's easily defined
@@ -122,15 +123,15 @@
       is difficult if you're building up a number via concatenation. In the sorting
       case this was easy because each iteration of the loop we would add only one
       digit. Here we may add a variable number of digits since $j - i$ could be <em>any</em>
-      value. Thus, we need a function to count the length of the Look &amp; Say number
-      we have built <em>so far</em>, up until group $i$, so that we can concatenate
-      properly.</p>
+      positive integer. Thus, we need a function to count the length of the Look &amp;
+      Say number we have built <em>so far</em>, up until group $i$, so that we can
+      concatenate properly.</p>
       
       <p>Some useful values are: The number of $1$s in $G(x)$ is one greater than the
       number of groups of digits in $x$. The number of $0$s in between two $1$s
       in $G(x)$ is one less than the number of digits in that group. In a group
-      bounded by $1$s at indices $i, j$, the length that group contributes to
-      the next Look &amp; Say number is $\text{len}(j - i) + 1$.</p>
+      bounded by $1$s at indices $i, j$ where $i < j$, the length that group
+      contributes to the next Look &amp; Say number is $\text{len}(j - i) + 1$.</p>
       
       <h2>Formalizing</h2>
       <p>When iterating through $G(x)$, we only really care about performing operations
@@ -138,17 +139,18 @@
       
       $$\begin{aligned}
         L(x) = \sum_{i = 0}^{\text{len}(G(x)) - 2} at(G(x), i) \cdot [\dots]
-      \end{aligned}$$<p><em>Note</em>: The last index is subtracted by $2$ because the last $1$ is not the
-      start boundary of a group, but instead and an end.</p>
+      \end{aligned}$$<p><em>Note</em>: The upper bound of the sum is subtracted by $2$ because the last $1$ in
+      $G(x)$ is not the start boundary of a group, but instead and the end.</p>
       
-      <p>where $[\dots]$ represents stuff we still need to write. The
+      <p>The $[\dots]$ represents stuff we still need to write. The
       $\text{at}(G(x), i)$ serves as discarding the computations in $[\dots]$ when
       the digit at index $i$ is $0$.</p>
       
       <p>Now, as we said in the previous section, we need to find the index of the next
-      $1$, and then concatenate that and the corresponding digit in $x$ to our
-      ongoing computation. If $G_{len}(x, i)$ is the length of the group at index $i$
-      and $\sigma(x, i)$ is new index of the group length &amp; digit pair, then we have</p>
+      $1$, use that to compute the length of the group, and then concatenate that
+      length and the corresponding digit in $x$ to our ongoing computation. If
+      $G_{len}(x, i)$ is the length of the group at index $i$ and $\sigma(x, i)$ is
+      new index of the group length &amp; digit pair, then we have</p>
       
       $$\begin{aligned}
         \sigma(x, i) &= [\dots] \\
@@ -158,14 +160,13 @@
           L_{pair}(x, i) \cdot 10^{\sigma(x, i)}
       \end{aligned}$$<h2>Tackling $\sigma$</h2>
       <p>I think $\sigma(x, i)$ is pretty easy assuming we already have $G_{len}$. It's
-      essentially the number of digits that have been concatenated already. Thus, the
-      sum of all of the <em>lengths</em> of $G_{len}$s and groups less than $i$. This is
-      because having a group of length $10$ adds $3$ new digits, to $L(x)$: the group
-      length ($10$), and the corresponding group digit. Thus, this can be written as</p>
+      essentially the number of digits that have been concatenated already. Thus,
+      it's the sum of all of the <em>lengths</em> of $L_{pair}$s for indices less than $i$,
+      since that's what we're concatenating together. Thus, we would write this as</p>
       
       $$\begin{aligned}
         \sigma(x, i) = \sum_{j = 0}^{i - 1} at(G(x), j) \cdot
-          (\text{len}(G_{len}(x, j)) + 1)
+          (\text{len}(L_{pair}(x, j)))
       \end{aligned}$$<p><em>Note</em>: again, we don't care about indices where $G(x)$ is $0$.</p>
       
       <h2>Tackling $G_{len}$</h2>
@@ -191,7 +192,7 @@
         &\downarrow \text{reverse} \\
         b = 11&01 \\
         &\downarrow \text{compute} \\
-        \text{len}(a) &- \text{len}(b) = 2
+        1 + \text{len}(a) &- \text{len}(b) = 3
       \end{aligned}$$<p>We would write that like this:</p>
       
       $$\begin{aligned}
@@ -229,34 +230,34 @@
       &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>for</ezb-op>&nbsp;i&nbsp;<ezb-op>in</ezb-op>&nbsp;<ezb-builtin>range</ezb-builtin>(<ezb-builtin>len</ezb-builtin>(x,&nbsp;b)))<br>
       <br>
       <ezb-op>def</ezb-op>&nbsp;<ezb-builtin>sign</ezb-builtin>(x):<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>floor</ezb-builtin>(x&nbsp;<ezb-op>/</ezb-op>&nbsp;(<ezb-builtin>abs</ezb-builtin>(x)&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-num>1</ezb-num>))&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-builtin>ceil</ezb-builtin>(x&nbsp;<ezb-op>/</ezb-op>&nbsp;(<ezb-builtin>abs</ezb-builtin>(x)&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-num>1</ezb-num>))<br>
+      &nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>floor</ezb-builtin>(x&nbsp;<ezb-op>/</ezb-op>&nbsp;(<ezb-builtin>abs</ezb-builtin>(x)&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-num>1</ezb-num>))&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-builtin>ceil</ezb-builtin>(x&nbsp;<ezb-op>/</ezb-op>&nbsp;(<ezb-builtin>abs</ezb-builtin>(x)&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-num>1</ezb-num>))<br>
       <br>
       <ezb-op>def</ezb-op>&nbsp;<ezb-builtin>neq</ezb-builtin>(x,&nbsp;y):<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>ceil</ezb-builtin>(<ezb-builtin>abs</ezb-builtin>(x&nbsp;<ezb-op>-</ezb-op>&nbsp;y)&nbsp;<ezb-op>/</ezb-op>&nbsp;(<ezb-builtin>abs</ezb-builtin>(x&nbsp;<ezb-op>-</ezb-op>&nbsp;y)&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-num>1</ezb-num>))<br>
+      &nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>ceil</ezb-builtin>(<ezb-builtin>abs</ezb-builtin>(x&nbsp;<ezb-op>-</ezb-op>&nbsp;y)&nbsp;<ezb-op>/</ezb-op>&nbsp;(<ezb-builtin>abs</ezb-builtin>(x&nbsp;<ezb-op>-</ezb-op>&nbsp;y)&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-num>1</ezb-num>))<br>
       <br>
       <ezb-op>def</ezb-op>&nbsp;<ezb-builtin>G_inner</ezb-builtin>(x):<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>sum</ezb-builtin>(<ezb-builtin>neq</ezb-builtin>(<ezb-builtin>at</ezb-builtin>(x,&nbsp;i,&nbsp;<ezb-num>10</ezb-num>),&nbsp;<ezb-builtin>at</ezb-builtin>(x,&nbsp;i&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-num>1</ezb-num>,&nbsp;<ezb-num>10</ezb-num>))&nbsp;<ezb-op>*</ezb-op>&nbsp;<ezb-num>10</ezb-num>&nbsp;<ezb-op>*</ezb-op><ezb-op>*</ezb-op>&nbsp;i<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>for</ezb-op>&nbsp;i&nbsp;<ezb-op>in</ezb-op>&nbsp;<ezb-builtin>range</ezb-builtin>(<ezb-builtin>len</ezb-builtin>(x,&nbsp;<ezb-num>10</ezb-num>)&nbsp;<ezb-op>-</ezb-op>&nbsp;<ezb-num>1</ezb-num>))<br>
+      &nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>sum</ezb-builtin>(<ezb-builtin>neq</ezb-builtin>(<ezb-builtin>at</ezb-builtin>(x,&nbsp;i,&nbsp;<ezb-num>10</ezb-num>),&nbsp;<ezb-builtin>at</ezb-builtin>(x,&nbsp;i&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-num>1</ezb-num>,&nbsp;<ezb-num>10</ezb-num>))&nbsp;<ezb-op>*</ezb-op>&nbsp;<ezb-num>10</ezb-num>&nbsp;<ezb-op>*</ezb-op><ezb-op>*</ezb-op>&nbsp;i<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>for</ezb-op>&nbsp;i&nbsp;<ezb-op>in</ezb-op>&nbsp;<ezb-builtin>range</ezb-builtin>(<ezb-builtin>len</ezb-builtin>(x,&nbsp;<ezb-num>10</ezb-num>)&nbsp;<ezb-op>-</ezb-op>&nbsp;<ezb-num>1</ezb-num>))<br>
       <br>
       <ezb-op>def</ezb-op>&nbsp;<ezb-builtin>G</ezb-builtin>(x):<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-num>1</ezb-num>&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-num>10</ezb-num>&nbsp;<ezb-op>*</ezb-op><ezb-op>*</ezb-op>&nbsp;<ezb-builtin>len</ezb-builtin>(x,&nbsp;<ezb-num>10</ezb-num>)&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-builtin>G_inner</ezb-builtin>(x)&nbsp;<ezb-op>*</ezb-op>&nbsp;<ezb-num>10</ezb-num><br>
+      &nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-num>1</ezb-num>&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-num>10</ezb-num>&nbsp;<ezb-op>*</ezb-op><ezb-op>*</ezb-op>&nbsp;<ezb-builtin>len</ezb-builtin>(x,&nbsp;<ezb-num>10</ezb-num>)&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-builtin>G_inner</ezb-builtin>(x)&nbsp;<ezb-op>*</ezb-op>&nbsp;<ezb-num>10</ezb-num><br>
       <br>
       <ezb-op>def</ezb-op>&nbsp;<ezb-builtin>sigma</ezb-builtin>(x,&nbsp;i):<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>sum</ezb-builtin>(<ezb-builtin>at</ezb-builtin>(<ezb-builtin>G</ezb-builtin>(x),&nbsp;j,&nbsp;<ezb-num>10</ezb-num>)&nbsp;<ezb-op>*</ezb-op>&nbsp;(<ezb-builtin>len</ezb-builtin>(<ezb-builtin>G_len</ezb-builtin>(x,&nbsp;j),&nbsp;<ezb-num>10</ezb-num>)&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-num>1</ezb-num>)<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>for</ezb-op>&nbsp;j&nbsp;<ezb-op>in</ezb-op>&nbsp;<ezb-builtin>range</ezb-builtin>(i))<br>
+      &nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>sum</ezb-builtin>(<ezb-builtin>at</ezb-builtin>(<ezb-builtin>G</ezb-builtin>(x),&nbsp;j,&nbsp;<ezb-num>10</ezb-num>)&nbsp;<ezb-op>*</ezb-op>&nbsp;(<ezb-builtin>len</ezb-builtin>(<ezb-builtin>L_pair</ezb-builtin>(x,&nbsp;j),&nbsp;<ezb-num>10</ezb-num>))<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>for</ezb-op>&nbsp;j&nbsp;<ezb-op>in</ezb-op>&nbsp;<ezb-builtin>range</ezb-builtin>(i))<br>
       <br>
       <ezb-op>def</ezb-op>&nbsp;<ezb-builtin>G_tr</ezb-builtin>(x,&nbsp;i):<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>floor</ezb-builtin>(<ezb-builtin>G</ezb-builtin>(x)&nbsp;<ezb-op>/</ezb-op>&nbsp;<ezb-num>10</ezb-num>&nbsp;<ezb-op>*</ezb-op><ezb-op>*</ezb-op>&nbsp;(i&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-num>1</ezb-num>))<br>
+      &nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>floor</ezb-builtin>(<ezb-builtin>G</ezb-builtin>(x)&nbsp;<ezb-op>/</ezb-op>&nbsp;<ezb-num>10</ezb-num>&nbsp;<ezb-op>*</ezb-op><ezb-op>*</ezb-op>&nbsp;(i&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-num>1</ezb-num>))<br>
       <br>
       <ezb-op>def</ezb-op>&nbsp;<ezb-builtin>G_len</ezb-builtin>(x,&nbsp;i):<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-num>1</ezb-num>&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-builtin>len</ezb-builtin>(<ezb-builtin>G_tr</ezb-builtin>(x,&nbsp;i),&nbsp;<ezb-num>10</ezb-num>)&nbsp;<ezb-op>-</ezb-op>&nbsp;<ezb-builtin>len</ezb-builtin>(<ezb-builtin>rev</ezb-builtin>(<ezb-builtin>G_tr</ezb-builtin>(x,&nbsp;i),&nbsp;<ezb-num>10</ezb-num>),&nbsp;<ezb-num>10</ezb-num>)<br>
+      &nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-num>1</ezb-num>&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-builtin>len</ezb-builtin>(<ezb-builtin>G_tr</ezb-builtin>(x,&nbsp;i),&nbsp;<ezb-num>10</ezb-num>)&nbsp;<ezb-op>-</ezb-op>&nbsp;<ezb-builtin>len</ezb-builtin>(<ezb-builtin>rev</ezb-builtin>(<ezb-builtin>G_tr</ezb-builtin>(x,&nbsp;i),&nbsp;<ezb-num>10</ezb-num>),&nbsp;<ezb-num>10</ezb-num>)<br>
       <br>
       <ezb-op>def</ezb-op>&nbsp;<ezb-builtin>L_pair</ezb-builtin>(x,&nbsp;i):<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>G_len</ezb-builtin>(x,&nbsp;i)&nbsp;<ezb-op>*</ezb-op>&nbsp;<ezb-num>10</ezb-num>&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-builtin>at</ezb-builtin>(x,&nbsp;i,&nbsp;<ezb-num>10</ezb-num>)<br>
+      &nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>G_len</ezb-builtin>(x,&nbsp;i)&nbsp;<ezb-op>*</ezb-op>&nbsp;<ezb-num>10</ezb-num>&nbsp;<ezb-op>+</ezb-op>&nbsp;<ezb-builtin>at</ezb-builtin>(x,&nbsp;i,&nbsp;<ezb-num>10</ezb-num>)<br>
       <br>
       <ezb-op>def</ezb-op>&nbsp;<ezb-builtin>L</ezb-builtin>(x):<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>sum</ezb-builtin>(<ezb-builtin>at</ezb-builtin>(<ezb-builtin>G</ezb-builtin>(x),&nbsp;i,&nbsp;<ezb-num>10</ezb-num>)&nbsp;<ezb-op>*</ezb-op>&nbsp;<ezb-builtin>L_pair</ezb-builtin>(x,&nbsp;i)&nbsp;<ezb-op>*</ezb-op>&nbsp;<ezb-num>10</ezb-num>&nbsp;<ezb-op>*</ezb-op><ezb-op>*</ezb-op>&nbsp;<ezb-builtin>sigma</ezb-builtin>(x,&nbsp;i)<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>for</ezb-op>&nbsp;i&nbsp;<ezb-op>in</ezb-op>&nbsp;<ezb-builtin>range</ezb-builtin>(<ezb-builtin>len</ezb-builtin>(<ezb-builtin>G</ezb-builtin>(x),&nbsp;<ezb-num>10</ezb-num>)&nbsp;<ezb-op>-</ezb-op>&nbsp;<ezb-num>1</ezb-num>))<br>
+      &nbsp;&nbsp;<ezb-op>return</ezb-op>&nbsp;<ezb-builtin>sum</ezb-builtin>(<ezb-builtin>at</ezb-builtin>(<ezb-builtin>G</ezb-builtin>(x),&nbsp;i,&nbsp;<ezb-num>10</ezb-num>)&nbsp;<ezb-op>*</ezb-op>&nbsp;<ezb-builtin>L_pair</ezb-builtin>(x,&nbsp;i)&nbsp;<ezb-op>*</ezb-op>&nbsp;<ezb-num>10</ezb-num>&nbsp;<ezb-op>*</ezb-op><ezb-op>*</ezb-op>&nbsp;<ezb-builtin>sigma</ezb-builtin>(x,&nbsp;i)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<ezb-op>for</ezb-op>&nbsp;i&nbsp;<ezb-op>in</ezb-op>&nbsp;<ezb-builtin>range</ezb-builtin>(<ezb-builtin>len</ezb-builtin>(<ezb-builtin>G</ezb-builtin>(x),&nbsp;<ezb-num>10</ezb-num>)&nbsp;<ezb-op>-</ezb-op>&nbsp;<ezb-num>1</ezb-num>))<br>
       
       </div>
       <p>Does it work?</p>
@@ -286,12 +287,22 @@
       being no $0$s, hence we'd expect $L(0) = 00 = 0$. Fair enough.</p>
       
       <div class="code">
-      <ezb-import>>></ezb-import><ezb-import>></ezb-import>&nbsp;<ezb-builtin>L</ezb-builtin>(<ezb-num>0</ezb-num>)<br>
+      <ezb-import>>></ezb-import><ezb-import>></ezb-import>&nbsp;<ezb-builtin>L</ezb-builtin>(<ezb-op>-</ezb-op><ezb-num>1</ezb-num>)<br>
       ValueError:&nbsp;math&nbsp;domain&nbsp;error<br>
       
       </div>
       <p>Ah, this is because $\text{len}$ relies on $\log$, whose domain is only the
-      non-negative reals. No real way around that I think.</p>
+      positive reals. $\text{len}(0) = 0$, but is undefined for any smaller integer.
+      No real way around that I think.</p>
+      
+      <div class="code">
+      <ezb-import>>></ezb-import><ezb-import>></ezb-import>&nbsp;<ezb-builtin>L</ezb-builtin>(<ezb-num>211111111113</ezb-num>)<br>
+      <ezb-num>1210113</ezb-num><br>
+      
+      </div>
+      <p>Notice this handles groups of length greater than $9$ just fine. As we'd
+      hopefully expect, $L(21111111113)$ results in reading "one $2$, ten $1$s,
+      and one $3$", which is the output we get. (This is just me showing off).</p>
       
       <h1>Conclusion</h1>
       <p>This was a pretty fun "adventure" to go on as a high schooler. I previously saw
@@ -301,17 +312,17 @@
       sure it actually worked.</p>
       
       <p>I'm not sure how much further we can go with this. I was thinking if it's possible
-      to make a function $L_i(s, i)$ that can take a seed $s$ and an index $i$ without
-      using the super-function notation. That is, this could be written as</p>
+      to make a function $L_{idx}(s, i)$ that can take a seed $s$ and an index $i$
+      without using the super-function notation. That is, this could be written as</p>
       
       $$\begin{aligned}
-        L_i(s, i) = L^{(i)}(s)
+        L_{idx}(s, i) = L^{(i)}(s)
       \end{aligned}$$<p>but I was wondering if there was a way to do this without introducing any new
       notation. I haven't come up with anything yet though.</p>
       
       <p>On the next (and likely last) functions post, we'll talk about stuff I haven't
-      figured out and maybe gloss over the other interesting functions I haven't yet
-      mentioned.</p>
+      figured out yet and maybe gloss over the other interesting functions I haven't
+      yet mentioned.</p>
       
       <div id="footer-links">
         <ul>

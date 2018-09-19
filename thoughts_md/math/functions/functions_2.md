@@ -61,16 +61,16 @@ Let's test it out here to verify that it it works:
 ```python
 `Keyword.Import]>>>` rev(12345, 10)
 54321
-`Keyword.Import]>>>` f"{12345:o}"
-'30071'
-`Keyword.Import]>>>` f"{rev(12345, 8):o}"
-'17003'
+`Keyword.Import]>>>` rev(0o37001, 8) == 0o10073
+True
+`Keyword.Import]>>>` rev(0xdeadbeef, 16) == 0xfeebdaed
+True
 ```
 
-Awesome! The first expression shows that $12345$ reversed when written in
-base $10$ comes out to $54321$, which is what we expected! Then we see that
-$12345_{10} = 30071_8$. Therefore, reversing with respect to base $8$ comes
-out to the correct value, $17003_8$.
+Awesome! The first expression shows that $12345$ reversed when written in base
+$10$ comes out to $54321$, which is what we expected! Then we see that
+$\text{rev}(37001_8, 8) = 10073_8$, as expected. Finally we see that
+$\text{rev}(\text{deadbeef}_{16}, 16) = \text{feebdaed}_{16}$.
 
 Even though this is over 10x slower than the naive string-reversal
 approach, it's still pretty cool that this can be done using only binary

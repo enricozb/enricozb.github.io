@@ -45,14 +45,25 @@ came up with,
 $$ \text{sign}(x) = \left\lfloor \frac{x}{\lvert x \rvert + 1} \right\rfloor +
     \left\lceil \frac{x}{\lvert x \rvert + 1} \right\rceil $$
 
-Now, what's the fun in doing all of this? Well, for me it was the fact
+Now, what's the point of doing all of this? Well, for me it was the fact
 that in programming, arguments to a function (even as numbers) are
 data, stored sequentially in memory. This mindset allows for easier
 conceptualization of some operations over others. For example, how would
 you write some code to reverse a number? Well, if the number was stored
 in base 10 in memory, and not in binary, you could just copy the data
-but in reverse order. Now, how would you write a *math function* to
-reverse an integer? When I was first working on this stuff, the idea
-of being able to do this blew my mind. Control flow, time and
+but in reverse order. Now, as a preview of what is to come,
+**how would you write a math function to reverse an integer?**
+
+When I was first working on this stuff, the idea
+of treating math functions in this way was pretty foreign and made me
+very curious about what was possible. Control flow, time and
 space complexity, a sequence of instructions, all of that was gone when
-writing using just arithmetic operations.
+writing using just arithmetic operations. In math, things just *are*.
+
+I understand now that this really isn't any ground-breaking math nor
+does it connect two fields in any novel way, but it was what I _thought_
+was math, and that's what made me thoroughly enjoy the journey. I hope
+you enjoy it too.
+
+Let's talk about reversing an integer next.
+

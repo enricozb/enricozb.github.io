@@ -8,7 +8,7 @@
 
 [body]
 
-Somewhere in my senior year of High School, two friends and I were
+Somewhere in my senior year of high school, two friends and I were
 wondering how one could write `min(x,y)` in math
 notation using only binary operations and elementary functions. It took
 us a little while to come up with something, but eventually we got this:

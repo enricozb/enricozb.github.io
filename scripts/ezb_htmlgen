@@ -3,9 +3,11 @@
 import ezb
 
 import argparse
+import itertools
 import os
 import pathlib
 import sys
+import time
 
 
 def parse_args():
@@ -16,6 +18,9 @@ def parse_args():
     group.add_argument("-a", "--all",
             action="store_true",
             help="convert all .md files in thoughts_md to html")
+    parser.add_argument("-c", "--continuous",
+            action="store_true",
+            help="continuously build this file every time it changes")
 
     return parser.parse_args(sys.argv[1:])
 
@@ -44,17 +49,27 @@ def generate_files():
 def main():
     args = parse_args()
 
-    if args.file:
-        output_file = f"{os.path.splitext(args.file)[0]}.html"
-        generate_file(args.file, output_file)
-    elif args.all:
-        if os.path.isdir("thoughts/") and os.path.isdir("thoughts_md/"):
-            generate_files()
-            ezb.toc.generate_toc("thoughts_md/thoughts.hjson", "thoughts.html")
-        else:
-            print("could not find 'thoughts_md/' folder in current directory")
+    if args.continuous:
+        loop = itertools.count()
     else:
-        print("No action done.")
+        loop = range(1)
+
+    for i in loop:
+        try:
+            if args.file:
+                output_file = f"{os.path.splitext(args.file)[0]}.html"
+                generate_file(args.file, output_file)
+            elif args.all:
+                if os.path.isdir("thoughts/") and os.path.isdir("thoughts_md/"):
+                    generate_files()
+                    ezb.toc.generate_toc("thoughts_md/thoughts.hjson", "thoughts.html")
+                else:
+                    print("could not find 'thoughts_md/' folder in current directory")
+            else:
+                print("No action done.")
+        except Exception as e:
+            print(e)
+        time.sleep(1)
 
 
 if __name__ == "__main__":

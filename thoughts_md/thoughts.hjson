@@ -4,8 +4,8 @@
             introduction: [2018, 7, 17]
             reverse: [2018, 7, 17]
             sorting: [2018, 7, 31]
-            look-and-say: [2018, 9, 18]
-            future: future
+            "look and say": [2018, 9, 18]
+            "what's next": future
         }
     }
 
@@ -25,6 +25,12 @@
     Life: {
         "Living in Japan": {
             "work culture": future
+        }
+    }
+
+    Random: {
+        "Thought Experiments": {
+            "free lunch": [2018, 9, 19]
         }
     }
 }

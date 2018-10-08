@@ -1,3 +1,0 @@
-[submodule "ace-buidls"]
-	path = projects/quicktex/ace-builds
-	url = https://github.com/ajaxorg/ace-builds/

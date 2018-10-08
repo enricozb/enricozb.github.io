@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>QuickTeX</title>
+<style type="text/css" media="screen">
+  body {
+    padding: 0;
+    margin: 0;
+    background: #141414;
+  }
+
+  .katex {
+    font-size: 2em !important;
+    color: #F8F8F2;
+  }
+
+  .katex-display {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  #title {
+    height: 0px;
+    border: 1px solid #141414;
+    width: 1000px;
+    color: #F8F8F2;
+    padding: 0;
+    margin: 0 auto;
+    margin-top: 100px;
+    font-size: 30pt;
+    text-align: center;
+  }
+
+  #innertitle {
+    padding: 0;
+    margin: 0;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  #container, #latexout {
+    height: 200px;
+    width: 1000px;
+    padding: 0;
+    margin: 0 auto;
+    border-radius: 10px;
+    margin-top: 100px;
+  }
+
+  #latexout {
+    background: #2B2C27;
+  }
+
+  #editor {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border-radius: 10px;
+  }
+</style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js" integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js" integrity="sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF" crossorigin="anonymous"
+    onload="renderMathInElement(document.body); render(); render_title();"></script>
+
+</head>
+<body>
+
+<div id="title"><div id="innertitle">QuickTeX</div></div>
+
+<div id="container">
+  <div id="editor"></div>
+</div>
+
+<div id="latexout">
+</div>
+
+<script src="ace-builds/src-noconflict/ace.js" type="text/javascript"
+  charset="utf-8"></script>
+<script>
+  let editor = ace.edit("editor");
+  editor.setTheme("ace/theme/monokai");
+  editor.session.setMode("ace/mode/latex");
+  editor.setOptions({
+    fontSize: 24,
+  });
+
+  render = function(e) {
+    katex.render(editor.getValue(), document.getElementById("latexout"), {
+        throwOnError: false,
+        displayMode: true
+    });
+
+    let display = document.getElementsByClassName("katex-display");
+    if (display.length == 1) {
+      let height = Math.max(display[0].offsetHeight + 50, 200);
+      document.getElementById("latexout").style.height = `${height}px`;
+    }
+  };
+
+
+  latexes = [
+    "\\text{rev}_b(x) = \\sum_{i = 0}^{\\text{len}_b(x) - 1} \n    \\text{at}_b(x, i) \\cdot b^{\\text{len}_b(x) - i - 1}",
+    "\\lfloor \\cos(\\pi x)^2 \\rfloor",
+    "1 - \\left\\lceil \\frac{|x - y|}{|x - y| + 1} \\right\\rceil"];
+
+  let item = latexes[Math.floor(Math.random() * latexes.length)];
+  editor.setValue(item, -1);
+
+  editor.session.on("change", render);
+
+  render_title = function() {
+    katex.render("\\text{Quick}\\TeX", document.getElementById("innertitle"), {
+        throwOnError: false,
+        displayMode: true
+    });
+  };
+
+</script>
+</body>
+</html>
+

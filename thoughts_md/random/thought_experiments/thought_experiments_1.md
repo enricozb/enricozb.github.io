@@ -66,5 +66,5 @@ waitress & staff to look away for a sufficient amount of time for us to
 to let us go for free, and never have to think about it again.
 
 Well, I have no idea if exists or not, but given how fallible, gullible, and
-hopefull humans are, it's probably possible.
+hopeful humans are, it's probably possible.
 

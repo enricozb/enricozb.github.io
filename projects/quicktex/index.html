@@ -88,6 +88,8 @@
     fontSize: 24,
   });
 
+  editor.commands.removeCommand('gotoline');
+
   render = function(e) {
     katex.render(editor.getValue(), document.getElementById("latexout"), {
         throwOnError: false,

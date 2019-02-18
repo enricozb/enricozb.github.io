@@ -4,6 +4,7 @@
 <title>QuickTeX</title>
 <style type="text/css" media="screen">
   body {
+    height:100%;
     padding: 0;
     margin: 0;
     background: #141414;
@@ -47,6 +48,7 @@
     margin: 0 auto;
     border-radius: 10px;
     margin-top: 100px;
+    margin-bottom: 100px;
   }
 
   #latexout {
@@ -97,8 +99,8 @@
     });
 
     let display = document.getElementsByClassName("katex-display");
-    if (display.length == 1) {
-      let height = Math.max(display[0].offsetHeight + 50, 200);
+    if (display.length == 2) {
+      let height = Math.max(display[1].offsetHeight + 50, 200);
       document.getElementById("latexout").style.height = `${height}px`;
     }
   };

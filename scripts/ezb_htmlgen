@@ -62,6 +62,7 @@ def main():
             elif args.all:
                 if os.path.isdir("thoughts/") and os.path.isdir("thoughts_md/"):
                     generate_files()
+                    print("Generating toc...")
                     ezb.toc.generate_toc("thoughts_md/thoughts.hjson", "thoughts.html")
                 else:
                     print("could not find 'thoughts_md/' folder in current directory")

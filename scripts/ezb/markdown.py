@@ -1,10 +1,24 @@
 import mistune
 import re
+import string
 
+from colorama import init, Fore, Style
+init()
+
+from nltk.tokenize import TweetTokenizer
 from pygments import highlight
 from pygments.formatter import Formatter
 from pygments.lexers import get_lexer_by_name
 from pygments.token import *
+from spellchecker import SpellChecker
+
+
+spell = SpellChecker()
+spell.word_frequency.load_text_file(
+    "/home/enricozb/projects/ezb.io/scripts/words.txt",
+    tokenizer=lambda s: s.split("\n"))
+tokenizer = TweetTokenizer()
+punctuation = string.punctuation.replace("$", "")
 
 
 class MathBlockGrammar(mistune.BlockGrammar):
@@ -84,6 +98,27 @@ class EZBRenderer(mistune.Renderer):
         return f"${text}$"
 
     def paragraph(self, text):
+        def is_word(s):
+            if not any(c in string.ascii_letters for c in s):
+                return False
+            if not re.match(r"^[^$].*[^$]$", remove_punc(s)):
+                return False
+            if "/" in s:
+                return False
+            if "_" in s:
+                return False
+            return True
+
+        text_clean = text.replace('-', ' ')
+        remove_punc = lambda s: s.strip(punctuation)
+        words = [remove_punc(t) for t in text_clean.split() if is_word(t)]
+        words = tokenizer.tokenize(" ".join(words))
+
+        misspelled =  spell.unknown(words)
+        if misspelled:
+            for word in misspelled:
+                print(f"  {Fore.RED}{word}{Style.RESET_ALL}")
+
         return f"<p>{text}</p>\n\n"
 
     def block_code(self, code, lang):

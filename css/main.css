@@ -177,7 +177,7 @@ ul:after {
     width: 100%;
 }
 
-li {
+ul li {
     display: inline;
 }
 

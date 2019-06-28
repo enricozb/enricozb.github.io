@@ -10,6 +10,11 @@
     }
 
     Programming: {
+        myth-lang: {
+            introduction: [2019, 3, 15]
+            "lexer and parser": [2019, 3, 15]
+            mutability: [2019, 4, 3]
+        }
         Mollusk: {
             prelude: [2018, 7, 18]
             "the code": future

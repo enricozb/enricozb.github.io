@@ -69,7 +69,7 @@ def main():
             else:
                 print("No action done.")
         except Exception as e:
-            print(e)
+            raise
         time.sleep(1)
 
 

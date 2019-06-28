@@ -72,7 +72,7 @@ $10$ comes out to $54321$, which is what we expected! Then we see that
 $\text{rev}(37001_8, 8) = 10073_8$, as expected. Finally we see that
 $\text{rev}(\text{deadbeef}_{16}, 16) = \text{feebdaed}_{16}$.
 
-Even though this is over 10x slower than the naive string-reversal
+Even though this is over 10 times slower than the naive string-reversal
 approach, it's still pretty cool that this can be done using only binary
 operations.
 

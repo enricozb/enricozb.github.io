@@ -31,7 +31,7 @@ the reals, we opted for `true` being $1$, and
 
 $$ \text{eq}(x, y) = 1 - \left\lceil \frac{\lvert x - y \rvert}{\lvert x - y \rvert + 1} \right\rceil $$
 
-Using the celing function might seem like "cheating", but
+Using the ceiling function might seem like "cheating", but
 it's important to remember that we were mostly trying to sidestep
 functions defined in a piecewise/pattern-matching fashion. Thus, this
 one-line arithmetic definition met our needs.

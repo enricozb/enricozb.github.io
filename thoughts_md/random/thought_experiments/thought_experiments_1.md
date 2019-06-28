@@ -26,7 +26,7 @@ there's bound to be a bug & exploit to find. So much of society depends on
 everything working smoothly. So much of society is uneducated on proper
 security setups. There are just _so damn many_ degrees of freedom.
 
-Now, this property of having a large, sometimes an immesurable, number of
+Now, this property of having a large, sometimes an immeasurable, number of
 security holes is mostly specific to the tech sector, and anything that is
 associated to digital technologies in general. The scale of physical
 vulnerabilities, I think, is at least slightly more tangible. I mean, there
@@ -57,7 +57,7 @@ be to convince the waitress that we had some sort of supernatural advantage.
 Either we were time travellers, knew the future, were contacted by supremely
 intelligent beings, or something. I thought if we could convince the waitress
 that we knew something that we had absolutely no way of knowing, that would
-cause catostrophic damage to her or someone she cared about, unless she or
+cause catastrophic damage to her or someone she cared about, unless she or
 someone else paid the bill, we wouldn't have to pay.
 
 I'm not super sure what other routes there are to take this. Convincing the

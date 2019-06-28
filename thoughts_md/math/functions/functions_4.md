@@ -26,7 +26,7 @@ of the same digit. For example:
 
 3. $21$ is read as "one $2$, one $1$" or $1211$.
 
-4. $1211$ is read as "one $1$, one $2$, two $1$s” or $111221$.
+4. $1211$ is read as "one $1$, one $2$, two $1$s" or $111221$.
 
 Notice you can start with a different "seed" or starting number. This
 leads to a different sequence. Interestingly enough, $22$ is the only
@@ -70,7 +70,7 @@ similar digits together. For example, we would group the digits of the
 number $11244$ as $[11][2][44]$. Then we use the contents of each group
 to generate the next term. This "grouping" action can be done numerically
 by computing a number that encodes where these groups start and end. One
-way to do this is to create a number that has $1$s on the boundries of
+way to do this is to create a number that has $1$s on the boundaries of
 groups and $0$s otherwise. For example, using the number $11244$ again,
 we would have
 

@@ -1,389 +1,50 @@
 @font-face {
-    font-family: sans;
-    src: url("../fonts/ptsans.woff2");
-}
-
-::selection {
-  background: rgba(142, 68, 173, 0.2);
-}
-
-::-moz-selection {
-  background: rgba(142, 68, 173, 0.2);
+  font-family: sans;
+  src: url("../fonts/ptsans.woff2");
 }
 
 body {
   font-family: sans;
-  width:100%;
-  padding: 0;
-  margin: 0;
-  -webkit-touch-callout: none;
-    -webkit-user-select: none;
-     -khtml-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
 }
 
-.selectable, .code {
-  -webkit-touch-callout: text;
-    -webkit-user-select: text;
-     -khtml-user-select: text;
-       -moz-user-select: text;
-        -ms-user-select: text;
-            user-select: text;
-}
+div.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 
-#home {
-  position: absolute;
-  top: 15px;
-  left: 10px;
-  float: left;
-  line-height: 0.2;
-  font-size: 30pt;
-}
-
-#maindiv {
-  color: black;
-  width: 600px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -moz-transform: translateX(-50%) translateY(-50%);
-  -webkit-transform: translateX(-50%) translateY(-50%);
-  transform: translateX(-50%) translateY(-50%);
-  padding: 0;
-  margin: 0;
-}
-
-#maindivalt {
-  text-align: justify;
-  color: black;
-  width: 600px;
-  font-size: 15pt;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 50px;
-}
-
-#title {
-  font-size: 40pt;
-  text-align: center;
-  line-height: 1;
-  margin-top: 40px;
-  margin-bottom: 80px;
-  padding: 0;
-}
-
-#subtitle {
-  font-size: 15pt;
-  text-align: center;
-  line-height: 1;
-  color: #555;
-  padding: 0;
-  margin-top: 10px;
-}
-
-#bigname {
-  font-size: 60pt;
-  text-align: center;
-  line-height: 1;
-  margin: 0;
-  padding: 0;
-}
-
-#footer-links {
-  text-align: center;
-  font-size: 18pt;
-  padding: 0;
-  padding-left: 50px;
-  padding-right: 50px;
-  padding-top: 50px;
-}
-
-#links {
-  text-align: center;
-  font-size: 18pt;
-  padding-left: 50px;
-  padding-right: 50px;
-  padding-top: 30px;
-  padding-bottom: 80px;
-}
-
-#toc {
-  width: 600px;
-  margin-bottom: 50px;
-}
-
-.toc-section-end {
-  width: 100px;
-}
-
-.toc-section {
-  margin: 0;
-  font-size: 15pt;
-  font-weight: bold;
-}
-
-.toc-subsection {
-  margin: 0;
-  width: 500px;
-  font-size: 15pt;
-  padding-left: 10px;
-}
-
-.toc-entry-n {
-  padding-left: 20px;
-  width: 480px;
-  font-size: 13pt;
-
-  float: left;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.toc-entry-d {
-  text-align: center;
-  width: 100px;
-  font-size: 13pt;
-
-  float: left;
-  overflow: hidden;
-}
-
-.future {
-  color: #aaa;
-}
-
-h1, h2, h3 {
-  text-align: left;
-  font-weight: normal;
-  margin-bottom: 0;
-}
-
-.toc-entry-n:after {
-  text-align: right;
-  content: "\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.";
-}
-
-ul {
-    margin: 0;
-    padding: 0;
-    text-align: justify;
-}
-
-ul:after {
-    content: " ";
-    display: inline-block;
-    width: 100%;
-}
-
-ul li {
-    display: inline;
-}
-
-a {
-  color: #9b59b6;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: none;
-  color: #8e44ed
-}
-
-.katex-display > .katex {
-    max-width: 100%;
-}
-
-.katex-display > .katex > .katex-html {
-    max-width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-
-.code {
-  text-align: left;
-  font-family: monospace;
-  font-size: 10pt;
-  width: 98%;
   margin: 0 auto;
-  padding: 5px;
-  line-height: 1.2;
-  background: #eee;
-  border-radius: 5px;
-  overflow-x: auto;
-  white-space: nowrap;
+
+  height: 100%;
+  width: calc(min(100%, 600px))
 }
 
-#codeblock {
-  text-align: left;
-  font-family: monospace;
-  font-size: 10pt;
-  width: 400px;
-  margin: 0 auto;
-  padding: 5px;
-  line-height: 1.2;
-  background: #eee;
-  border-radius: 5px;
-}
-
-ezb-code    {
-  font-family: monospace;
-  font-size: 14pt;
-  background: #eee;
-  border-radius: 5px;
-  padding:0;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-ezb-import  { color: #5f27cd; }
-ezb-cmt     { color: #777; }
-ezb-op      { color: #e67e22; }
-ezb-builtin { color: #9b59b6; }
-ezb-str     { color: #c0392b; }
-ezb-num     { color: #2980b9; }
-
-#quotestart {
-  text-align: left;
+div.name {
   font-size: 50pt;
-  color: rgb(65,62,74);
+  text-align: center;
+}
+
+@media screen and (max-width: 480px) {
+  div.name {
+    font-size: 35pt;
+  }
+}
+
+ul.links {
+  font-size: 16pt;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+
   padding: 0;
-  padding-left: 80px;
-  line-height: 0;
 }
 
-#quoteend {
-  text-align: right;
-  font-size: 50pt;
-  color: rgb(65,62,74);
-  padding: 0;
-  padding-right: 80px;
-  line-height: 1;
-  float: right;
+.links li {
+  list-style: none;
 }
 
-#quoteattr {
-  text-align: left;
-  font-style: italic;
-  color: #555;
-  font-size: 15pt;
-  float: left;
-  padding: 0;
-  padding-top: 40px;
-  padding-left: 80px;
-}
-
-@media (max-width: 654px) {
-  #maindiv { width: 90%; }
-  #maindivalt {
-    width: 90%;
-    font-size: 5vw;
-  }
-  #bigname { font-size: 12.1vw; }
-
-  #title {
-    font-size: 16.2vw;
-    margin-top: 14vw;
-    margin-bottom: 14vw;
-  }
-
-  #subtitle {
-    font-size: 5.4vw;
-    margin-top: 3.5vw;
-  }
-
-  #home {
-    font-size: 12vw;
-    line-width: 2vw;
-    top: 4vw;
-    left: 3vw;
-  }
-
-  #toc {
-    width: 90vw;
-    margin-bottom: 7.5vw;
-  }
-
-  .toc-section-end {
-    width: 16vw;
-  }
-
-  .toc-section { font-size: 6vw; }
-  .toc-subsection {
-    width: 50vw;
-    font-size: 6vw;
-    padding-left: 3vw;
-  }
-
-  .toc-entry-n {
-    font-size: 5.2vw;
-    padding-left: 6vw;
-    width: 56vw;
-  }
-
-  .toc-entry-d {
-    font-size: 5.2vw;
-    width: 28vw;
-  }
-
-  #footer-links {
-    font-size: 6vw;
-    padding-left: 8vw;
-    padding-right: 8vw;
-    padding-top: 8vw;
-  }
-
-  #links {
-    font-size: 5vw;
-    padding-left: 8%;
-    padding-right: 8%;
-    padding-top: 4.8%;
-    padding-bottom: 12.8%;
-  }
-
-  .katex-display > .katex > .katex-html {
-      padding-top: 0.8vw;
-      padding-bottom: 0.8vw;
-  }
-
-  .code {
-    font-size: 3.6vw;
-    width: 95%;
-    padding: 1.6vw;
-    border-radius: 1vw;
-  }
-
-  #codeblock {
-    font-size: 2vw;
-    width: 68%;
-    padding: 0.8%;
-    border-radius: 1vw;
-  }
-
-  ezb-code {
-    font-size: 5vw;
-    padding-left: 0.8vw;
-    padding-right: 0.8vw;
-    border-radius: 1vw;
-  }
-
-  #quotestart {
-    font-size: 10.1vw;
-    padding-left: 13.6%;
-  }
-
-  #quoteend {
-    font-size: 10.1vw;
-    padding-right: 13.6%;
-  }
-
-  #quoteattr {
-    padding-top: 6.8vw;
-    padding-left: 13.6%;
-    font-size: 3vw;
+@media screen and (max-width: 350px) {
+  .links li {
+    font-size: 12pt;
   }
 }
-

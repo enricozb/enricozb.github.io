@@ -1,56 +1,19 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="css/main.css">
     <title>Enrico Z. Borba</title>
   </head>
   <body>
-    <div id="maindiv">
-      <div id="bigname">
-        Enrico Z. Borba
-      </div>
-
-      <div id="links">
-        <ul>
-          <li><a href="https://www.github.com/enricozb">Github</a></li>
-          <li><a href="thoughts.html">Thoughts</a></li>
-          <li><a href="resume/resume.pdf">Resume</a></li>
-        </ul>
-      </div>
-      <div id="quotestart">&ldquo;</div>
-      <div id="codeblock" class="code selectable">
-        <ezb-import>import</ezb-import> Data.Char
-        <br>
-        one <ezb-op>=</ezb-op>
-        <ezb-builtin>id</ezb-builtin>
-        <br>
-        for s l <ezb-op>=</ezb-op>
-        <ezb-builtin>map</ezb-builtin>
-        chr <ezb-op>$</ezb-op>
-        zipWith (<ezb-op>+</ezb-op>) l
-        <ezb-op>$</ezb-op>
-        <ezb-builtin>map</ezb-builtin> ord s
-        <br>
-        all f o a
-        <ezb-op>=</ezb-op>
-        a [<ezb-num>4</ezb-num>,
-            <ezb-num>14</ezb-num>,
-            <ezb-op>-</ezb-op><ezb-num>10</ezb-num>]
-        <ezb-op>++</ezb-op>
-        f o [<ezb-op>-</ezb-op><ezb-num>65</ezb-num>,
-            <ezb-op>-</ezb-op><ezb-num>5</ezb-num>,
-            <ezb-num>10</ezb-num>]
-        <br>
-        all for <ezb-str>"one"</ezb-str>
-        <ezb-op>$</ezb-op>
-        one for <ezb-str>"all"</ezb-str>
-      </div>
-      <div id="footer">
-        <div id="quoteend">&rdquo;</div>
-        <div id="quoteattr">&mdash; The Three Musketeers</div>
-      </div>
+    <div class="main">
+      <div class="name">Enrico Z. Borba</div>
+      <ul class="links">
+        <li>Projects</li>
+        <li>Thoughts</li>
+        <li>Github</li>
+        <li>Resume</li>
+      </ul>
     </div>
   </body>
 </html>
-

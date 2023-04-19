@@ -25,6 +25,10 @@ ul.entries {
   list-style: none
 }
 
+ul.entries + div.section {
+  margin: 1rem 0 0 0;
+}
+
 ul.entries > li {
   overflow-x: hidden;
 }

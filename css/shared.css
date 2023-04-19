@@ -1,0 +1,16 @@
+@font-face {
+  font-family: sans;
+  src: url("../fonts/ptsans.woff2");
+}
+
+body {
+  font-family: sans;
+}
+
+a {
+  color: #454545;
+}
+
+a:visited {
+  color: #959595;
+}

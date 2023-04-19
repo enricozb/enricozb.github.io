@@ -1,19 +1,4 @@
-@font-face {
-  font-family: sans;
-  src: url("../fonts/ptsans.woff2");
-}
-
-body {
-  font-family: sans;
-}
-
-a {
-  color: #454545;
-}
-
-a:visited {
-  color: #959595;
-}
+@import "shared.css";
 
 div.main {
   display: flex;
@@ -38,7 +23,7 @@ div.name {
   }
 }
 
-ul.links {
+ul.nav {
   font-size: 16pt;
 
   display: flex;
@@ -49,12 +34,12 @@ ul.links {
   padding: 0;
 }
 
-.links li {
+.nav li {
   list-style: none;
 }
 
 @media screen and (max-width: 350px) {
-  .links li {
+  .nav li {
     font-size: 12pt;
   }
 }

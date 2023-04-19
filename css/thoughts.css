@@ -13,7 +13,7 @@ div.text {
 
 div.text > img {
   outline: 1px solid black;
-  margin: 3rem;
+  margin: 2rem 3rem;
 }
 
 @media screen and (max-width: 480px) {

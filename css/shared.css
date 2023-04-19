@@ -52,14 +52,18 @@ div.main {
 }
 
 div.header {
+  width: 100%;
+
+  display: inline-block;
+  margin: 2rem 0;
+
   font-size: 24pt;
   text-align: center;
-
-  margin: 2rem;
 }
 
 @media screen and (max-width: 480px) {
   div.header {
-    margin: 1rem;
+    margin: 1rem 0;
+    font-size: 20pt;
   }
 }

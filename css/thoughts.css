@@ -17,8 +17,11 @@ div.subsection {
 }
 
 ul.entries {
-  margin: 0 0 1rem 0;
-  padding: 0 2rem;
+  display: inline-block;
+  width: 100%;
+
+  margin: 0;
+  padding: 0;
   list-style: none
 }
 
@@ -32,12 +35,14 @@ ul.entries > li > span {
 
 ul.entries > li > span.name {
   float: left;
+  padding-left: 2rem;
   padding-right: 0.3rem;
 }
 
 ul.entries > li > span.date {
   float: right;
   padding-left: 0.3rem;
+  padding-right: 2rem;
 }
 
 ul.entries > li:before {

@@ -8,7 +8,7 @@ div.main {
 
   margin: 0 auto;
 
-  height: 100%;
+  flex-grow: 1;
   width: calc(min(100%, 900px));
 }
 

@@ -4,12 +4,12 @@ div.main {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 2em;
+  gap: 2rem;
 
   margin: 0 auto;
 
   height: 100%;
-  width: calc(min(100%, 600px))
+  width: calc(min(100%, 900px));
 }
 
 div.name {
@@ -51,7 +51,7 @@ div.art {
   flex-direction: column;
   place-items: center;
 
-  margin-top: 2em;
+  margin-top: 2rem;
 }
 
 div.art p {

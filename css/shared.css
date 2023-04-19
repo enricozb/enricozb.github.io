@@ -3,14 +3,25 @@
   src: url("../fonts/ptsans.woff2");
 }
 
+:root {
+  --gray: #454545;
+  --lightgray: #959595;
+}
+
 body {
   font-family: sans;
 }
 
 a {
-  color: #454545;
+  color: var(--gray);
 }
 
 a:visited {
-  color: #959595;
+  color: var(--lightgray);
+}
+
+div.main {
+  width: calc(min(100%, 900px));
+
+  margin: 0 auto;
 }

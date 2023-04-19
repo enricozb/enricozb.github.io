@@ -38,7 +38,7 @@ ul.nav {
   list-style: none;
 }
 
-@media screen and (max-width: 350px) {
+@media screen and (max-width: 400px) {
   .nav li {
     font-size: 12pt;
   }

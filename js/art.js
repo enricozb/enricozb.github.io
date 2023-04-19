@@ -1,5 +1,16 @@
 const TEXT = [
   [
+    "                         ",
+    "                         ",
+    "                         ",
+    "                         ",
+    "                         ",
+    "                         ",
+    "                         ",
+    "                         ",
+    "                         ",
+  ],
+  [
     "ww   ww  hh   hh  ooooooo",
     "ww   ww  hh   hh  ooooooo",
     "ww   ww  hh   hh  oo   oo",
@@ -38,7 +49,7 @@ const CHARS = 'abcdefghijklmnopqrstuvwxyz` ~!^*()_+-=[]{};:"\\|<>,./?';
 
 const PERIOD_MS = 3000;
 const PEAK_MS = PERIOD_MS / 2;
-const START = Date.now();
+const START = Date.now() + PEAK_MS;
 
 function blip(t) {
   return Math.exp(-(((t - PEAK_MS) / 800) ** 2)) ** 2;
@@ -50,9 +61,12 @@ function randomChar() {
 
 function refresh() {
   const t = Date.now() - START;
-  const scale = blip((t - PEAK_MS) % PERIOD_MS);
-  const word = TEXT[Math.floor((t / PERIOD_MS) % TEXT.length)];
+  const scale = blip((t + PEAK_MS) % PERIOD_MS);
+  const word = TEXT[Math.floor(((t / PERIOD_MS) % (TEXT.length - 1)) + 1)];
   const nodes = document.getElementsByClassName("row");
+
+  console.log(t, scale);
+
   for (let i = 0; i < word.length; i++) {
     const node = nodes[i];
     const row = word[i].split("");

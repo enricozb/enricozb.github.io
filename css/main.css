@@ -7,6 +7,14 @@ body {
   font-family: sans;
 }
 
+a {
+  color: #454545;
+}
+
+a:visited {
+  color: #959595;
+}
+
 div.main {
   display: flex;
   flex-direction: column;
@@ -53,9 +61,12 @@ ul.links {
 
 div.art {
   font-family: monospace;
+
   display: flex;
   flex-direction: column;
   place-items: center;
+
+  margin-top: 2em;
 }
 
 div.art p {

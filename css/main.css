@@ -11,6 +11,7 @@ div.main {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 2em;
 
   margin: 0 auto;
 
@@ -25,7 +26,7 @@ div.name {
 
 @media screen and (max-width: 480px) {
   div.name {
-    font-size: 35pt;
+    font-size: 34pt;
   }
 }
 
@@ -36,6 +37,7 @@ ul.links {
   flex-direction: row;
   justify-content: space-evenly;
 
+  margin: 0;
   padding: 0;
 }
 
@@ -47,4 +49,16 @@ ul.links {
   .links li {
     font-size: 12pt;
   }
+}
+
+div.art {
+  font-family: monospace;
+  display: flex;
+  flex-direction: column;
+  place-items: center;
+}
+
+div.art p {
+  margin: 0;
+  white-space: pre;
 }

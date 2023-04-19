@@ -1,0 +1,23 @@
+@import "shared.css";
+
+div.subheader {
+  font-size: 14pt;
+  text-align: center;
+  color: var(--lightgray);
+}
+
+div.text {
+  display: flex;
+  flex-direction: column;
+}
+
+div.text > img {
+  outline: 1px solid black;
+  margin: 3rem;
+}
+
+@media screen and (max-width: 480px) {
+  div.text > img {
+    margin: 1rem;
+  }
+}

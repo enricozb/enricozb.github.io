@@ -26,3 +26,16 @@ div.main {
 
   margin: 0 auto;
 }
+
+div.header {
+  font-size: 24pt;
+  text-align: center;
+
+  margin: 2rem;
+}
+
+@media screen and (max-width: 480px) {
+  div.header {
+    margin: 1rem;
+  }
+}

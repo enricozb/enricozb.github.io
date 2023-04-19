@@ -1,12 +1,5 @@
 @import "shared.css";
 
-div.header {
-  font-size: 24pt;
-  text-align: center;
-
-  margin: 2rem;
-}
-
 div.grid {
   display: grid;
   grid-gap: 1rem;

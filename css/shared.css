@@ -30,6 +30,9 @@
   --gray: #454545;
   --lightgray: #959595;
   --lightergray: #e5e5e5;
+
+  --blue: #009dc4;
+  --lightblue: #62b0c4;
 }
 
 body {
@@ -53,11 +56,12 @@ body > .footer {
 }
 
 a {
-  color: var(--gray);
+  color: var(--blue);
+  text-decoration: none;
 }
 
 a:visited {
-  color: var(--lightgray);
+  color: var(--lightblue);
 }
 
 div.main {

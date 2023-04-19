@@ -6,6 +6,64 @@ div.subheader {
   color: var(--lightgray);
 }
 
+div.section {
+  font-size: 16pt;
+  font-weight: bold;
+}
+
+div.subsection {
+  font-size: 14pt;
+  padding-left: 1rem;
+}
+
+ul.entries {
+  margin: 0 0 1rem 0;
+  padding: 0 2rem;
+  list-style: none
+}
+
+ul.entries > li {
+  overflow-x: hidden;
+}
+
+ul.entries > li > span {
+  background: white;
+}
+
+ul.entries > li > span.name {
+  float: left;
+  padding-right: 0.3rem;
+}
+
+ul.entries > li > span.date {
+  float: right;
+  padding-left: 0.3rem;
+}
+
+ul.entries > li:before {
+  float: left;
+  width: 0;
+  white-space: nowrap;
+  content:
+    "\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0."
+    "\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0."
+    "\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0."
+    "\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0."
+    "\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0."
+    "\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0."
+    "\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0."
+    "\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0."
+    "\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0."
+    "\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0."
+    "\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0."
+    "\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0.\00a0\00a0."
+  ;
+}
+
+ul.entries > li.future {
+  color: var(--lightgray);
+}
+
 div.text {
   display: flex;
   flex-direction: column;
@@ -13,7 +71,7 @@ div.text {
 
 div.text > img {
   outline: 1px solid black;
-  margin: 2rem 3rem;
+  margin: 1rem 3rem;
 }
 
 @media screen and (max-width: 480px) {

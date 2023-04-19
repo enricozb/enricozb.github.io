@@ -13,21 +13,30 @@ div.grid {
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
-div.project {
+a.project {
   outline: 1px solid black;
   display: flex;
   flex-direction: column;
 
   height: 300px;
+
+  overflow: hidden;
+
+  text-decoration: none;
+  color: black;
 }
 
-div.project > .title {
+a.project:hover {
+  background-color: var(--lightergray);
+}
+
+a.project > .title {
   font-size: 16pt;
   margin-top: 4px;
   padding-left: 8px;
 }
 
-div.project > .subtitle {
+a.project > .subtitle {
   font-size: 12pt;
   color: var(--gray);
   padding-left: 8px;
@@ -35,8 +44,11 @@ div.project > .subtitle {
   margin-bottom: 8px;
 }
 
-div.project > .image {
+a.project > img {
   outline: 1px solid black;
 
   flex-grow: 1;
+
+  object-fit: cover;
+  image-rendering: crisp-edges;
 }

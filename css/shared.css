@@ -31,8 +31,9 @@
   --lightgray: #959595;
   --lightergray: #e5e5e5;
 
+  --darkblue: #066f8a;
   --blue: #009dc4;
-  --lightblue: #62b0c4;
+  --lightblue: #99ebff;
 }
 
 body {
@@ -61,7 +62,7 @@ a {
 }
 
 a:visited {
-  color: var(--lightblue);
+  color: var(--blue);
 }
 
 div.main {
@@ -85,4 +86,11 @@ div.header {
     margin: 1rem 0;
     font-size: 20pt;
   }
+}
+
+::selection {
+  background: var(--lightblue);
+}
+::-moz-selection {
+  background: var(--lightblue);
 }

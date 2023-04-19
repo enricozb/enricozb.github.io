@@ -78,9 +78,31 @@ div.text {
   flex-direction: column;
 }
 
-div.text > img {
-  outline: 1px solid black;
+div.text > p.note {
+  font-style: italic;
+  color: var(--lightgray);
+}
+
+div.text > div.image {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   margin: 1rem 3rem;
+}
+
+div.text > div.image > img {
+  outline: 1px solid black;
+
+  max-height: 600px;
+  max-width: 100%;
+
+  height: auto;
+  width: auto;
+}
+
+div.text ul {
+  margin: 0;
 }
 
 @media screen and (max-width: 480px) {

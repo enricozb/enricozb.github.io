@@ -65,8 +65,6 @@ function refresh() {
   const word = TEXT[Math.floor(((t / PERIOD_MS) % (TEXT.length - 1)) + 1)];
   const nodes = document.getElementsByClassName("row");
 
-  console.log(t, scale);
-
   for (let i = 0; i < word.length; i++) {
     const node = nodes[i];
     const row = word[i].split("");

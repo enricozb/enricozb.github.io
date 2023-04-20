@@ -96,6 +96,12 @@ div.header > div.center > div.subtitle {
   color: var(--lightgray);
 }
 
+code {
+  background-color: var(--lightergray);
+  padding: 0 0.2em;
+  font-size: 1.1em;
+  border-radius: 5px;
+}
 
 @media screen and (max-width: 480px) {
   div.header {

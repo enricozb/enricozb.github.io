@@ -124,3 +124,10 @@ div.text ul {
     margin: 1rem;
   }
 }
+
+div.code {
+  background: var(--lightergray);
+  font-family: monospace;
+  padding: 0.5em;
+  border-radius: 5px;
+}

@@ -80,7 +80,7 @@ function refresh() {
 }
 
 function main() {
-  setInterval(refresh, 40);
+  setInterval(refresh, 50);
 }
 
 main();

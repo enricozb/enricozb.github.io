@@ -76,25 +76,42 @@ div.main {
 }
 
 div.header {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+
   width: 100%;
-
-  display: inline-block;
   margin: 2rem 0;
+}
 
-  font-size: 24pt;
+div.header > div.center {
   text-align: center;
 }
 
-div.subheader {
+div.header > div.center > div.title {
+  font-size: 28pt;
+}
+
+div.header > div.center > div.subtitle {
   font-size: 14pt;
-  text-align: center;
   color: var(--lightgray);
 }
+
 
 @media screen and (max-width: 480px) {
   div.header {
     margin: 1rem 0;
+  }
+
+  div.header > div.center > div.title {
     font-size: 20pt;
+  }
+
+  div.header > div.center > div.subtitle {
+    font-size: 12pt;
+  }
+
+  div.header > div.nav {
+    font-size: 10pt;
   }
 }
 

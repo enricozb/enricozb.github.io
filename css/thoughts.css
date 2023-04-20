@@ -12,12 +12,6 @@ h1, h2 {
   margin: 0.5rem 0 0 0;
 }
 
-div.subheader {
-  font-size: 14pt;
-  text-align: center;
-  color: var(--lightgray);
-}
-
 div.section {
   font-size: 16pt;
   font-weight: bold;

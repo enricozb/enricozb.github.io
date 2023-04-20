@@ -1,0 +1,11 @@
+@import "projects.css";
+
+canvas {
+  outline: 1px solid black;
+}
+
+div.sketch {
+  display: flex;
+  place-content: center;
+  flex-grow: 1;
+}

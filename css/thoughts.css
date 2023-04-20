@@ -1,5 +1,17 @@
 @import "shared.css";
 
+h1, h2 {
+  margin: 0;
+}
+
+* + h1 {
+  margin: 1rem 0 0 0;
+}
+
+* + h2 {
+  margin: 0.5rem 0 0 0;
+}
+
 div.subheader {
   font-size: 14pt;
   text-align: center;
@@ -25,7 +37,7 @@ ul.entries {
   list-style: none
 }
 
-ul.entries + div.section {
+* + div.section {
   margin: 1rem 0 0 0;
 }
 
@@ -83,6 +95,14 @@ div.text > p.note {
   color: var(--lightgray);
 }
 
+div.text > p.quote {
+  margin: 0 0 1rem 1rem;
+  padding-left: 1rem;
+  border-left: 1px solid var(--gray);
+  color: var(--gray);
+  font-style: italic;
+}
+
 div.text > div.image {
   display: flex;
   flex-direction: row;
@@ -102,7 +122,7 @@ div.text > div.image > img {
 }
 
 div.text ul {
-  margin: 0;
+  margin-top: 0;
 }
 
 @media screen and (max-width: 480px) {

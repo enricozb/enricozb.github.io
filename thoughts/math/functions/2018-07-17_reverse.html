@@ -6,8 +6,9 @@
     <link rel="stylesheet" href="/css/thoughts.css">
 
     <link rel="stylesheet" href="/js/katex/katex.min.css">
-    <script src="/js/katex/katex.min.js"></script>
-    <script src="/js/katex/contrib/auto-render.min.js"></script>
+    <script defer src="/js/code.js"></script>
+    <script defer src="/js/katex/katex.min.js"></script>
+    <script defer src="/js/katex/contrib/auto-render.min.js"></script>
 
     <title>Enrico Z. Borba — Thoughts</title>
   </head>
@@ -64,17 +65,17 @@
         </p>
 
         <div class="code">
-          from math import *<br>
-          <br>
-          def len(x, b):<br>
-          &nbsp;&nbsp;return ceil(log(x + 1, b))<br>
-          <br>
-          def at(x, i, b):<br>
-          &nbsp;&nbsp;return floor(abs(x) / (b ** i)) % b<br>
-          <br>
-          def rev(x, b):<br>
-          &nbsp;&nbsp;return sum(at(x, i, b) * (b ** (len(x, b) - i - 1))<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;for i in range(len(x, b)))<br>
+          from math import *
+
+          def len(x, b):
+            return ceil(log(x + 1, b))
+
+          def at(x, i, b):
+            return floor(abs(x) / (b ** i)) % b
+
+          def rev(x, b):
+            return sum(at(x, i, b) * (b ** (len(x, b) - i - 1))
+              for i in range(len(x, b)))
         </div>
 
         <p>
@@ -82,12 +83,12 @@
         </p>
 
         <div class="code">
-          >>> rev(12345, 10)<br>
-          54321<br>
-          >>> rev(0o37001, 8) == 0o10073<br>
-          True<br>
-          >>> rev(0xdeadbeef, 16) == 0xfeebdaed<br>
-          True<br>
+          >>> rev(12345, 10)
+          54321
+          >>> rev(0o37001, 8) == 0o10073
+          True
+          >>> rev(0xdeadbeef, 16) == 0xfeebdaed
+          True
         </div>
 
         <p>

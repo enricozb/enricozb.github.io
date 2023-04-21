@@ -6,8 +6,9 @@
     <link rel="stylesheet" href="/css/thoughts.css">
 
     <link rel="stylesheet" href="/js/katex/katex.min.css">
-    <script src="/js/katex/katex.min.js"></script>
-    <script src="/js/katex/contrib/auto-render.min.js"></script>
+    <script defer src="/js/code.js"></script>
+    <script defer src="/js/katex/katex.min.js"></script>
+    <script defer src="/js/katex/contrib/auto-render.min.js"></script>
 
     <title>Enrico Z. Borba — Thoughts</title>
   </head>
@@ -149,46 +150,46 @@
         </p>
 
         <div class="code">
-          from math import *<br>
-          <br>
-          def len(x, b):<br>
-          &nbsp;&nbsp;return ceil(log(x + 1, b))<br>
-          <br>
-          def at(x, i, b):<br>
-          &nbsp;&nbsp;return floor(abs(x) / (b ** i)) % b<br>
-          <br>
-          def sign(x):<br>
-          &nbsp;&nbsp;return floor(x / (abs(x) + 1)) + ceil(x / (abs(x) + 1))<br>
-          <br>
-          def eq(x, y):<br>
-          &nbsp;&nbsp;return 1 - ceil(abs(x - y) / (abs(x - y) + 1))<br>
-          <br>
-          def lt(x, y):<br>
-          &nbsp;&nbsp;return eq(-1, sign(x - y))<br>
-          <br>
-          def sigma_eq(x, i, b):<br>
-          &nbsp;&nbsp;return sum(eq(at(x, j, b), at(x, i, b)) for j in range(0, i))<br>
-          <br>
-          def sigma_lt(x, i, b):<br>
-          &nbsp;&nbsp;return sum(lt(at(x, j, b), at(x, i, b)) for j in range(0, len(x, b)))<br>
-          <br>
-          def sigma_sort(x, i, b):<br>
-          &nbsp;&nbsp;return sigma_eq(x, i, b) + sigma_lt(x, i, b)<br>
-          <br>
-          def sort(x, b):<br>
-          &nbsp;&nbsp;return sum(at(x, i, b) * b ** sigma_sort(x, i, b)<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;for i in range(len(x, b)))<br>
+          from math import *
+
+          def len(x, b):
+            return ceil(log(x + 1, b))
+
+          def at(x, i, b):
+            return floor(abs(x) / (b ** i)) % b
+
+          def sign(x):
+            return floor(x / (abs(x) + 1)) + ceil(x / (abs(x) + 1))
+
+          def eq(x, y):
+            return 1 - ceil(abs(x - y) / (abs(x - y) + 1))
+
+          def lt(x, y):
+            return eq(-1, sign(x - y))
+
+          def sigma_eq(x, i, b):
+            return sum(eq(at(x, j, b), at(x, i, b)) for j in range(0, i))
+
+          def sigma_lt(x, i, b):
+            return sum(lt(at(x, j, b), at(x, i, b)) for j in range(0, len(x, b)))
+
+          def sigma_sort(x, i, b):
+            return sigma_eq(x, i, b) + sigma_lt(x, i, b)
+
+          def sort(x, b):
+            return sum(at(x, i, b) * b ** sigma_sort(x, i, b)
+              for i in range(len(x, b)))
         </div>
 
         <p>And again let's test it out to see if it works:</p>
 
         <div class="code">
-          >>> sort(18081971, 10)<br>
-          98871110<br>
-          >>> sort(0o1420740, 8) == 0o7442100<br>
-          True<br>
-          >>> sort(0xcafebabe, 16) == 0xfeecbbaa<br>
-          True<br>
+          >>> sort(18081971, 10)
+          98871110
+          >>> sort(0o1420740, 8) == 0o7442100
+          True
+          >>> sort(0xcafebabe, 16) == 0xfeecbbaa
+          True
         </div>
 
         <p>

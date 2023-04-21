@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="/css/thoughts.css">
+
+    <link rel="stylesheet" href="/js/katex/katex.min.css">
+    <script defer src="/js/code.js"></script>
+
+    <title>Enrico Z. Borba — Thoughts</title>
+  </head>
+  <body>
+    <div class="header">
+      <div class="nav left">
+        <div><a href="/">home</a></div>
+        <div><a href="/thoughts">thoughts</a></div>
+      </div>
+      <div class="center">
+        <div class="title">Myth-Lang 2</div>
+        <div class="subtitle">Lexing & Parsing, 2019-03-15</div>
+      </div>
+      <div class="nav right"></div>
+    </div>
+
+    <div class="main">
+      <div class="text">
+        <h1>Disclaimer</h1>
+
+        <p>
+          Myth's lexer is built with
+          <a href="https://caml.inria.fr/pub/docs/manual-ocaml/lexyacc.html">ocamllex</a>,
+          since that was the first meaningful result that came up when I searched "lexing with
+          OCaml". It's nice enough to use. Either way, the code I've written is pure
+          garbage. The way newlines, <code>INDENT</code>s, and <code>DEDENT</code>s
+          are handled is annoying, and the parser &amp; lexer are way to tightly
+          coupled. But, it's the code that's currently running so, whatever.
+        </p>
+
+        <h1>A Whitespace-Sensitive Lexer</h1>
+
+        <p>
+          Myth's syntax is heavily inspired by Python. I wanted something that was
+          whitespace-sensitive and used indentation to specify code blocks. So I decided
+          to look at the <a href="https://docs.python.org/3/reference/grammar.html">Python 3.7
+          Grammar</a> to see how they handled whitespace-sensitivity. I saw that a
+          lot of the rules depended on <code>INDENT</code> and <code>DEDENT</code>
+          tokens. So I'd have to make my lexer figure out when to emit those. However,
+          it's often the case that after reading a single <code>\n</code> character
+          followed by a non-whitespace character, we will want to emit multiple
+          <code>DEDENT</code> tokens. For example,
+        </p>
+
+        <div class="code">
+          if True:
+            if True:
+              if True:
+                pass
+          print()
+        </div>
+
+        <p>
+          when the lexer sees the <code>\n</code> followed by the <code>p</code> in
+          <code>print</code>, three <code>DEDENT</code> tokens need to be emitted,
+          one for each <code>if</code> block. So I had to find a way to handle this
+          multiple <code>DEDENT</code> nonsense.
+        </p>
+
+        <h2>The Lexer Code</h2>
+
+        <p>
+          This isn't really the place for an ocamllex tutorial, so we'll just look at the
+          code immediately. The meat of the lexer (ignoring the non-interesting rules)
+          looks something like
+        </p>
+
+        <div class="code">
+          rule token = parse
+            | ['\n'] {
+              if !paren_count = 0 then begin
+                state := RECENT_NEWLINE;
+                NEWLINE
+              end else
+                token lexbuf
+            }
+            | ['('] {
+              incr paren_count;
+              LPAREN
+            }
+            | [')'] {
+              decr paren_count;
+              RPAREN
+            }
+            | ['a'-'z' '_']+ ['a'-'z' 'A'-'Z' '0'-'9' '_']* as id {
+              check_keyword id
+            }
+
+            (*... other rules ... *)
+        </div>
+
+        <p>Some important points to notice:</p>
+
+        <ol>
+          <li>We have some special logic in when handling <code>\n</code>.</li>
+          <li>
+            We track parenthesis usage, in order to ignore indents within
+            parenthesized pieces of code across multiple lines.
+          </li>
+          <li>Keywords are checked in a function, not in the lexer rules.</li>
+        </ol>
+
+        <p>
+          We have a special <code>state</code> variable that has the following
+          type and initial value:
+        </p>
+
+        <div class="code">
+          type state =
+            | CODE
+            | RECENT_NEWLINE
+
+          let state = ref CODE
+        </div>
+
+        <p>
+          We'll see why these is useful soon. We also have a variable
+          <code>paren_count</code> that is initialized to <code>ref 0</code>. This just
+          keeps track of whether or not we are inside a parenthesized expression. If
+          we are, then indents and newlines are ignored. Lastly, keywords are checked
+          in a special function <code>check_keyword</code>, this is because, as per
+          <a href="https://caml.inria.fr/pub/docs/manual-ocaml/lexyacc.html#sec333">ocamllex
+          documentation</a>, this should be done to keep the generated transition
+          table small. The definition is something like
+        </p>
+
+        <div class="code">
+          let check_keyword = function
+            | "if" -> IF
+            | "else" -> ELSE
+            | "while" -> WHILE
+            | "def" -> DEF
+            | "return" -> RETURN
+            | "and" -> OPERATOR "and"
+            | "or" -> OPERATOR "or"
+            | id -> NAME id
+        </div>
+
+        <p>
+          In addition to the rule <code>token</code>, we also have the rule
+          <code>newline</code>, which is defined as follows:
+        </p>
+
+        <div class="code">
+          and newline = parse
+            | [' ']* as spaces {
+              state := CODE;
+              match count_indent (String.length spaces) with
+              | `Skip -> token lexbuf
+              | `Token t -> t
+            }
+        </div>
+
+        <p>
+          This counts the spaces immediately after a newline, in order to determine
+          what indent block we are currently on. Specifically, we want to determine
+          if we should emit an <code>INDENT</code> token, or several
+          <code>DEDENT</code> tokens followed by a newline. Here's the definition
+          of <code>count_indent</code>:
+        </p>
+
+        <div class="code">
+          let space_stack = Stack.create ()
+          let _ = Stack.push 0 space_stack
+
+          (* outputs INDENT, DEDENT, or DEDENTMANY tokens *)
+          let count_indent count =
+            if Stack.top space_stack = count then
+              `Skip
+            else if Stack.top space_stack &lt; count then begin
+              Stack.push count space_stack;
+              `Token INDENT
+            end else
+              (* Pop from the stack until we get an equal indent *)
+              let dedent_count = ref 0 in
+              try
+                while true do
+                  if Stack.top space_stack = count then
+                    raise Exit
+                  else
+                    incr dedent_count;
+                    ignore (Stack.pop space_stack);
+                done;
+                raise SyntaxError
+              with Exit -&gt; `Token (DEDENTMANY !dedent_count)
+        </div>
+
+        <p>
+          This is some awful code... What it essentially does is, we have a stack of
+          integers, <code>space_stack</code>, that keeps the counts for the number
+          of spaces used to indent blocks. For example, if the lexer is given this
+          piece of code:
+        </p>
+
+        <div class="code">
+          if True:
+            if True:
+                if True:
+                 if True:
+                  pass
+        </div>
+
+        <p>
+          when it reaches <code>pass</code>, the space stack will have the contents
+          <code>[0, 2, 6, 7, 8]</code>.  These numbers are the number of spaces used
+          in each indent block. So, when we dedent, we need to return to a preexisting
+          number of spaces. The space stack ensures that we do this. Furthermore, when
+          deindenting, <code>count_indent</code> counts how many <code>DEDENTS</code>
+          needs to be output, and reports this using a <code>DEDENTMANY</code> token,
+          which contains an <code>int</code> (the number of <code>DEDENT</code>s
+          to output).
+        </p>
+
+        <p>
+          Finally, the last part of the lexer is the part that handles outputting
+          multiple <code>DEDENT</code> tokens. It works like this: inside the lexer,
+          there is a function called <code>token_cache</code> that has the following
+          definition:
+        </p>
+
+        <div class="code">
+          let token_cache =
+            let cache = ref [] in
+            fun lexbuf ->
+              match !cache with
+              | x::xs -> cache := xs; x
+              | [] ->
+                  match !Lexer.state with
+                  | Lexer.CODE -> Lexer.token lexbuf
+                  | Lexer.RECENT_NEWLINE -> begin
+                      match Lexer.newline lexbuf with
+                      | DEDENTMANY n -> begin
+                          cache := (replicate (n - 1) DEDENT);
+                          DEDENT
+                      end
+                      | token -> token
+                  end
+        </div>
+
+        <p>
+          It essentially keeps a reference to a list (<code>cache</code>) that gets
+          filled with <code>DEDENT</code> tokens once a <code>DEDENTMANY</code>
+          token is output by the lexer. Notice that the parser never expects a
+          <code>DEDENTMANY</code> token, that is only used internally by the lexer.
+        </p>
+
+        <h2>Using The Lexer</h2>
+        <p>
+          When looking at ocamllex tutorials, you'll usually see the main lexing rule
+          defined as <code>token</code>. Then, in the main program, or wherever the
+          lexer needs to be used, you'll see a call to <code>Lexer.token</code>. In
+          order to use this whitespace sensitive lexer, you'll instead use
+          <code>Lexer.token_cache</code>, as your "rule" instead of <code>token</code>.
+        </p>
+
+        <h1>The Parser (parser.mly)</h1>
+
+        <p>
+          I'm using <a href="http://gallium.inria.fr/~fpottier/menhir/">Menhir</a> for parsing,
+          since it supports incremental parsing reasonably nicely. This is so I can
+          parse multiline code inside a REPL, which will hopefully be touched on
+          in a later blog post. The parser isn't anything too fancy. The most interesting
+          thing is how operator precedence is handled, which I'll detail here. If
+          you're only interested in the whitespace-sensitivity bit, skip this part I
+          guess.
+        </p>
+
+        <p>
+          Somewhere deep in my parser, I have the following bit of
+          <a href="https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form">BNF</a>
+          grammar:
+        </p>
+
+        <div class="code">
+          expr:
+            | non_op_expr                  { $1 }
+            | non_op_expr op_list          { resolve_op_list $1 $2 }
+
+          op_list:
+            | OPERATOR non_op_expr         { [($1, $2)] }
+            | OPERATOR non_op_expr op_list { ($1, $2) :: $3 }
+        </div>
+
+        <p>Basically, it's meant to match expressions of the following nature</p>
+
+        <div class="code">
+          1 + 2 ^ 3 * 4
+        </div>
+
+        <p>
+          And the <code>resolve_op_list</code> call on this expression would
+          look something like
+        </p>
+
+        <div class="code">
+          resolve_op_list
+            (Ast.Num 1)
+            [("+", Ast.Num 2), ("^", Ast.Num 3), ("*", Ast.Num 4)]
+        </div>
+
+        <p>
+          The <code>Ast.Num</code> stuff is just how my language internally represents
+          its <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">abstract
+          syntax tree</a>.
+        </p>
+
+        <p>
+          The <code>resolve_op_list</code> code is a bit too long to post here I think, so check
+          it out <a href="https://github.com/enricozb/CS81-2019/blob/7e4cbd565ea0da626c17c8087a47b078fe24053d/src/custom/repl/parser.mly#L45-L102">on the
+          repo</a>
+          The way it works isn't too complicated though. I defined some precedences
+          for each operator. It's a function that takes in an operator and outputs
+          and associativity
+        </p>
+
+        <div class="code">
+          let assoc_f i (_, op) = match op with
+            | "or" -> (0, -i)
+            | "and" -> (1, -i)
+            | "<" | "<=" | ">" | ">=" | "!=" | "==" -> (2, -i)
+            | "+" | "-" -> (3, -i)
+            | "*" | "/" -> (4, -i)
+            | "^" -> (5, i)
+            | _ -> failwith "Unknown operator."
+        </div>
+
+        <p>
+          You'll notice it also takes in an integer <code>i</code>. This is the index of the
+          operator in a list of operators. The index is passed in so we can also take
+          into account
+          <a href="https://en.wikipedia.org/wiki/Operator_associativity">associativity</a>. Namely,
+          if I search for the minimum precedence element in a list, I will find the
+          left-most, or the right-most operator of minimum precedence, depending on
+          the associativity.
+        </p>
+
+        <p>
+          The rest of the <code>resolve_op_list</code> just finds the minimum precedence operator
+          and splits the lists of operators and expressions at that minimum precedence
+          operator. Then it recurses on those two smaller left and right lists.
+        </p>
+
+        <p>
+          The ability to handle operators like this is super useful for two reasons:
+        </p>
+
+        <ol>
+          <li>Custom operators are easily added by the user.</li>
+          <li>I don't need to write BNF rules for specific operators.</li>
+        </ol>
+
+        <h1>Conclusion</h1>
+
+        <p>
+          My code is garbage. That's the end of the lexing/parsing bit. The rest of the
+          lexer and parser is just standard stuff that is specific to Myth, and not
+          that generalizable. The <a href="./2019-04-03_mutability.html">next post</a>
+          will probably be on the type system, or my serious issues with mutability,
+          or Hindley-Milner, or idk.
+        </p>
+      </div>
+    </div>
+
+    <div class="footer">
+      made with <a href="https://www.youtube.com/watch?v=Ssd3U_zicAI">love</a>
+      by <a href="https://github.com/enricozb/enricozb.github.io/commits/master">hand</a>
+    </div>
+  </body>
+</html>

@@ -124,7 +124,7 @@ div.text > div.image > img {
   width: auto;
 }
 
-div.text ul {
+div.text ul, div.text ol {
   margin-top: 0;
 }
 
@@ -139,4 +139,8 @@ div.code {
   font-family: monospace;
   padding: 0.5em;
   border-radius: 5px;
+}
+
+div.code > pre {
+  margin: 0;
 }

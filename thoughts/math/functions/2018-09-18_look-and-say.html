@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="/css/thoughts.css">
+
+    <link rel="stylesheet" href="/js/katex/katex.min.css">
+    <script src="/js/katex/katex.min.js"></script>
+    <script src="/js/katex/contrib/auto-render.min.js"></script>
+
+    <title>Enrico Z. Borba — Thoughts</title>
+  </head>
+  <body>
+    <div class="header">
+      <div class="nav left">
+        <div><a href="/">home</a></div>
+        <div><a href="/thoughts">thoughts</a></div>
+      </div>
+      <div class="center">
+        <div class="title">Functions 4</div>
+        <div class="subtitle">Look and Say, 2018-09-18</div>
+      </div>
+      <div class="nav right"></div>
+    </div>
+
+    <div class="main">
+      <div class="text">
+
+        <h1>The Sequence</h1>
+        <p>
+          The <a href="https://en.wikipedia.org/wiki/Look-and-say_sequence">Look &amp; Say sequence</a>
+          was originally introduced and analyzed by John Conway. The sequence begins
+          as follows:
+
+          $$
+            \begin{aligned}
+              1, 11, 21, 1211, 111221, 312211, \dots
+            \end{aligned}
+          $$
+
+          To generate a member of the sequence from the previous member, read
+          the digits of the previous member, counting the number of digits in groups
+          of the same digit. For example:
+        </p>
+
+        <ul>
+          <li>$1$ is read as "one $1$" or $11$.</li>
+          <li>$11$ is read as "two $1$s" or $21$.</li>
+          <li>$21$ is read as "one $2$, one $1$" or $1211$.</li>
+          <li>$1211$ is read as "one $1$, one $2$, two $1$s" or $111221$.</li>
+        </ul>
+
+        <p>
+          Notice you can start with a different "seed" or starting number. This
+          leads to a different sequence. Interestingly enough, $22$ is the
+          <a href="https://en.wikipedia.org/wiki/Look-and-say_sequence#Growth">only</a>
+          seed that leads to a sequence that loops. All other seeds generate a
+          sequence that grows indefinitely.
+        </p>
+
+        <h1>The Function Definition</h1>
+        <p>
+          How would you make <i>this</i> into a function using only the constructs we've
+          introduced? This post will be longer than usual because of the many parts
+          required to complete this task. It's not that daunting, but it's going to
+          take a bit of explaining on my part.
+        </p>
+
+        <p>
+          The function we want to create will take in an integer $x$ and output the
+          next term in the sequence. For example, using the values we computed
+          in the section above, we would have the following input/output pairs:
+
+          $$
+            \begin{aligned}
+              L(1) &= 11 \\
+              L(11) &= 21 \\
+              L(21) &= 1211 \\
+              L(1211) &= 111221 \\
+              &\vdots
+            \end{aligned}
+          $$
+
+          The function could also take any positive integer, and not just those from
+          the most common sequence. For example,
+
+          $$
+            \begin{aligned}
+              L(6) &= 16 \\
+              L(73) &= 1713 \\
+              L(4444) &= 44 \\
+              &\vdots
+            \end{aligned}
+          $$
+
+          This is the function we want to write out. Let's start off with some
+          intuition first to get our feet wet.
+        </p>
+
+        <h1>Implementation</h1>
+        <h2>Grouping</h2>
+
+        <p>
+          When visually computing the next Look &amp; Say number, we group consecutive
+          similar digits together. For example, we would group the digits of the
+          number $11244$ as $[11][2][44]$. Then we use the contents of each group
+          to generate the next term. This "grouping" action can be done numerically
+          by computing a number that encodes where these groups start and end. One
+          way to do this is to create a number that has $1$s on the boundaries of
+          groups and $0$s otherwise. For example, using the number $11244$ again,
+          we would have
+
+          $$
+            \begin{aligned}
+              11244 \to {_11_01_12_14_04_1} \to 101101
+            \end{aligned}
+          $$
+
+          This is equivalent to placing $1$s between digits that differ and
+          $0$s between digits that are the same. Finally pad this number with $1$s
+          on the left and right side of the entire integer. Here's how we can do this:
+
+          $$
+            \begin{aligned}
+              G_{inner}(x) &=
+              \sum_{i = 0}^{\text{len}(x) - 2} [\text{at}(x, i) \ne \text{at}(x, i + 1)] \cdot 10^i \\
+              G(x) &= 1 + 10^{\text{len}(x)} + G_{inner}(x) \cdot 10
+            \end{aligned}
+          $$
+
+          <i>
+            Note: I've omitted the base $b$ subscript found in $\text{len}_b(x)$ as
+            it's assumed to be $10$. This will be done throughout the rest of this post.
+          </i>
+        </p>
+
+        <p>
+          The keen eye will notice that we haven't defined $\text{neq}$ yet, and
+          therefore should not be able to use $\neq$, but, it's easily defined
+          as
+
+          $$
+            \begin{aligned}
+              \text{neq}(x, y) = 1 - \text{eq}(x, y)
+            \end{aligned}
+          $$
+
+          The way $G$ works is $G_{inner}$ goes through each adjacent pair of digits
+          in $x$ and "concatenates" a $1$ if they're different and a $0$ otherwise.
+          Notice this doesn't take into account the $1$s that should be at the
+          beginning and the end of this grouping number. To take care of this, $G$
+          shifts $G_{inner}$ over by one digit, and adds a $1$ at the start and end.
+          These manipulations are easier to think about in terms of string operations,
+          instead of literally adding numerals.
+        </p>
+
+        <h2>Counting Groups</h2>
+        <h3>Intuition</h3>
+
+        <p>
+          The next big step is to iterate over these groups and build up the next
+          Look &amp; Say number. A sentence description of what needs to happen would be
+          something like: For each $1$ in $G(x)$ (from right to left) at index $i$,
+          let $j$ be the index of the next $1$ in $G(x)$ after the one at index $i$,
+          then $at(x, i)$ is the digit that occured $j - i$ times in $x$. If we
+          concatenate these instances of $j - i$ and $at(x, i)$ for each group in
+          $G(x)$, we'll have the next number.
+        </p>
+
+        <p>
+          If we remember from <a href="./2018-07-31_sorting.html">previous post</a>, concatenation is hard
+          because when concatenating $x$ to $y$, we need to know the length of $y$. This
+          is difficult if you're building up a number via concatenation. In the sorting
+          case this was easy because each iteration of the loop we would add only one
+          digit. Here we may add a variable number of digits since $j - i$ could be <i>any</i>
+          positive integer. Thus, we need a function to count the length of the Look &amp;
+          Say number we have built <i>so far</i>, up until group $i$, so that we can
+          concatenate properly.
+        </p>
+
+        <p>
+          Some useful things to notice are:
+        </p>
+
+        <ul>
+          <li>
+            The number of $1$s in $G(x)$ is one greater than the number of groups of digits in $x$.
+          </li>
+          <li>
+            The number of $0$s in between two $1$s in $G(x)$ is one less than the number of digits in that group.
+          </li>
+          <li>
+            In a group bounded by $1$s at indices $i, j$ where $i &lt; j$, the length that group
+            contributes to the next Look &amp; Say number is $\text{len}(j - i) + 1$.
+          </li>
+        </ul>
+
+        <h2>Formalizing</h2>
+
+        <p>
+          When iterating through $G(x)$, we only really care about performing operations
+          where the $1$s are. Thus, we can start off with
+
+          $$
+            \begin{aligned}
+              L(x) = \sum_{i = 0}^{\text{len}(G(x)) - 2} at(G(x), i) \cdot [\dots]
+            \end{aligned}
+          $$
+          <i>
+            Note: The upper bound of the sum is subtracted by $2$ because the last
+            $1$ in $G(x)$ is not the start boundary of a group, but instead and the end.
+          </i>
+        </p>
+
+        <p>
+          The $[\dots]$ represents stuff we still need to write. The
+          $\text{at}(G(x), i)$ serves as discarding the computations in $[\dots]$ when
+          the digit at index $i$ is $0$.
+        </p>
+
+        <p>
+          Now, as we said in the previous section, we need to find the index of the next
+          $1$, use that to compute the length of the group, and then concatenate that
+          length and the corresponding digit in $x$ to our ongoing computation. If
+          $G_{len}(x, i)$ is the length of the group at index $i$ and $\sigma(x, i)$ is
+          new index of the group length &amp; digit pair, then we have
+
+          $$
+            \begin{aligned}
+              \sigma(x, i) &= [\dots] \\
+              G_{len}(x, i) &= [\dots] \\
+              L_{pair}(x, i) &= G_{len}(x, i) \cdot 10 + \text{at}(x, i) \\
+              L(x) &= \sum_{i = 0}^{\text{len}(G(x)) - 1} \text{at}(G(x), i) \cdot L_{pair}(x, i) \cdot 10^{\sigma(x, i)}
+            \end{aligned}
+          $$
+        </p>
+
+        <h2>Tackling $\sigma$</h2>
+
+        <p>
+          I think $\sigma(x, i)$ is pretty easy assuming we already have $G_{len}$. It's
+          essentially the number of digits that have been concatenated already. Thus,
+          it's the sum of all of the <i>lengths</i> of $L_{pair}$s for indices less than $i$,
+          since that's what we're concatenating together. Thus, we would write this as
+
+          $$
+            \begin{aligned}
+              \sigma(x, i) = \sum_{j = 0}^{i - 1} at(G(x), j) \cdot (\text{len}(L_{pair}(x, j)))
+            \end{aligned}
+          $$
+
+          <i>Note: again, we don't care about indices where $G(x)$ is $0$.</i>
+        </p>
+
+        <h2>Tackling $G_{len}$</h2>
+
+        <p>
+          $G_{len}(x, i)$ is simply the length of the group at index $i$ in $x$. So we
+          know the first $1$ is at index $i$. Then we need to find the index of the next
+          $1$. Here's an example $G(x)$ with $i, j$ indicated when $i = 2$:
+
+          $$
+            \begin{aligned}
+              G(22344455) &\to {_12_02_13_14_04_04_15_05_1} \to 101100101 \\
+              G(x) &= 101\underset{j}{1}00\underset{i}{1}01 \\
+            \end{aligned}
+          $$
+
+          The number we care about is $j - i$, since that is equal to the length of the
+          group. We would expect, in this case, that $G_{len}(22344455, 2) = 3$, since
+          the group of $4$s is of length $3$. One way to compute $j - i$ is to truncate
+          the digits at indices before and including $i$ in $G(x)$, then take the length
+          of the reverse of the resulting number and subtract it from the length of the
+          truncation before the reversal and add $1$. Here's a diagram that's hopefully
+          more understandable:
+
+          $$
+            \begin{aligned}
+              [10&1\underset{j}{1}00]\underset{i}{1}01 \\
+              &\downarrow \text{truncate} \\
+              a = 10&1100 \\
+              &\downarrow \text{reverse} \\
+              b = 11&01 \\
+              &\downarrow \text{compute} \\
+              1 + \text{len}(a) &- \text{len}(b) = 3
+            \end{aligned}
+          $$
+
+          We would write that like this:
+
+          $$
+            \begin{aligned}
+              G_{tr}(x, i) &= \left\lfloor \frac{G(x)}{10^{i + 1}} \right\rfloor \\
+              G_{len}(x, i) &= 1 + \text{len}(G_{tr}(x, i)) - \text{len}(\text{rev}(G_{tr}(x, i)))
+            \end{aligned}
+          $$
+        </p>
+
+        <h2>Recap</h2>
+
+        <p>
+          Let's just rewrite all of the functions here for convenience
+
+          $$
+            \begin{aligned}
+              G_{inner}(x) &= \sum_{i = 0}^{\text{len}(x) - 2}
+                [\text{at}(x, i) \ne \text{at}(x, i + 1)] \cdot 10^i \\
+              G(x) &= 1 + 10^{\text{len}(x)} + G_{inner}(x) \cdot 10 \\
+              \sigma(x, i) &= \sum_{j = 0}^{i - 1} at(G(x), j) \cdot (G_{len}(x, j) + 1) \\
+              G_{tr}(x, i) &= \left\lfloor \frac{G(x)}{10^{i + 1}} \right\rfloor \\
+              G_{len}(x, i) &= 1 + \text{len}(G_{tr}(x, i)) -
+                            \text{len}(\text{rev}(G_{tr}(x, i))) \\
+              L_{pair}(x, i) &= G_{len}(x, i) \cdot 10 + \text{at}(x, i) \\
+              L(x) &= \sum_{i = 0}^{\text{len}(G(x)) - 1} \text{at}(G(x), i) \cdot
+                L_{pair}(x, i) \cdot 10^{\sigma(x, i)}
+            \end{aligned}
+          $$
+        </p>
+
+        <h1>Codified Functions</h1>
+
+        <p>Let's keep with the tradition of writing everything out as python functions.</p>
+
+        <div class="code">
+          from math import *<br>
+          <br>
+          def len(x, b):<br>
+          &nbsp;&nbsp;return ceil(log(x + 1, b))<br>
+          <br>
+          def at(x, i, b):<br>
+          &nbsp;&nbsp;return floor(abs(x) / (b ** i)) % b<br>
+          <br>
+          def rev(x, b):<br>
+          &nbsp;&nbsp;return sum(at(x, i, b) * (b ** (len(x, b) - i - 1))<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;for i in range(len(x, b)))<br>
+          <br>
+          def sign(x):<br>
+          &nbsp;&nbsp;return floor(x / (abs(x) + 1)) + ceil(x / (abs(x) + 1))<br>
+          <br>
+          def neq(x, y):<br>
+          &nbsp;&nbsp;return ceil(abs(x - y) / (abs(x - y) + 1))<br>
+          <br>
+          def G_inner(x):<br>
+          &nbsp;&nbsp;return sum(neq(at(x, i, 10), at(x, i + 1, 10)) * 10 ** i<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;for i in range(len(x, 10) - 1))<br>
+          <br>
+          def G(x):<br>
+          &nbsp;&nbsp;return 1 + 10 ** len(x, 10) + G_inner(x) * 10<br>
+          <br>
+          def sigma(x, i):<br>
+          &nbsp;&nbsp;return sum(at(G(x), j, 10) * (len(L_pair(x, j), 10))<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;for j in range(i))<br>
+          <br>
+          def G_tr(x, i):<br>
+          &nbsp;&nbsp;return floor(G(x) / 10 ** (i + 1))<br>
+          <br>
+          def G_len(x, i):<br>
+          &nbsp;&nbsp;return 1 + len(G_tr(x, i), 10) - len(rev(G_tr(x, i), 10), 10)<br>
+          <br>
+          def L_pair(x, i):<br>
+          &nbsp;&nbsp;return G_len(x, i) * 10 + at(x, i, 10)<br>
+          <br>
+          def L(x):<br>
+          &nbsp;&nbsp;return sum(at(G(x), i, 10) * L_pair(x, i) * 10 ** sigma(x, i)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;for i in range(len(G(x), 10) - 1))<br>
+        </div>
+
+        <p>Does it work?</p>
+
+        <div class="code">
+          >>> L(1)<br>
+          11<br>
+          >>> L(11)<br>
+          21<br>
+          >>> L(21)<br>
+          1211<br>
+          >>> L(1211)<br>
+          111221<br>
+          >>> L(111221)<br>
+          312211<br>
+        </div>
+
+        <p>
+          Heck yea it works! Isn't that crazy? What's even cooler is looking at some $x$
+          values that we don't usually consider, and see if we can find meaning in those.
+        </p>
+
+        <div class="code">
+          >>> L(0)<br>
+          0<br>
+        </div>
+
+        <p>
+          Hmmm... Well, I guess that makes sense right? We could interpret this as there
+          being no $0$s, hence we'd expect $L(0) = 00 = 0$. Fair enough.
+        </p>
+
+        <div class="code">
+          >>> L(-1)<br>
+          ValueError: math domain error<br>
+        </div>
+
+        <p>
+          Ah, this is because $\text{len}$ relies on $\log$, whose domain is only the
+          positive reals. $\text{len}(0) = 0$, but is undefined for any smaller integer.
+          No real way around that I think.
+        </p>
+
+        <div class="code">
+          >>> L(211111111113)<br>
+          1210113<br>
+        </div>
+
+        <p>
+          Notice this handles groups of length greater than $9$ just fine. As we'd
+          hopefully expect, $L(21111111113)$ results in reading "one $2$, ten $1$s,
+          and one $3$", which is the output we get. (This is just me showing off).
+        </p>
+
+        <h1>Conclusion</h1>
+
+        <p>
+          This was a pretty fun "adventure" to go on as a high schooler. I previously saw
+          the Look &amp; Say numberphile video and was so intrigued by the sequence. When I
+          came up with this I thought I could be on the show, but of course I was (and
+          still am) just a kid. It took me about 2-3 weeks to come up with this and make
+          sure it actually worked.
+        </p>
+
+        <p>
+          I'm not sure how much further we can go with this. I was thinking if it's possible
+          to make a function $L_{idx}(s, i)$ that can take a seed $s$ and an index $i$
+          without using the super-function notation. That is, this could be written as
+
+          $$
+            \begin{aligned}
+              L_{idx}(s, i) = L^{(i)}(s)
+            \end{aligned}
+          $$
+
+          but I was wondering if there was a way to do this without introducing any new
+          notation. I haven't come up with anything yet though.
+        </p>
+
+        <p>
+          On the next (and likely last) functions post, we'll talk about stuff I haven't
+          figured out yet and maybe gloss over the other interesting functions I haven't
+          yet mentioned.
+        </p>
+      </div>
+    </div>
+
+    <div class="footer">
+      made with <a href="https://www.youtube.com/watch?v=Ssd3U_zicAI">love</a>
+      by <a href="https://github.com/enricozb/enricozb.github.io/commits/master">hand</a>
+    </div>
+  </body>
+</html>

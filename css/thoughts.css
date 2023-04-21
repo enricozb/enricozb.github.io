@@ -1,7 +1,12 @@
 @import "shared.css";
 
-h1, h2 {
+h1, h2, h3 {
+  font-weight: 400;
   margin: 0;
+}
+
+h3 {
+  font-size: 1.3em;
 }
 
 * + h1 {
@@ -10,6 +15,10 @@ h1, h2 {
 
 * + h2 {
   margin: 0.5rem 0 0 0;
+}
+
+* + h3 {
+  margin: 0.2rem 0 0 0;
 }
 
 div.section {

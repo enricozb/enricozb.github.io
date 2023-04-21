@@ -1,0 +1,311 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="/css/thoughts.css">
+
+    <script defer src="/js/code.js"></script>
+
+    <title>Enrico Z. Borba — Thoughts</title>
+  </head>
+  <body>
+    <div class="header">
+      <div class="nav left">
+        <div><a href="/">home</a></div>
+        <div><a href="/thoughts">thoughts</a></div>
+      </div>
+      <div class="center">
+        <div class="title">idk-lang 2</div>
+        <div class="subtitle">Special Forms, 2018-07-18</div>
+      </div>
+      <div class="nav right"></div>
+    </div>
+
+    <div class="main">
+      <div class="text">
+        <h1> Forms </h1>
+
+        <p>
+          It's important to note that in idk-lang, every syntactically valid
+          construct is known as a <i>form</i>. There are two types of forms,
+          there are <i>statements</i> and there are <i>expressions</i>. Statements
+          do not return a value. Expressions return a value.
+        </p>
+
+        <h2>Assignment &amp; Blocks</h2>
+
+        <p>
+          Assignment comes in two flavors: a single-line assignment statement and
+          a multiline assignment statement. Single-line assignment statements
+          are (unsurprisingly) assignment occuring entirely on a single line.
+          Multiline assignment statements must be started by a newline, and
+          indented some amount of spaces to form a <i>block</i>. The last line
+          of the block must be an expression and that value is what will be used
+          for the assignment. Here are two valid assignment statements
+        </p>
+
+        <div class="code">
+          x: 1          # `x` will be assigned `1`
+
+          y_plus_z:     # `y_plus_z` will be assigned `3`
+            y: 1        # `y` will be assigned `1`
+            z: 2        # `z` will be assigned `2`
+            y + z       # `y + z` returns `3`
+        </div>
+
+        <p>
+          Assignment is a statement, and thus cannot be used as a value. For
+          example, <code>1 + (x: 1)</code> would be a syntax error because
+          <code>x: 1</code> does not return a value.
+        </p>
+
+        <p>
+          Also, in an attempt to have unified syntax, wherever a colon <code>:</code>
+          is syntactically valid, it can be followed by a single-line form or a
+          multiline list of forms. A multiline list of forms is known as a <i>block</i>
+          and must be indented with some amount of tabs or spaces (but not both!).
+        </p>
+
+        <h2> Expression Forms </h2>
+
+        <p>
+          The following forms (<code>if</code>, <code>when</code>, and
+          <code>match</code>) are all expressions. Therefore, they can be used on
+          the right-hand side of a single-line assignment and as the expression in
+          the last line of the block of an assignment.
+        </p>
+
+        <h2> If Expression </h2>
+
+        <p>
+          The general syntax for <code>if</code> expressions look like
+          this, (very similar to Python's syntax)
+        </p>
+
+        <div class="code">
+          if a_boolean:
+            return_value_if_true
+          else:
+            return_value_if_false
+        </div>
+
+        <p>
+          Remember, since <code>if</code> is an expression, it returns a value. The
+          last value in the <code>if</code> or <code>else</code> block is what is
+          returned. For example,
+        </p>
+
+        <div class="code">
+          if x >= 0:
+            x
+          else:
+            negative_x: -x
+            negative_x
+        </div>
+
+        <p>
+          This expression (rather verbosely) evaluates to the absolute value of
+          <code>x</code>.
+        </p>
+
+        <h2> When Expression </h2>
+
+        <p>
+          <code>when</code> expressions are a generalized version of <code>if</code>
+          expressions. They can take a list of boolean expressions and code to
+          execute. It's easier to explain with an example,
+        </p>
+
+        <div class="code">
+          when:
+            x = y: "equal"
+            abs(x - y) &lt; 1: "close"
+            else: "far"
+        </div>
+
+        <p>
+          This mostly reads like english: <i>When x and y are equal: return
+          "equal". When the absolute value of their difference is less than one:
+          return "close". Otherwise: return "far"</i>.
+        </p>
+
+        <p>
+          Notice, the first true boolean that is ecountered is the one whose branch
+          will be executed. For example,
+        </p>
+
+        <div class="code">
+          when:
+            True: "which"
+            True: "branch"
+            True: "will"
+            True: "execute"
+            True: "first?"
+        </div>
+
+        <p>
+          will return <code>"which"</code>.
+        </p>
+
+        <h2> Parameterized When Expression </h2>
+
+        <p>
+          <code>when</code> expressions are more than just multiple if expressions,
+          they can also pass paremeters to functions for a more expressive piece
+          of code.  For example,
+        </p>
+
+        <div class="code">
+          when x, y:
+            (&lt;): "less than"
+            (&gt;): "greater than"
+            (=): "equal"
+        </div>
+
+        <p>
+          Here, <code>x</code> and <code>y</code> are passed to the functions in each
+          branch, until one evaluates to <code>True</code>. If a <code>when</code>
+          expression is missing an <code>else</code> branch, the compiler will
+          complain if it can't figure out that the <code>when</code> expression is
+          exhaustive. That is, if the compiler can't tell that at least one of the
+          branches of the <code>when</code> expression will return <code>True</code>,
+          it will raise a compilation error.
+        </p>
+
+        <p>
+          Parameterized <code>when</code> expressions can take any number of
+          parameters. Here's one with one parameter using operator sections that
+          evaluates to the sign of <code>x</code>
+        </p>
+
+        <div class="code">
+          when x:
+            (&lt; 0): -1
+            (= 0): 0
+            (&gt; 0): 1
+        </div>
+
+        <h2> Match Expressions </h2>
+
+        <p>
+          The last expression form is a <code>match</code> expression.  It's similar
+          to the pattern matching facilities in other languages, but maybe slightly
+          more advanced. A <code>match</code> expression is made up of a value
+          and several patterns to test the value against.  Here's an example match
+          statement that computes the boolean expression <code>x or y</code>,
+        </p>
+
+        <div class="code">
+          match x, y:
+            (_, True): True
+            (True, _): True
+            else: False
+        </div>
+
+        <p>
+          Here, the <code>match</code> expression tests the tuple <code>x, y</code>
+          against possible patterns. The underscore <code>_</code>, or any other
+          variable name for that matter, matches against any object. Thus, the pattern
+          <code>(_, True)</code> matches against all 2-tuples that have their second
+          element as <code>True</code>.
+        </p>
+
+        <p>
+          <code>match</code> expressions also have <i>disjunctive patterns</i>
+          meaning that multiple patterns can be matched in one branch. For example,
+          this expression returns <code>True</code> is one of the elements is
+          <code>0</code>,
+        </p>
+
+        <div class="code">
+          match x, y:
+            (_, 0) or (0, _): True
+            else: False
+        </div>
+
+        <p>
+          <code>match</code> expressions also have <code>if</code> and
+          <code>when</code> guards. These are useful for finer grained logic against
+          matched values. For example, let's say we have a tuple <code>person</code>
+          with type <code>(String, Int)</code> representing the name and age of an
+          individual. Then we can have the following <code>match</code> expression.
+        </p>
+
+        <div class="code">
+          match person:
+            (name, age) if age &lt; 20: f"{name} is a teenager"
+            (name, age) if age &lt; 75: f"{name} is an adult"
+            (name, age): f"{name} is a senior"
+        </div>
+
+        <p>
+          As you can hopefully see, <code>if</code> guards are pretty useful. However,
+          as you can also hopefully see, multiple if guards begin to get pretty
+          verbose, even if they are doing conditionals on the same portion of the
+          pattern. There has to be a better way! In the same way that you can use
+          <code>when</code> expressions as multiple <code>if</code> expressions,
+          you can use <code>when</code> <i>guards</i> as multiple <code>if</code>
+          <i>guards</i>! Here's a cleaner version of the code above,
+        </p>
+
+        <div class="code">
+          match person:
+            (name, age) when age:
+              (&lt; 20): f"{name} is a teenager"
+              (&lt; 75): f"{name} is an adult"
+              else: f"{name} is a senior"
+        </div>
+
+        <p>
+          <i>Note</i>: the <code>when</code> <i>guards</i> need not be exhaustive. If
+          a <code>when</code> guard fails to find a branch that evaluates to
+          <code>True</code>, the entire pattern matching branch fails and moves
+          onto the next branch. Because of this, the <code>else</code> clause in the
+          example above could be on either the <code>when</code> guard block or as
+          the final clause in the <code>match</code> expression.
+        </p>
+
+        <p>
+          The last feature of <code>match</code> expressions is being
+          able to have multiple instances of the same variable in one pattern.
+          Here's an example of a <code>match</code> expression that
+          evaluates to <code>True</code> if the 2-tuple
+          <code>tup</code> contains two elements that are equal to
+          eachother,
+        </p>
+
+        <div class="code">
+          match tup:
+            (x, x): True
+            else: False
+        </div>
+
+        <p>
+          This is exactly euivalent to
+        </p>
+
+        <div class="code">
+          match tup:
+            (x, y) if x = y: True
+            else: False
+        </div>
+
+        <p>
+          Thus the additional constraints on <code>tup</code> having two elements that
+          are of the same type and that inherit from <code>Equatable</code> will apply.
+        </p>
+
+        <p>
+          The next section will be on loops and lambdas.
+        </p>
+      </div>
+    </div>
+
+    <div class="footer">
+      made with <a href="https://www.youtube.com/watch?v=Ssd3U_zicAI">love</a>
+      by <a href="https://github.com/enricozb/enricozb.github.io/commits/master">hand</a>
+    </div>
+  </body>
+</html>

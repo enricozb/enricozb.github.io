@@ -1,0 +1,209 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="/css/thoughts.css">
+
+    <script defer src="/js/code.js"></script>
+
+    <title>Enrico Z. Borba — Thoughts</title>
+  </head>
+  <body>
+    <div class="header">
+      <div class="nav left">
+        <div><a href="/">home</a></div>
+        <div><a href="/thoughts">thoughts</a></div>
+      </div>
+      <div class="center">
+        <div class="title">idk-lang 2</div>
+        <div class="subtitle">Introduction, 2018-07-18</div>
+      </div>
+      <div class="nav right"></div>
+    </div>
+
+    <div class="main">
+      <div class="text">
+
+        <h1> Let's see some code! </h1>
+
+        <p>
+          The code samples I've provided here are subject to not be valid in
+          any future implementation of this language. I'm still trying to figure
+          everything out, and it's hard to go back and change
+          everywhere where I stated something about this language. So, I don't
+          think things will change much, but they will be left here to preserve
+          a record of progress, so I can see what this language really started
+          out as.
+        </p>
+
+        <h2> Literals </h2>
+
+        <p>
+          Here's what the literals look like:
+        </p>
+
+        <div class="code">
+          1                    # Num
+          2.0                  # Fractional
+          3e4                  # Fractional
+          5i                   # Complex
+          True                 # Bool
+          False                # Bool
+          (1, True, "a")       # (Num, Bool, String)
+          [1, 2, 3]            # [Num] or List&lt;Num&gt;
+          {1, 2, 3}            # {Num} or Set&lt;Num&gt;
+          {"a": 1 "b": 2}      # {String: Num} or Dict&lt;String, Num&gt;
+          "Hello, World!"      # String
+        </div>
+
+        <p>
+          Notice the types on the right of each literal expression.  <code>Num</code>,
+          <code>Complex</code>, and <code>Fractional</code> are all traits. The
+          type of these literals is similar to Haskell's typeclasses of the same
+          name. They represent the most general type that this literal can be. We'll
+          talk about traits in more detail in a later section. <code>Bool</code>
+          is a type with two constructors that take no arguments, <code>True</code>
+          and <code>False</code>.  <code>Lists</code> and <code>Sets</code> are
+          heterogenous, that is, they only hold objects of the same type. Lastly,
+          <code>String</code> is <i>not</i> a trait like <code>Num</code> and friends,
+          it is a proper class. It can be instantiated, and cannot be inherited from,
+          unlike traits. We'll talk about classes in more detail in a later section.
+        </p>
+
+        <h2> Binary Operators </h2>
+
+        <p>
+          Here are some basic operators:
+        </p>
+
+        <div class="code">
+          1 + 1     # 2
+          1 - 1     # 0
+          2 * 2     # 4
+          1 / 2     # 0.5
+          3 ^ 2     # 9
+        </div>
+
+        <p>
+          Even though we haven't talked about idk-lang's type language yet, we
+          will use it here for a quick showcase of some of the features of this
+          language. The type of <code>+</code> is <code>Addable a =&gt; a -&gt;
+          a -&gt; a</code>. That is, <code>+</code> takes in two objects of the
+          same type <code>a</code> where the type <code>a</code> must inherit the
+          trait <code>Addable</code>. Since <code>Num</code> and <code>String</code>
+          both inherit <code>Addable</code>, the following expressions are both valid,
+        </p>
+
+        <div class="code">
+          10213674 + 7868297       # 18081971
+          "Hello, " + "World!"     # "Hello, World!"
+        </div>
+
+        <p>
+          This shows one of the many advantages to using traits in a statically
+          typed environment. It prevents the creation of over-engineered
+          syntax to handle the &ldquo;overloading&rdquo; of operators on different
+          types.
+        </p>
+
+        <h2> Boolean Operators </h2>
+
+        <p>
+          Lastly, we have the boolean operators:
+        </p>
+
+        <div class="code">
+          not True         # False
+          True and False   # False
+          True or False    # True
+        </div>
+
+        <p>
+          The operator <code>not</code> has type <code>Bool -&gt; Bool</code>.
+          The operators <code>and</code> and <code>or</code> both have type
+          <code>Bool -&gt; Bool -&gt; Bool</code>. These work as expected,
+          and because of how strict this language is, there is never an implicit
+          cast or coercion to any type, so these functions only work on booleans.
+        </p>
+
+        <h2>Comparison Operators</h2>
+
+        <p>
+          We've seen some basic binary operators: <code>+ - / * ^</code>. A valid
+          type for all of these operators is <code>Num a =&gt; a -&gt; a -&gt;
+          a</code>.  That is, they take in two objects of the same type <code>a</code>
+          that implement the trait <code>Num</code>, and return an object of type
+          <code>a</code> that also implements that <code>Num</code>. These are called
+          <i>Numeric operators</i>.
+        </p>
+
+        <p>
+          There is another group of operators called <i>Comparison operators</i>.
+          They all have type <code>a -&gt; a -&gt; Bool</code>. That is, they take
+          in two objects, both of type <code>a</code> and the and they return a
+          <code>Bool</code>. Now, <code>a</code> are <i>type variables</i>, they
+          represent any possible type.  For example, the following operators are
+          <i>Comparison operators</i>
+        </p>
+
+        <div class="code">
+          1 = 1     # True (structural equality)
+          1 &lt; 2     # True
+          1 &gt; 2     # False
+          1 /= 1    # False
+        </div>
+
+        <p>
+          What is special about these operators is that they can be chained for
+          greater expressive power. For example, this is a valid use of these
+          operators,
+        </p>
+
+        <div class="code">
+          1 &lt; 2 &lt; 3      # True
+          1 &lt; 2 &gt; 3      # False
+          1 = 1 &lt; 3      # True
+        </div>
+
+        <p>
+          These chains are equivalent to checking that every adjacent pair of
+          arguments to each operator returns <ezb-code>True</ezb-code>. In the
+          case of function calls inside chains, they are only executed once
+          per chain.
+        </p>
+
+        <h2>Partial(ly applied) operators</h2>
+
+        <p>
+          Another cool feature of operators is that they can be partially
+          applied, esentially equivalent to Haskell's
+          <a href="https://wiki.haskell.org/Section_of_an_infix_operator">operator sections</a>
+          except without any iterated section support. For example,
+        </p>
+
+        <div class="code">
+          (&lt;0)   # A function that returns True if the input is less than 0
+          (=1)   # A function that returns True if the input is equal to 1
+          (2*)   # A function that multiplies its input by 2
+        </div>
+
+        <p>
+          These can be really expressive when using maps or filters.
+        </p>
+
+        <p>
+          The <a href="./2018-07-18_forms.html">next section</a> is on <i>forms</i>,
+          where we'll talk about assignment, <code>if</code> expressions, and
+          <code>where</code> expressions.
+        </p>
+      </div>
+    </div>
+
+    <div class="footer">
+      made with <a href="https://www.youtube.com/watch?v=Ssd3U_zicAI">love</a>
+      by <a href="https://github.com/enricozb/enricozb.github.io/commits/master">hand</a>
+    </div>
+  </body>
+</html>

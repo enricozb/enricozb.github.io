@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="/css/thoughts.css">
+
+    <script defer src="/js/code.js"></script>
+
+    <title>Enrico Z. Borba — Thoughts</title>
+  </head>
+  <body>
+    <div class="header">
+      <div class="nav left">
+        <div><a href="/">home</a></div>
+        <div><a href="/thoughts">thoughts</a></div>
+      </div>
+      <div class="center">
+        <div class="title">Myth-Lang 3</div>
+        <div class="subtitle">Mutability, 2019-04-03</div>
+      </div>
+      <div class="nav right"></div>
+    </div>
+
+    <div class="main">
+      <div class="text">
+        <h1>Hindley-Milner and Mutability</h1>
+
+        <p>
+          After implementing Hindley-Milner, I had type inference. It was good enough
+          to start with, and I thought the next big stepping stone was mutability.
+          Specifically, I wanted mutable bindings, but not necessarily mutable objects.
+          Basically, I wanted something like this to work
+        </p>
+
+        <div class="code">
+          def f(v):
+            x = 0
+            if v > 0:
+              x = 1
+            else:
+              x = -1
+            return x
+        </div>
+
+        <p>
+          Obviously this can be written in a way without mutable bindings, but
+          mutable bindings are often useful for global counters and other imperative
+          structures. I also wanted to distinguish between assignments, bindings, and
+          mutable bindings. So the syntax now looks like
+        </p>
+
+        <div class="code">
+          def f(v):
+            let y = 0
+            let mut x = 0
+            if v > 0:
+              x = 1
+            else:
+              x = -1
+            return [x, y]
+        </div>
+
+        <h2>Value Restriction</h2>
+
+        <p>
+          So, for inspiration, I decided to look at how OCaml implements it's mutable
+          references, which is different than what I wanted, but is close enough.
+          Specifically, OCaml has a <code>ref</code> function, which creates a mutable reference
+          which can be <i>passed around</i>. What I wanted is not a reference that could
+          be passed around, but bindings that could be rebound during the execution of
+          the program. Either way, let's take a look at OCaml's type inference with calls
+          to <code>ref</code>:
+        </p>
+
+        <div class="code">
+          >>> let x = ref [];;
+              x : '_weak1 list ref = {contents = []}
+        </div>
+
+        <p>
+          So we see here that <code>x</code> has the type
+          <code>Ref[List[_weak1]]</code>. Basically, the type variable
+          <code>_weak1</code> is a variable that can't be generalized. So when
+          instantiating it, we get the same <code>_weak1</code> variable back. What
+          OCaml implements is what is known as <i>the value restriction</i>. It's
+          basically a modification of Hindley-Milner's <code>generalize</code>
+          function. It generalizes only specific syntactical structures. Namely,
+          it generalizes only the structures that are sure to not create a mutable
+          reference. So what used to be simple calls to <code>generalize</code>
+          are now replaced with
+        </p>
+
+        <div class="code">
+          if mut || is_expansive ast then
+            ty
+          else
+            generalize level ty
+        </div>
+
+        <p>
+          where <code>mut</code> just tells us if the binding is mutable. At the very bottom of
+          <a href="https://caml.inria.fr/pub/docs/oreilly-book/html/book-ora026.html">this page</a>
+          we can see a list of expressions considered expansive and non-expansive. This
+          is what is computed by <code>is_expansive</code> in the code above. It just checks if
+          an expression could potentially create a mutable binding:
+        </p>
+
+        <div class="code">
+          let is_expansive = function
+            | Ast.Name _
+            | Ast.Num _
+            | Ast.List _   (* TODO: change if List becomes mutable *)
+            | Ast.Lambda _
+            | Ast.Field _  (* TODO: change if mutable fields are added *)
+            | Ast.Record _ (* TODO: change if mutable fields are added *)
+              -> false
+
+            | Ast.Call _ -> true
+            | _ -> failwith "Type.is_expansive called on non-expression"
+        </div>
+
+        <p>
+          As we can see, this has to be changed as changes are made to the language. For
+          example, if I make the list object, <code>[]</code>, mutable, then we need to never
+          generalize any use of the list constructor.
+        </p>
+
+        <h2>Relaxation</h2>
+
+        <p>
+          The value restriction is a bit pessimistic, specifically when returning
+          polymorphic values from function calls. This can be resolved in most cases
+          with a deceptively simple change to generalization described in
+          <a href="https://caml.inria.fr/pub/papers/garrigue-value_restriction-fiwflp04.pdf">this paper</a>.
+          I have yet to implement this, but hopefully will soon.
+        </p>
+
+        <p>
+          I'll probably talk about recursive types next. I've added extensible records
+          already at the time of this writing, but they're not as useful as I'd like
+          them to be. Their use will dramatically increase with recursive typing,
+          since I can have concepts such as <code>self</code>.
+        </p>
+      </div>
+    </div>
+
+    <div class="footer">
+      made with <a href="https://www.youtube.com/watch?v=Ssd3U_zicAI">love</a>
+      by <a href="https://github.com/enricozb/enricozb.github.io/commits/master">hand</a>
+    </div>
+  </body>
+</html>

@@ -33,7 +33,7 @@
 
   --darkblue: #066f8a;
   --blue: #009dc4;
-  --lightblue: #99ebff;
+  --lightblue: #b0e7f5;
 }
 
 body {
@@ -63,6 +63,10 @@ a {
 
 a:visited {
   color: var(--blue);
+}
+
+a:hover {
+  color: var(--darkblue);
 }
 
 div.main {

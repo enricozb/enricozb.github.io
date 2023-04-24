@@ -133,8 +133,8 @@ div.text ul, div.text ol {
 }
 
 @media screen and (max-width: 480px) {
-  div.text > div.image > img {
-    margin: 1rem;
+  div.text > div.image {
+    margin: 1rem 0;
   }
 }
 

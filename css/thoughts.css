@@ -48,17 +48,15 @@ ul.entries > li {
   overflow-x: hidden;
 }
 
-ul.entries > li > span {
+ul.entries > li > span:first-child {
   background: white;
-}
-
-ul.entries > li > span.name {
   float: left;
   padding-left: 2rem;
   padding-right: 0.3rem;
 }
 
-ul.entries > li > span.date {
+ul.entries > li > span:last-child {
+  background: white;
   float: right;
   padding-left: 0.3rem;
   padding-right: 2rem;

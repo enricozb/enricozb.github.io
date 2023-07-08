@@ -28,16 +28,20 @@ div.section {
 
 div.subsection {
   font-size: 14pt;
-  padding-left: 1rem;
+  padding-left: 0.5rem;
 }
 
 ul.entries {
   display: inline-block;
-  width: 100%;
 
   margin: 0;
-  padding: 0;
+  padding-left: 1rem;
+  padding-right: 1rem;
   list-style: none
+}
+
+ul.entries.wide {
+  padding: 0;
 }
 
 * + div.section {
@@ -49,9 +53,9 @@ ul.entries > li {
 }
 
 ul.entries > li > span:first-child {
+  max-width: 60%;
   background: white;
   float: left;
-  padding-left: 2rem;
   padding-right: 0.3rem;
 }
 
@@ -59,7 +63,6 @@ ul.entries > li > span:last-child {
   background: white;
   float: right;
   padding-left: 0.3rem;
-  padding-right: 2rem;
 }
 
 ul.entries > li:before {

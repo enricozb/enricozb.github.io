@@ -1,0 +1,166 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="/css/thoughts.css">
+    <title>Enrico Z. Borba — Thoughts</title>
+  </head>
+  <body>
+    <div class="header">
+      <div class="nav left">
+        <div><a href="/">home</a></div>
+        <div><a href="/thoughts">thoughts</a></div>
+      </div>
+      <div class="center">
+        <div class="title">DIY SuzyQable</div>
+        <div class="subtitle">2023-07-13</div>
+      </div>
+      <div class="nav right"></div>
+    </div>
+
+    <div class="main">
+      <div class="text">
+        <h1>Introduction</h1>
+
+        <p>
+          I've got one of these "old" Google Pixelbooks, specifically a 2017 Pixelbook Eve model
+          with a Kaby Lake CPU. I want to install NixOS on it, and this will be the first of a
+          few posts documenting my journey doing so.
+        </p>
+
+        <p>
+          There are few challenges that I am immediately aware of:
+        </p>
+        <ol>
+          <li>We need to remove Write Protection to install "real" linux</li>
+          <li>Some hardware (like audio) will not work out of the box</li>
+        </ol>
+
+        <p>
+          In this post we'll tackle the first of those two.
+        </p>
+
+        <h1>Why we need a SuzyQable</h1>
+
+        <p>
+          In order to replace the stock boot firmware with UEFI, you need to disable write protection
+          on an embedded controller called <code>cr50</code>. To do that you either need to remove the
+          battery or use a <a href="https://chromium.googlesource.com/chromiumos/third_party/hdctools/+/master/docs/ccd.md#SuzyQ-SuzyQable">
+          SuzyQable</a>. Sparkfun <a href="https://www.sparkfun.com/products/retired/14746">used to sell these</a>
+          but apparently no longer does, so I was forced to make a DIY verison. Luckily, the chromium
+          team publishes <a href="https://chromium.googlesource.com/chromiumos/third_party/hdctools/+/master/docs/ccd.md#making-your-own-suzyq">
+          the schematics</a> of the cable.
+        </p>
+
+        <h1>The Breakout Board</h1>
+
+        <p>
+          I purchased <a href="https://www.amazon.com/gp/product/B094QFDLXG/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&th=1">
+          this USB-C breakout board</a> from Amazon, which is not one of the two common boards that there seems to be
+          documentation on when making these SuzyQables. (Incidentally, this breakout board also came with a female
+          breakout board, which ended up being invaluable in the debugging process of my incorrect wiring).
+        </p>
+
+        <p>
+          So this page is more searchable: it's a <a href="https://flashtree.com/collections/all-products/products/00012">flashtree USB-C breakout board</a>.
+        </p>
+
+        <div class="image">
+          <img src="/img/thoughts/life/programming/2023-07-13_diy-suzyqable_1.jpg"/>
+        </div>
+
+        <h1>Soldering the Connections</h1>
+        <p>
+          Using <a href="https://chromium.googlesource.com/chromiumos/third_party/hdctools/+/master/docs/ccd.md#making-your-own-suzyq">
+          the schematics</a> as a guide, here's what I did:
+        </p>
+
+        <ul>
+          <li>
+            Connect A1, B1, B12, A12 together to BLACK (GND)
+          </li>
+          <li>
+            Connect A4, A9, B4, B9 together to RED (+5v)
+          </li>
+          <li>
+            Connect the 22k resistors across A4 and A8
+          </li>
+          <li>
+            Connect the 56k resistors across B4 and B8
+          </li>
+        </ul>
+
+        <p class="note">
+          Note: The last two points above are <b>not</b> what the schematics say. I had originally wired it exactly like the
+          schematics said (resistors across VBUS and A5/B5) but this didn't work. After using the female board and checking
+          connections it seems that this board behaves similarly to the "green board" in the comments in the youtube video
+          (see <a href="#resources">resources</a> below).
+        </p>
+
+        <div class="image">
+          <img src="/img/thoughts/life/programming/2023-07-13_diy-suzyqable_2.png"/>
+        </div>
+
+        <div class="image">
+          <img src="/img/thoughts/life/programming/2023-07-13_diy-suzyqable_3.png"/>
+        </div>
+
+        <h2>Data Minus & Plus (Green & White)</h2>
+
+        <p>
+          I spent like an hour trying to understand which wire (green or white) is data minus and which is data plus. I looked
+          online for various pinouts of USB-A cables, and different resources said different things. I'm not sure if it even
+          matters if you swap green and white, but I just guessed this position and it worked. If my wiring doesn't work for you,
+          your donor cable might be different, so try swapping green and white.
+        </p>
+
+        <h1>Removing Write Protect</h1>
+        <p>
+          There is a fantastic guide on on removing write protect on the <a href="https://github.com/yusefnapora/pixelbook-linux">
+            yusefnapora/pixelbook-linux</a> GitHub repository, and I won't reproduce that here.
+        </p>
+
+        <h1 id="resources">Resources</h1>
+
+        <p>
+          The following resources were invaluable:
+        </p>
+        <ul>
+          <li>
+            <a href="https://webcache.googleusercontent.com/search?q=cache:sbOiwX-1LU8J:https://www.reddit.com/r/chrultrabook/comments/uaiz1q/making_a_chromeos_suzy_q_cable_tutorial/&cd=10&hl=en&ct=clnk&gl=us">
+              (reddit) Making a ChromeOS Suzy Q Cable TUTORIAL
+            </a>
+          </li>
+          <li>
+            <a href="https://imgur.com/a/9yvU7wV">(imgur) diagram of usb-c breakout board wiring</a>
+          </li>
+          <li><a href="https://youtu.be/WGsyXlgSxFk">(youtube) Make your own SuzyQable</a></li>
+          <li>
+            the chultrabook discord
+            <ul>
+              <li>
+                where random people in a chatroom decided to help out someone they never met debug
+                why my first soldering attempt wasn't working. Very grateful for such kindness.
+              </li>
+            </ul>
+          </li>
+
+          <li>
+            <a href="https://github.com/yusefnapora/pixelbook-linux">(github) yusefnapora/pixelbook-linux</a>
+            <ul>
+              <li>
+                has instructions on removing the write protect on the <code>cr50</code>, installing UEFI, and
+                fixing hardware issues if you're installing Ubuntu.
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer">
+      made with <a href="https://www.youtube.com/watch?v=Ssd3U_zicAI">love</a>
+      by <a href="https://github.com/enricozb/enricozb.github.io/commits/master">hand</a>
+    </div>
+  </body>
+</html>

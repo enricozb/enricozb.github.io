@@ -31,6 +31,10 @@ div.subsection {
   padding-left: 0.5rem;
 }
 
+:not(.section) + .subsection {
+  padding-top: 0.5rem;
+}
+
 ul.entries {
   display: inline-block;
 

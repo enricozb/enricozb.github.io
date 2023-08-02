@@ -80,7 +80,22 @@ function refresh() {
 }
 
 function main() {
-  setInterval(refresh, 50);
+  if (Math.random() < 0.5) {
+    setInterval(refresh, 50);
+  } else {
+    const art = document.getElementsByClassName("art")[0];
+    art.innerHTML = "";
+
+    const img = document.createElement("img");
+    img.src = "img/sushi.gif";
+
+    setTimeout(
+      () => img.style.opacity = "100%",
+      1000,
+    );
+
+    art.appendChild(img);
+  }
 }
 
 main();

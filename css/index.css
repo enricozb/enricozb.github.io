@@ -58,3 +58,10 @@ div.art p {
   margin: 0;
   white-space: pre;
 }
+
+div.art img {
+  height: 150px;
+  margin: auto 0;
+  opacity: 0%;
+  transition: opacity 5s ease-in-out;
+}

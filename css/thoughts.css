@@ -149,6 +149,8 @@ div.code {
   margin: 0.5rem;
   padding: 0.5em;
   border-radius: 5px;
+
+  overflow-x: scroll;
 }
 
 div.code > pre {

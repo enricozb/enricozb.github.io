@@ -80,22 +80,31 @@ function refresh() {
 }
 
 function main() {
-  if (Math.random() < 0.5) {
+  const r = Math.random();
+
+  if (r < 1 / 3) {
     setInterval(refresh, 50);
-  } else {
-    const art = document.getElementsByClassName("art")[0];
-    art.innerHTML = "";
 
-    const img = document.createElement("img");
-    img.src = "img/sushi.gif";
-
-    setTimeout(
-      () => img.style.opacity = "100%",
-      1000,
-    );
-
-    art.appendChild(img);
+    return;
   }
+
+  const art = document.getElementsByClassName("art")[0];
+  art.innerHTML = "";
+
+  const img = document.createElement("img");
+  if (r < 2 / 3) {
+    img.src = "img/art/sushi.gif";
+  } else {
+    img.src = "img/art/sandys.gif";
+    img.classList.add("no-smooth");
+  }
+
+  setTimeout(
+    () => img.style.opacity = "100%",
+    1000,
+  );
+
+  art.appendChild(img);
 }
 
 main();

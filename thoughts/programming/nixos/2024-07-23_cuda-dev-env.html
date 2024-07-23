@@ -1,0 +1,124 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="/css/thoughts.css">
+    <title>Enrico Z. Borba — Thoughts</title>
+    <script defer src="/js/code.js"></script>
+  </head>
+  <body>
+    <div class="header">
+      <div class="nav left">
+        <div><a href="/">home</a></div>
+        <div><a href="/thoughts">thoughts</a></div>
+      </div>
+      <div class="center">
+        <div class="title">CUDA Dev Environment on NixOS</div>
+        <div class="subtitle">2024-07-23</div>
+      </div>
+      <div class="nav right"></div>
+    </div>
+
+    <div class="main">
+      <div class="text">
+        <p>
+          Setting up CUDA development on NixOS has two high-level steps:
+        </p>
+
+        <ol>
+          <li>Setting up your GPU and its drivers</li>
+          <li>Setting up CUDA compilation and runtime</li>
+        </ol>
+
+        <h2>Drivers</h2>
+
+        <p>
+          Setting up your GPU is decently explained on the <a href="https://nixos.wiki/wiki/CUDA">NixOS Cuda page</a>.
+          I'm using an eGPU (GTX 1070) connected to my laptop through a thunderbolt port, and my NixOS contains a
+          module that looks like this:
+        </p>
+
+        <div class="code">
+          { config, pkgs, ... }:
+
+          {
+            services.xserver.videoDrivers = [ <span style="color: var(--darkblue);">"nvidia"</span> ];
+
+            <span style="color: var(--gray);"># needed to enable cuda programming</span>
+            hardware.opengl.enable = <span style="color: var(--darkblue);">true</span>;
+
+            hardware.nvidia.prime = {
+              offload.enable = <span style="color: var(--darkblue);">true</span>;
+              allowExternalGpu = <span style="color: var(--darkblue);">true</span>;
+              intelBusId = <span style="color: var(--darkblue);">"PCI:0:2:0"</span>;
+              nvidiaBusId = <span style="color: var(--darkblue);">"PCI:6:0:0"</span>;
+            };
+          }
+        </div>
+
+        <p>
+          This will set up the drivers for the GPU, and (specific to my configuration) will identify the bus ids
+          of the respective GPUs.
+        </p>
+
+        <h2>Runtime</h2>
+
+        <p>
+          Then, we can set up a <code>shell.nix</code> for local development. (Sorry <code>flake.nix</code> friends):
+        </p>
+
+        <div class="code">
+          {
+            pkgs ? import <span style="color: var(--darkblue);">&ltnixpkgs&gt</span> {
+              config = {
+                allowUnfree = <span style="color: var(--darkblue);">true</span>;
+                cudaSupport = <span style="color: var(--darkblue);">true</span>;
+              };
+            },
+          }:
+
+          pkgs.mkShell {
+            nativeBuildInputs = <span style="color: var(--darkblue);">with</span> pkgs; [
+              cudaPackages.cuda_nvcc
+              cudaPackages.cuda_cudart
+
+              <span style="color: var(--gray);"># this is because the CUDA driver being used requires gcc version &lt= 12</span>
+              gcc12
+            ];
+
+            shellHook = <span style="color: var(--darkblue);">''
+              export CUDA_PATH=${<span style="color: black;">pkgs.cudatoolkit</span>}
+              export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/run/opengl-driver/lib
+            ''</span>;
+          }
+        </div>
+
+        <p>
+          Now, you can use <code>nvcc</code> to compile CUDA applications, and <code>LD_LIBRARY_PATH</code> is properly set up
+          to make the CUDA shared librarys discoverable.
+        </p>
+
+        <h2>LSP</h2>
+
+        <p>
+          Lastly, if you're using <code>clangd</code> as an LSP server, <code>CUDA_PATH</code> is taken care of you will have to create a <code>.clangd</code> file
+          containing the <code>--cuda-gpu-arch</code> flag to identify the compute capability of your GPU:
+        </p>
+
+        <div class="code">
+          CompileFlags:
+              Add:
+              [
+                  '--cuda-gpu-arch=sm_61',
+              ]
+        </div>
+
+      </div>
+    </div>
+
+    <div class="footer">
+      made with <a href="https://www.youtube.com/watch?v=Ssd3U_zicAI">love</a>
+      by <a href="https://github.com/enricozb/enricozb.github.io/commits/master">hand</a>
+    </div>
+  </body>
+</html>

@@ -34,7 +34,7 @@
 
         <p>
           Setting up your GPU is decently explained on the <a href="https://nixos.wiki/wiki/CUDA">NixOS Cuda page</a>.
-          I'm using an eGPU (GTX 1070) connected to my laptop through a thunderbolt port, and my NixOS contains a
+          I'm using an eGPU (GTX 1070) connected to my laptop through a thunderbolt port. Therefore, my NixOS contains a
           module that looks like this:
         </p>
 
@@ -94,8 +94,8 @@
         </div>
 
         <p>
-          Now, you can use <code>nvcc</code> to compile CUDA applications, and <code>LD_LIBRARY_PATH</code> is properly set up
-          to make the CUDA shared librarys discoverable.
+          Now, you can use <code>nvcc</code> to compile CUDA applications. Additionally, <code>LD_LIBRARY_PATH</code> is
+          properly set up to make the CUDA shared libraries discoverable at runtime.
         </p>
 
         <h2>LSP</h2>

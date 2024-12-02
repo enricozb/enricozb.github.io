@@ -34,14 +34,16 @@ ul.nav {
   padding: 0;
 }
 
-.nav li {
-  list-style: none;
+@media screen and (max-width: 512px) {
+  ul.nav {
+    text-align: center;
+    flex-direction: column;
+    gap: 3pt;
+  }
 }
 
-@media screen and (max-width: 400px) {
-  .nav li {
-    font-size: 12pt;
-  }
+.nav li {
+  list-style: none;
 }
 
 div.art {

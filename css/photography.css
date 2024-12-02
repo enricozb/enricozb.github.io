@@ -1,0 +1,28 @@
+@import "shared.css";
+
+div.grid {
+  display: grid;
+  grid-gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+}
+
+.grid > .cell {
+  outline: 1px solid black;
+  display: flex;
+  flex-direction: column;
+
+  height: 300px;
+
+  overflow: hidden;
+
+  text-decoration: none;
+  color: black;
+}
+
+.grid img {
+  outline: 1px solid black;
+  height: 300px;
+  object-fit: cover;
+  flex-grow: 1;
+  image-rendering: crisp-edges;
+}

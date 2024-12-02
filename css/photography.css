@@ -1,9 +1,15 @@
 @import "shared.css";
 
-div.grid {
+.grid {
   display: grid;
   grid-gap: 2rem;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+}
+
+@media screen and (max-width: 450px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .grid > .cell {
@@ -11,7 +17,7 @@ div.grid {
   display: flex;
   flex-direction: column;
 
-  height: 300px;
+  max-height: 300px;
 
   overflow: hidden;
 

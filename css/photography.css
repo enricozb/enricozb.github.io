@@ -30,5 +30,4 @@
   height: 300px;
   object-fit: cover;
   flex-grow: 1;
-  image-rendering: crisp-edges;
 }

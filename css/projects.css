@@ -49,5 +49,4 @@ a.project > img {
   flex-grow: 1;
 
   object-fit: cover;
-  image-rendering: crisp-edges;
 }

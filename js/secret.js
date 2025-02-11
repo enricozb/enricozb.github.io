@@ -89,7 +89,7 @@ class Transmute {
 
 function encrypt(text) {
   const key = [...KEYS];
-  const seed = KEYS[0] + KEYS[1] * (26 ** 1) + KEYS[2] * (26 ** 2) + KEYS[3] * (26 ** 3);
+  const seed = key[0] + key[1] * (26 ** 1) + key[2] * (26 ** 2) + key[3] * (26 ** 3);
   const cipher = cipher_from_seed(seed);
 
   let encrypted = [];

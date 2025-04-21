@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="/css/thoughts.css">
+
+    <link rel="stylesheet" href="/js/katex/katex.min.css">
+    <script defer src="/js/katex/katex.min.js"></script>
+    <script defer src="/js/katex/contrib/auto-render.min.js"></script>
+
+    <title>Enrico Z. Borba — Thoughts</title>
+  </head>
+  <body>
+    <div class="header">
+      <div class="nav left">
+        <div><a href="/">home</a></div>
+        <div><a href="/thoughts">thoughts</a></div>
+      </div>
+      <div class="center">
+        <div class="title">Learning Boolean Circuit (Wirings)</div>
+        <div class="subtitle">2025-03-23</div>
+      </div>
+      <div class="nav right"></div>
+    </div>
+
+    <div class="main">
+      <div class="text">
+        <h2>
+          Background
+        </h2>
+
+        <p>
+          Recently the Paradigms of Intelligence Team at Google published a paper on
+          <a href="https://google-research.github.io/self-organising-systems/difflogic-ca/">Differentiable Logic
+          Cellular Automata</a>. They discuss using <a href="https://arxiv.org/abs/2210.08277">Differentiable
+          Logic Gate Networks</a> (DLGN) by Petersen et al. to learn cellular automata rules given training data in the
+          form of past and future states.
+        </p>
+
+        <p>
+          This was my first introduction to DLGN's, and I thought it was interesting that they were
+          being applied to image recognition tasks rather than program synthesis. After all, boolean
+          circuits are just functions from from $\mathbb{B}^m \to \mathbb{B}^n$.
+        </p>
+
+        <h2>
+          Problem
+        </h2>
+
+        <p>
+          An immediate limitation of the previous two presentations of DLGN's when applied to to program synthesis
+          is that <i>the wiring of the boolean circuit is fixed at initialization</i>.  While the wiring is
+          pseudo-randomly initialized, it is fixed once training starts. This is an issue because the chance that
+          the circuit will usefully route the inputs is unlikely for large circuits.
+        </p>
+
+        <p>
+          For example, take the function $\text{eq}_2(a, b) : \mathbb B^4 \to \mathbb B$ that computes the equality of
+          two 2-bit integers. A circuit that computes $\text{eq}_2$ will have to at some point compare $a_0$ with $b_0$,
+          and $a_1$ with $b_1$. If the circuit does not produce an initial wiring that can route these two pairs of
+          inputs properly, the circuit will not converge during training.
+        </p>
+
+        <p>
+          Of course, if we have a large enough circuit and the set of possible logic gates includes "pass-through" gates
+          such as $\text{fst}(a, b) = a$ and $\text{snd}(a, b) = b$, the routing can be learned. However if inputs are
+          "far away" from being routed given the initial randomized wiring, deeper circuits will be required to guarantee
+          convergence. Training these circuits is already expensive so it's possible that learnable wirings allow for
+          shallower initial circuits. However the trade-off is not clear to me at the moment.
+        </p>
+
+        <h2>
+          Idea
+        </h2>
+
+        <p>
+          What if we make the wirings <i>learnable</i>? Sticking with the example of $\text{eq}_2(a, b)$ on 2-bit
+          integers. An initial circuit could look like this:
+        </p>
+
+        <div class="image"">
+          <img src="/img/thoughts/program_synthesis/boolean_circuits/initial_wiring.svg" style="padding: 10px;">
+        </div>
+
+        <p>
+          Note:
+          <ol>
+            <li>from top to bottom the inputs are $a_0$, $a_1$, $b_0$, $b_1$</li>
+            <li>that the data is travelling from left to right</li>
+            <li>the opacity of the wirings is proportional to their probability</li>
+            <li>the text on the nodes are the names of logic gates</li>
+            <li>the opacity of the names are proportional to their probability</li>
+          </ol>
+        </p>
+
+        <p>
+          When training this circuit on all possible pairs of 2-bit integer inputs for 100 epochs, the network
+          learns the following distribution of logic gates and wiring:
+        </p>
+
+        <div class="image"">
+          <img src="/img/thoughts/program_synthesis/boolean_circuits/learned_wiring.svg" style="padding: 10px;">
+        </div>
+
+        <p>
+          Notice that this correctly, albeit rather confusingly, associates inputs $a_0$ with $b_0$, and $a_1$
+          with $b_1$. Notice additionally that the learned circuit is not what a human would likely produce.
+          The network learned the following implementation:
+
+          $$\text{eq}_2(a, b) = \text{nor}(\text{xor}(b_1, a_1), \text{xor}(b_0, a_0))$$
+
+          While a human would likely produce
+
+          $$\text{eq}_2(a, b) = \text{and}(\text{eq}(a_0, b_0), \text{eq}(a_1, b_1))$$
+        </p>
+
+        <p>
+          After an additional 200 epochs, the network converges further, collapsing nearly all wirings and logic
+          gates:
+        </p>
+
+        <div class="image">
+          <img src="/img/thoughts/program_synthesis/boolean_circuits/converged_wiring.svg" style="padding: 10px;">
+        </div>
+
+        <p>
+          While the final wiring seems to have converged, the right-most (final) node of the boolean circuit still
+          has a reasonable amount of its probability mass allocated to an $\text{eq}$ gate, instead of moving completely
+          to a $\text{nor}$ gate. The mode of the distribution of logic gates for the final node is $\text{nor}$, so
+          when discretizing the circuit we would still obtain a correct implementation of $\text{eq}_2$.
+        </p>
+
+        <h2>
+          Problems
+        </h2>
+
+        <p>
+          When initially trying this approach I ran into a major problem: <b>The network often learns to rely on weighted sum of wires between layers</b>.
+          This prevents it from converging to a discretizable circuit.
+        </p>
+
+        <p>
+          One idea I am currently trying out makes use of the <a href="https://arxiv.org/abs/1611.01144">Gumbel-Softmax</a>
+          distribution. While this distribution was initially presented to allow stochastic neural networks to sample
+          from categorical latent variables, I thought it could be used as a way to prevent the network from ever having
+          too much of a weighted sum of wires during training. It's not obvious to me at all that the gradient of the
+          Gumbel-Softmax distribution is any more useful than that of $\text{softmax}$.
+        </p>
+
+        <h2>
+          Next Steps
+        </h2>
+
+        <p>
+          I wanted to try using Gumbel-Softmax on the distribution of logic gates, in addition to the wirings. This makes
+          intuitive sense to me as the network should also not learn a weighted mixture of logic gates for a node. In my
+          (limited) testing, like the papers mentioned above, if the network converges then the nodes typically learn
+          a nearly one-hot distribution. However, during initial tests, using Gumbel-Softmax on the nodes causes the
+          network to <i>never</i> learn any gate past the final one. This seems like a bug to me during backpropagation
+          but I'm not sure.
+        </p>
+
+        <p>
+          The main goal here is to synthesize using gradient descent an 8-bit adder circuit, as I think that will be a
+          decent example of successfully learning a circuit that would be very difficult to learn using an initially
+          randomized but fixed wiring.
+        </p>
+      </div>
+    </div>
+
+    <div class="footer">
+      made with <a href="https://www.youtube.com/watch?v=Ssd3U_zicAI">love</a>
+      by <a href="https://github.com/enricozb/enricozb.github.io/commits/master">hand</a>
+    </div>
+  </body>
+</html>

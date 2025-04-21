@@ -1,0 +1,62 @@
+<svg width="250" height="230" style="fill: none; stroke: black; stroke-width: 1; min-width: 250px;" xmlns="http://www.w3.org/2000/svg">
+  <rect x="50" y="60.0" width="50" height="50"></rect>
+  <text x="50" y="85.0" style="line-height: 0; font-size: 20px; opacity: 0.0242146;">false</text>
+  <text x="50" y="85.0" style="line-height: 0; font-size: 20px; opacity: 0.0352286;">true</text>
+  <text x="50" y="85.0" style="line-height: 0; font-size: 20px; opacity: 0.0233263;">a</text>
+  <text x="50" y="85.0" style="line-height: 0; font-size: 20px; opacity: 0.0319253;">b</text>
+  <text x="50" y="85.0" style="line-height: 0; font-size: 20px; opacity: 0.0271684;">not_a</text>
+  <text x="50" y="85.0" style="line-height: 0; font-size: 20px; opacity: 0.0194816;">not_b</text>
+  <text x="50" y="85.0" style="line-height: 0; font-size: 20px; opacity: 0.0122978;">and</text>
+  <text x="50" y="85.0" style="line-height: 0; font-size: 20px; opacity: 0.0746967;">nand</text>
+  <text x="50" y="85.0" style="line-height: 0; font-size: 20px; opacity: 0.00630944;">eq</text>
+  <text x="50" y="85.0" style="line-height: 0; font-size: 20px; opacity: 0.0788545;">or</text>
+  <text x="50" y="85.0" style="line-height: 0; font-size: 20px; opacity: 0.0278131;">nor</text>
+  <text x="50" y="85.0" style="line-height: 0; font-size: 20px; opacity: 0.638683;">xor</text>
+  <line x1="0" y1="25.0" x2="50" y2="70.0" style="opacity: 0.0640992;"></line>
+  <line x1="0" y1="85.0" x2="50" y2="70.0" style="opacity: 0.0170571;"></line>
+  <line x1="0" y1="145.0" x2="50" y2="70.0" style="opacity: 0.0276804;"></line>
+  <line x1="0" y1="205.0" x2="50" y2="70.0" style="opacity: 0.891163;"></line>
+  <line x1="0" y1="25.0" x2="50" y2="100.0" style="opacity: 0.0253063;"></line>
+  <line x1="0" y1="85.0" x2="50" y2="100.0" style="opacity: 0.919577;"></line>
+  <line x1="0" y1="145.0" x2="50" y2="100.0" style="opacity: 0.0425555;"></line>
+  <line x1="0" y1="205.0" x2="50" y2="100.0" style="opacity: 0.0125612;"></line>
+  <rect x="50" y="120.0" width="50" height="50"></rect>
+  <text x="50" y="145.0" style="line-height: 0; font-size: 20px; opacity: 0.0157502;">false</text>
+  <text x="50" y="145.0" style="line-height: 0; font-size: 20px; opacity: 0.0692446;">true</text>
+  <text x="50" y="145.0" style="line-height: 0; font-size: 20px; opacity: 0.023294;">a</text>
+  <text x="50" y="145.0" style="line-height: 0; font-size: 20px; opacity: 0.0386721;">b</text>
+  <text x="50" y="145.0" style="line-height: 0; font-size: 20px; opacity: 0.0320523;">not_a</text>
+  <text x="50" y="145.0" style="line-height: 0; font-size: 20px; opacity: 0.0189394;">not_b</text>
+  <text x="50" y="145.0" style="line-height: 0; font-size: 20px; opacity: 0.0107587;">and</text>
+  <text x="50" y="145.0" style="line-height: 0; font-size: 20px; opacity: 0.102689;">nand</text>
+  <text x="50" y="145.0" style="line-height: 0; font-size: 20px; opacity: 0.00724786;">eq</text>
+  <text x="50" y="145.0" style="line-height: 0; font-size: 20px; opacity: 0.15414;">or</text>
+  <text x="50" y="145.0" style="line-height: 0; font-size: 20px; opacity: 0.0218893;">nor</text>
+  <text x="50" y="145.0" style="line-height: 0; font-size: 20px; opacity: 0.505322;">xor</text>
+  <line x1="0" y1="25.0" x2="50" y2="130.0" style="opacity: 0.0155563;"></line>
+  <line x1="0" y1="85.0" x2="50" y2="130.0" style="opacity: 0.0263968;"></line>
+  <line x1="0" y1="145.0" x2="50" y2="130.0" style="opacity: 0.922767;"></line>
+  <line x1="0" y1="205.0" x2="50" y2="130.0" style="opacity: 0.0352803;"></line>
+  <line x1="0" y1="25.0" x2="50" y2="160.0" style="opacity: 0.925434;"></line>
+  <line x1="0" y1="85.0" x2="50" y2="160.0" style="opacity: 0.0278197;"></line>
+  <line x1="0" y1="145.0" x2="50" y2="160.0" style="opacity: 0.0162361;"></line>
+  <line x1="0" y1="205.0" x2="50" y2="160.0" style="opacity: 0.0305107;"></line>
+  <rect x="150" y="90.0" width="50" height="50"></rect>
+  <text x="150" y="115.0" style="line-height: 0; font-size: 20px; opacity: 0.0943833;">false</text>
+  <text x="150" y="115.0" style="line-height: 0; font-size: 20px; opacity: 0.0478826;">true</text>
+  <text x="150" y="115.0" style="line-height: 0; font-size: 20px; opacity: 0.0165639;">a</text>
+  <text x="150" y="115.0" style="line-height: 0; font-size: 20px; opacity: 0.015847;">b</text>
+  <text x="150" y="115.0" style="line-height: 0; font-size: 20px; opacity: 0.0953126;">not_a</text>
+  <text x="150" y="115.0" style="line-height: 0; font-size: 20px; opacity: 0.101389;">not_b</text>
+  <text x="150" y="115.0" style="line-height: 0; font-size: 20px; opacity: 0.0278597;">and</text>
+  <text x="150" y="115.0" style="line-height: 0; font-size: 20px; opacity: 0.0655045;">nand</text>
+  <text x="150" y="115.0" style="line-height: 0; font-size: 20px; opacity: 0.0372963;">eq</text>
+  <text x="150" y="115.0" style="line-height: 0; font-size: 20px; opacity: 0.0250782;">or</text>
+  <text x="150" y="115.0" style="line-height: 0; font-size: 20px; opacity: 0.456302;">nor</text>
+  <text x="150" y="115.0" style="line-height: 0; font-size: 20px; opacity: 0.0165806;">xor</text>
+  <line x1="100" y1="85.0" x2="150" y2="100.0" style="opacity: 0.153186;"></line>
+  <line x1="100" y1="145.0" x2="150" y2="100.0" style="opacity: 0.846814;"></line>
+  <line x1="100" y1="85.0" x2="150" y2="130.0" style="opacity: 0.759785;"></line>
+  <line x1="100" y1="145.0" x2="150" y2="130.0" style="opacity: 0.240215;"></line>
+  <line x1="200" y1="115.0" x2="250" y2="115.0"></line>
+</svg>

@@ -163,11 +163,11 @@ The six (tersely written) rewrite rules we will be working with for the purpose 
 
   inet.port("comm'-top-1", (5, 0.5))
   inet.era(name: "comm'-bot-1", pos: (5, -1))
-  inet.link("comm'-top-1", "comm'-bot-1.0", main: true)
+  inet.link("comm'-top-1", "comm'-bot-1.0")
 
   inet.port("comm'-top-2", (6, 0.5))
   inet.era(name: "comm'-bot-2", pos: (6, -1))
-  inet.link("comm'-top-2", "comm'-bot-2.0", main: true)
+  inet.link("comm'-top-2", "comm'-bot-2.0")
 })
 
 #post.canvas({

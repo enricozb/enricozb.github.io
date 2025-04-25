@@ -66,11 +66,8 @@
   enumeration utility to generate programs satisfying dependently typed constraints at SOTA
   speeds.
 
- Wrote a
-  #link("https://github.com/HigherOrderCO/agdabook/tree/76fbbca0cdea9ae45968c939e0698539ab75a2d1/Imp")[DSL
-  for data pipelines] of grids of threads with backends in C, CUDA, and Agda. This
-  allowed for a single implementation of a multi-threaded interaction net evaluator that transpiled to
-  CPU and GPU runtimes.
+  Wrote a DSL for data pipelines of grids of threads with backends in C, CUDA, and Agda. This allowed for a single
+  implementation of a multi-threaded interaction net evaluator that transpiled to CPU and GPU runtimes.
 ]
 
 #item("Freelance / Consultant", "[Rust, Python, Django, Docker]", "(Jan 2023 - Jan 2024)")[
@@ -112,7 +109,7 @@
 // ]
 
 #section[Publications & Presentations]
-- #link("https://typst.app/project/p79cg7xe4PUNxioVSgF6rL")[HVM2: Interaction Combinator Evaluator] -- #link("https://www.youtube.com/live/7zZNwLgQCLc?t=28169s")[Video], #link("https://typst.app/project/pofOPfqnP0rNQ0_yT66rOZ")[Slides]. #date[(ICFP / FProPer 2024)]
+- #link("https://typst.app/project/p79cg7xe4PUNxioVSgF6rL")[HVM2: Interaction Combinator Evaluator] -- #link("https://www.youtube.com/live/7zZNwLgQCLc?t=28169s")[Video], #link("https://typst.app/project/rFmfnTGooKKbY31rNIu0fq")[Slides]. #date[(ICFP / FProPer 2024)]
 - #link("https://www.nature.com/articles/s41592-020-01023-0")[DeepCell: scaling deep learning–enabled cellular image analysis with Kubernetes]. #date[(Nature Methods 2021)]
 - #link("https://www.biorxiv.org/content/10.1101/803205v1")[Accurate tracking and lineage construction in live-cell imaging experiments with deep learning]. #date[(bioRxiv 2019)]
 

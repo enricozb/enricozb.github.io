@@ -102,9 +102,19 @@ div.text > p {
   margin: 0.8em 0;
 }
 
-div.text > p.note {
+div.text li p {
+  margin: 0.3em;
+}
+
+div.text > div.note {
   font-style: italic;
   color: var(--lightgray);
+}
+
+div.text > div.center {
+  margin: 1em 0 1em 0;
+  display: flex;
+  justify-content: center;
 }
 
 div.text > p.quote {
@@ -155,4 +165,13 @@ div.code {
 
 div.code > pre {
   margin: 0;
+}
+
+span[role="math"] > svg {
+  transform: scale(1.1);
+  transform-origin: center;
+}
+
+details > summary {
+  cursor: pointer;
 }

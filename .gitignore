@@ -1,1 +1,6 @@
+# python
 __pycache__
+
+# nix
+.envrc
+/.direnv/

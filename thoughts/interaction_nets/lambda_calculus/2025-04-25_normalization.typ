@@ -17,7 +17,7 @@
 
 = Overview
 The purpose of this post is to introduce interaction nets to an audience familiar with lambda calculus. This post will
-explain some of the general theory behind interaction nets and a particular instatiation of them with the purpose of
+explain some of the general theory behind interaction nets and a particular instantiation of them with the purpose of
 normalizing a subset of the lambda calculus. Lastly, we will explain the theoretical and practical benefits of using
 such a system to normalize lambda calculus terms.
 
@@ -34,7 +34,7 @@ related with #link("https://en.wikipedia.org/wiki/Linear_logic")[Linear Logic].
 Interaction nets are a framework for describing a whole class of graph-rewriting systems. In
 the context of modeling or encoding lambda calculus, one system that can be used is that of
 the #link("https://www.sciencedirect.com/science/article/pii/S0890540197926432")[_Interaction
-Combinators_], also devised by Lafont. The system we will describe below is a similar one known as the
+Combinators_], also devised by Lafont. The system we will describes below is a similar one known as the
 #link("https://www-lipn.univ-paris13.fr/~mazza/papers/CombSem-MSCS.pdf")[_Symmetric Interaction Combinators_]
 introduced by Mazza in 2007.
 
@@ -82,7 +82,7 @@ I'll name these nodes:
 - Constructor ($alpha$), which has two auxiliary ports.
 - Duplicator ($delta$), which has two auxiliary ports.
 
-The number of auxiliary ports of a node is also known as it's _arity_. Extending that pattern, nilary nodes have
+The number of auxiliary ports of a node is also known as its _arity_. Extending that pattern, nilary nodes have
 an arity of zero and binary nodes have arity two. In my opinion, drawing non-nilary (arity of at least zero)
 nodes as triangles (with colors or text inside) make it clear which port is the principal port and which are the
 auxiliary ports.
@@ -123,7 +123,7 @@ as wires can connect any kind of port to any other kind of port.
 == Rewrite Rules
 
 In order to perform any kind of computation with interaction nets, we need to define rewrite rules. The
-restrictions in the kind of rules we can define are part of what bestow interaction nets their interesting
+restrictions in the kind of rules we can define are part of what bestows interaction nets their interesting
 properties. Specifically: _rewrite rules only apply to -- and are uniquely identified by -- two nodes connected
 by their principal ports_. Since these are the portions of the graph that can be rewritten or _reduced_, we call
 them _reducible expressions_ or _active pairs_. Rewrite rules are also known as _interactions_.
@@ -240,7 +240,7 @@ beta-reductions that are performed to normalize a term will depend on the order 
 == Aside: Practical Consequences & Hardware
 
 Since the rewrite rules are local, and can be applied without affecting other parts of a net,
-there is a clear potential for parallel reduction / normalization of interaction nets. Moderm
+there is a clear potential for parallel reduction / normalization of interaction nets. Modern
 computers are the result of huge investment in research with the goal of improving upon the
 #link("https://en.wikipedia.org/wiki/Von_Neumann_architecture")[von Neumann architecture]. Normalization of interaction
 nets doesn't necessarily fit well into this architecture, so modelling such a system is an area of ongoing research.
@@ -262,10 +262,10 @@ theoretical benefits of interaction nets.
 
 We've defined above an interaction system of three nodes (eraser, constructor, duplicator) and six rewrite rules. We
 now need to create a translation or mapping from lambda calculus terms to interaction nets, such that beta-reduction
-is respected after reinterpreting the normalized interaction net as a lambda calculus term. Lets call this mapping
+is respected after reinterpreting the normalized interaction net as a lambda calculus term. Let's call this mapping
 $map(dot)$.
 
-In order to define $map(.)$, we need to define how it will act on all possible lambda terms. This can be done
+In order to define $map(dot)$, we need to define how it will act on all possible lambda terms. This can be done
 inductively (recursively) over the two possible kinds of lambda terms, abstraction and application:
 
 #post.canvas({
@@ -532,7 +532,7 @@ Additionally, "garbage collection" here is explicit. Throwing away a variable (c
 destroys it. Because of how the interactions are defined however, the discarded term _will be normalized_. This is
 because the eraser node can only interact with nodes through their active port, so any active pairs inside of the erased
 term will be reduced before erasure. This is in contrast to the naive term-rewriting of lambda calculus, where a
-substitution into an unused variable simply causes the term to "disappear". In some sense, unecessary work may be
+substitution into an unused variable simply causes the term to "disappear". In some sense, unnecessary work may be
 performed. In other sense however, it's optimal.
 
 = What's the point?
@@ -567,11 +567,11 @@ also not obvious] how to compute the number of beta-reductions required to termi
 
 == John Lamping
 
-This encoding of lambda calculus terms is and the algorithm for reduction is actually equivalent to a portion of an
+This encoding of lambda calculus terms and the algorithm for reduction is actually equivalent to a portion of an
 algorithm presented by John Lamping's 1990 paper #link("https://dl.acm.org/doi/pdf/10.1145/96709.96711")[_An Algorithm
 for Optimal Lambda Calculus Reduction_]. Astonishingly, it seems that this paper and the development of interaction
 nets were independent, as Lamping mentions neither Lafont or Girard. The main difference (or omission) of the algorithm
-presented in this post and Lamping's is the lack of _bracket nodes_. These node are one way to resolve the duplication
+presented in this post and Lamping's is the lack of _bracket nodes_. These nodes are one way to resolve the duplication
 issue mentioned above.
 
 = Conclusion & Other Topics

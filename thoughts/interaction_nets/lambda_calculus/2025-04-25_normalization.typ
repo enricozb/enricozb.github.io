@@ -208,6 +208,10 @@ wires above and below each rule are connected to some other unrelated part of th
 The first three rules are known as _commutations_, and the last three rules as _annihilations_. Commutations occur
 when nodes of different kinds interact and annihilations occur when nodes of the same kind interact.
 
+This system is known as 2-Symmetric Interaction Combinators, or 2-SIC. The "2" is because there are two binary nodes,
+and the "symmetric" is because the annihilation interaction is the same regardless of whether we are annihilating
+constructor or duplicator nodes.
+
 It is in this system where we will encode and soundly evaluate a subset of the lambda calculus.
 
 = Properties of Interaction Nets

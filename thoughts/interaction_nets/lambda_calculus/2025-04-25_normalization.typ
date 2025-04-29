@@ -1,5 +1,6 @@
 #import "../../../typst/post.typ"
 #import "../../../typst/inet.typ"
+#import "../../../typst/inets.typ"
 #import "@preview/cetz:0.3.4"
 
 #show: content => post.post(
@@ -14,6 +15,14 @@
 
   This post assumes some familiarity with lambda calculus but none with interaction nets.
 ]
+
+#let (era, con, dup) = inets.with-kinds(
+  era: inets.nilary-node,
+  con: inets.stroked-node,
+  dup: inets.filled-node,
+)
+
+#let wire = inets.wire
 
 = Overview
 The purpose of this post is to introduce interaction nets to an audience familiar with lambda calculus. This post will
@@ -55,19 +64,9 @@ unboundedly many).
 Let's define an example interaction system with three kinds of nodes:
 
 #post.canvas({
-  inet.era(name: "era", pos: (0, 0))
-  inet.con(name: "con", pos: (2, 0))
-  inet.dup(name: "dup", pos: (4, 0))
-
-  inet.link("era.0", "era.0")
-
-  inet.link("con.0", "con.0")
-  inet.link("con.1", "con.1")
-  inet.link("con.2", "con.2")
-
-  inet.link("dup.0", "dup.0")
-  inet.link("dup.1", "dup.1")
-  inet.link("dup.2", "dup.2")
+  era("e", (0, 0), show-ports: true)
+  con("c", (2, 0), show-ports: true)
+  dup("d", (4, 0), show-ports: true)
 
   cetz.draw.content((0, -0.3), $epsilon$)
   cetz.draw.content((2, -0.1), $alpha$)
@@ -90,29 +89,28 @@ auxiliary ports.
 An example instance of a net in this three-node system could be:
 
 #post.canvas({
-  inet.con(name: "a", pos: (0, 0))
-  inet.dup(name: "b", pos: (-0.5, -1.5))
-  inet.con(name: "c", pos: (-0, -3))
+  con("a", (0, 0))
+  dup("b", (-0.5, -1.5))
+  con("c", (-0, -3))
 
-  inet.link("a.1", "b.0")
-  inet.link("b.2", "c.0")
+  wire("a.1", "b.0")
+  wire("b.2", "c.0")
+  wire("b.1", (-1, -3.1, -90deg), "c.1")
+  wire("c.2", (1, -3, 90deg), "a.2")
 
-  cetz.draw.bezier("b.1.p", (-1/4, -3.44), (-1.5, -3), (-1/4, -4.5))
-  cetz.draw.bezier("a.2.p", (1/4, -3.44), (1.5, -3), (1/4, -4.5))
+  con("d", (1.5, 0))
+  con("e", (1.5, -1.5))
 
-  inet.con(name: "d", pos: (1.5, 0))
-  inet.con(name: "e", pos: (1.5, -1.5))
+  wire("a.0", "d.0")
+  wire("e.0", "d.1")
 
-  inet.link("a.0", "d.0")
-  inet.link("e.0", "d.1")
+  era("e1", (1.2, -2.7))
+  era("e2", (1.8, -2.7))
+  era("e3", (2, -1))
 
-  inet.era(name: "e1", pos: (1.2, -2.7))
-  inet.era(name: "e2", pos: (1.8, -2.7))
-  inet.era(name: "e3", pos: (2, -1))
-
-  inet.link("d.2", "e3.0")
-  inet.link("e1.0", "e.1")
-  inet.link("e2.0", "e.2")
+  wire("d.2", "e3.0")
+  wire("e1.0", "e.1")
+  wire("e2.0", "e.2")
 })
 
 I've omitted the greek-letter labels of the nodes, as they are uniquely identifiable by their shape and colors.
@@ -131,70 +129,64 @@ them _reducible expressions_ or _active pairs_. Rewrite rules are also known as 
 The six (tersely written) rewrite rules we will be working with for the purpose of this post are as follows:
 
 #post.canvas({
-  inet.con(name: "comm-top", pos: (0, 0), show-aux: true)
-  inet.dup(name: "comm-bot", pos: (0, 1.5), rot: 180deg, show-aux: true)
-  inet.link("comm-top.0", "comm-bot.0", main: true)
+  con("comm-top", (0, 0), show-aux: true)
+  dup("comm-bot", (0, 1.5), angle: 180deg, show-aux: true)
+  wire("comm-top.0", "comm-bot.0", stroke: red)
 
   cetz.draw.content((1.2, 4/5), $arrow.long.squiggly$)
 
-  inet.con(name: "comm'-1-top", pos: (2.5, 1.5), show-main: true)
-  inet.con(name: "comm'-2-top", pos: (4, 1.5), show-main: true)
-  inet.dup(name: "comm'-1-bot", pos: (2.5, 0), rot: 180deg, show-main: true)
-  inet.dup(name: "comm'-2-bot", pos: (4, 0), rot: 180deg, show-main: true)
+  con("comm'-1-top", (2.5, 1.5), show-main: true)
+  con("comm'-2-top", (4, 1.5), show-main: true)
+  dup("comm'-1-bot", (2.5, 0), angle: 180deg, show-main: true)
+  dup("comm'-2-bot", (4, 0), angle: 180deg, show-main: true)
 
-  inet.link("comm'-1-top.1", "comm'-1-bot.2")
-  inet.link("comm'-2-top.2", "comm'-2-bot.1")
-  inet.link("comm'-1-top.2", "comm'-2-bot.2")
-  inet.link("comm'-2-top.1", "comm'-1-bot.1")
+  wire("comm'-1-top.1", "comm'-1-bot.2")
+  wire("comm'-2-top.2", "comm'-2-bot.1")
+  wire("comm'-1-top.2", "comm'-2-bot.2")
+  wire("comm'-2-top.1", "comm'-1-bot.1")
 })
 
 #post.canvas({
-  inet.con(name: "comm-top-1", pos: (0, 0), rot: 180deg, show-aux: true)
-  inet.era(name: "comm-bot-1", pos: (0, -1))
-  inet.link("comm-top-1.0", "comm-bot-1.0", main: true)
+  con("comm-top-1", (0, 0), angle: 180deg, show-aux: true)
+  era("comm-bot-1", (0, -1))
+  wire("comm-top-1.0", "comm-bot-1.0", stroke: red)
 
   cetz.draw.content((1, -0.3), "or")
 
-  inet.dup(name: "comm-top-2", pos: (2, 0), rot: 180deg, show-aux: true)
-  inet.era(name: "comm-bot-2", pos: (2, -1))
-  inet.link("comm-top-2.0", "comm-bot-2.0", main: true)
+  dup("comm-top-2", (2, 0), angle: 180deg, show-aux: true)
+  era("comm-bot-2", (2, -1))
+  wire("comm-top-2.0", "comm-bot-2.0", stroke: red)
 
   cetz.draw.content((3.5, -0.3), $arrow.long.squiggly$)
 
-  inet.port("comm'-top-1", (5, 0.5))
-  inet.era(name: "comm'-bot-1", pos: (5, -1))
-  inet.link("comm'-top-1", "comm'-bot-1.0")
+  era("comm'-bot-1", (5, -1))
+  wire("comm'-bot-1.0", (5, 0.7, 90deg))
 
-  inet.port("comm'-top-2", (6, 0.5))
-  inet.era(name: "comm'-bot-2", pos: (6, -1))
-  inet.link("comm'-top-2", "comm'-bot-2.0")
+  era("comm'-bot-2", (6, -1))
+  wire("comm'-bot-2.0", (6, 0.7, 90deg))
 })
 
 #post.canvas({
-  inet.con(name: "anni-top-1", pos: (0, 0), rot: 180deg, show-aux: true)
-  inet.con(name: "anni-bot-1", pos: (0, -1.5), show-aux: true)
-  inet.link("anni-top-1.0", "anni-bot-1.0", main: true)
+  con("anni-top-1", (0, 0), angle: 180deg, show-aux: true)
+  con("anni-bot-1", (0, -1.5), show-aux: true)
+  wire("anni-top-1.0", "anni-bot-1.0", stroke: red)
 
   cetz.draw.content((1, -0.7), "or")
 
-  inet.dup(name: "anni-top-2", pos: (2, 0), rot: 180deg, show-aux: true)
-  inet.dup(name: "anni-bot-2", pos: (2, -1.5), show-aux: true)
-  inet.link("anni-top-2.0", "anni-bot-2.0", main: true)
+  dup("anni-top-2", (2, 0), angle: 180deg, show-aux: true)
+  dup("anni-bot-2", (2, -1.5), show-aux: true)
+  wire("anni-top-2.0", "anni-bot-2.0", stroke: red)
 
   cetz.draw.content((3.5, -0.7), $arrow.long.squiggly$)
 
-  inet.port("anni'-top-3", (5, 5/6), dir: 180deg)
-  inet.port("anni'-top-4", (6, 5/6), dir: 180deg)
-  inet.port("anni'-bot-3", (5, -2 - 1/3))
-  inet.port("anni'-bot-4", (6, -2 - 1/3))
-  inet.link("anni'-top-3", "anni'-bot-4")
-  inet.link("anni'-top-4", "anni'-bot-3")
+  wire((5, 0.7, -90deg), (6, -2.3, -90deg))
+  wire((6, 0.7, -90deg), (5, -2.3, -90deg))
 })
 
 #post.canvas({
-  inet.era(name: "anni-top-3", pos: (4, 0), rot: 180deg)
-  inet.era(name: "anni-bot-3", pos: (4, -1.5))
-  inet.link("anni-top-3.0", "anni-bot-3.0", main: true)
+  era("anni-top-3", (4, 0), angle: 180deg)
+  era("anni-bot-3", (4, -1.5))
+  wire("anni-top-3.0", "anni-bot-3.0", stroke: red)
 
   cetz.draw.content((5, -0.7), $arrow.long.squiggly$)
 
@@ -340,7 +332,7 @@ There are a few things to digest here:
 
 == Translating an Example Term
 
-Let's attempt a sample lambda calculus reduction using our 2-sic translation $map(dot)$, specifically of the term
+Let's attempt a sample lambda calculus reduction using our 2-SIC translation $map(dot)$, specifically of the term
 $(lambda f. (f f) lambda x. x)$. Using a friendlier function-definition syntax, the term we are interested in is
 $thick "apply_self"(id) thin$ where
 

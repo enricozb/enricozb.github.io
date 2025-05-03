@@ -49,8 +49,8 @@
 #let bezier-angle(t, p1, p2, c1, c2) = {
   let (dx, dy) = bezier-derivative(t, p1, p2, c1, c2)
   if dx == 0 {
-    90deg
+    dy.signum() * 90deg
   } else {
     calc.atan(dy / dx)
-  }
+  } + if dx < 0 { 180deg } else { 0deg }
 }

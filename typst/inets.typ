@@ -17,11 +17,13 @@
   let kind = kinds.at(kind)
   let shape = kind.at("shape")
   let ports = kind.at("ports", default: ())
+  let label = kind.at("label", default: (0, 0))
 
   cetz.draw.group(name: name, {
     cetz.draw.translate(position)
     cetz.draw.rotate(angle)
     cetz.draw.group({shape})
+    cetz.draw.anchor("label", label)
 
     if debug {
       cetz.draw.content((0, 0), text(red, name), anchor: "mid")
@@ -94,8 +96,9 @@
 
         cetz.draw.get-ctx(ctx => {
           let (ctx, p1, p2, c1, c2) = cetz.coordinate.resolve(ctx, p1, p2, c1, c2)
-          let angle = bezier-angle(t, p1, p2, c1, c2)
+          let angle = bezier-angle(t - 0.05, p1, p2, c1, c2)
           let position = bezier-point(t, p1, p2, c1, c2)
+          // cetz.draw.content(position, [#angle])
           arrow(position, angle)
         })
       }
@@ -115,7 +118,8 @@
     cetz.draw.fill(black)
     cetz.draw.circle((0, 0), radius: 3pt)
   },
-  "ports": ((0, 0),)
+  "ports": ((0, 0),),
+  "label": (0, -0.3)
 )
 
 #let stroked-node = (
@@ -124,7 +128,8 @@
     cetz.draw.fill(white)
     cetz.draw.line((-0.5, -calc.sqrt(3)/4), (0.5, -calc.sqrt(3)/4), (0, calc.sqrt(3)/4), close: true)
   },
-  "ports": ((0, calc.sqrt(3)/4), (-0.2, -calc.sqrt(3)/4), (0.2, -calc.sqrt(3)/4))
+  "ports": ((0, calc.sqrt(3)/4), (-0.3, -calc.sqrt(3)/4), (0.3, -calc.sqrt(3)/4)),
+  "label": (0, -0.1)
 )
 
 #let filled-node = (
@@ -133,5 +138,6 @@
     cetz.draw.fill(black)
     cetz.draw.line((-0.5, -calc.sqrt(3)/4), (0.5, -calc.sqrt(3)/4), (0, calc.sqrt(3)/4), close: true)
   },
-  "ports": ((0, calc.sqrt(3)/4), (-0.2, -calc.sqrt(3)/4), (0.2, -calc.sqrt(3)/4))
+  "ports": ((0, calc.sqrt(3)/4), (-0.3, -calc.sqrt(3)/4), (0.3, -calc.sqrt(3)/4)),
+  "label": (0, -0.1)
 )

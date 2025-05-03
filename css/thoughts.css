@@ -102,8 +102,12 @@ div.text > p {
   margin: 0.8em 0;
 }
 
-div.text li p {
-  margin: 0.3em;
+div.text li {
+  margin: 0.3em 0;
+}
+
+div.text li > p {
+  margin: 0;
 }
 
 div.text > div.note {
@@ -174,4 +178,21 @@ span[role="math"] > svg {
 
 details > summary {
   cursor: pointer;
+}
+
+figure {
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+}
+
+figcaption {
+  margin-top: 2em;
+  font-style: italic;
+}
+
+hr {
+  margin-top: 2em;
+  margin-bottom: 2em;
+  width: 50%;
 }

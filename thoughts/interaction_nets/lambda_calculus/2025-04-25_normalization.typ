@@ -133,7 +133,7 @@ The six (tersely written) rewrite rules we will be working with for the purpose 
   dup("comm-bot", (0, 1.5), angle: 180deg, show-aux: true)
   wire("comm-top.0", "comm-bot.0", stroke: red)
 
-  cetz.draw.content((1.2, 4/5), $arrow.long.squiggly$)
+  cetz.draw.content((1.2, 4/5), $~~>$)
 
   con("comm'-1-top", (2.5, 1.5), show-main: true)
   con("comm'-2-top", (4, 1.5), show-main: true)
@@ -157,7 +157,7 @@ The six (tersely written) rewrite rules we will be working with for the purpose 
   era("comm-bot-2", (2, -1))
   wire("comm-top-2.0", "comm-bot-2.0", stroke: red)
 
-  cetz.draw.content((3.5, -0.3), $arrow.long.squiggly$)
+  cetz.draw.content((3.5, -0.3), $~~>$)
 
   era("comm'-bot-1", (5, -1))
   wire("comm'-bot-1.0", (5, 0.7, 90deg))
@@ -177,7 +177,7 @@ The six (tersely written) rewrite rules we will be working with for the purpose 
   dup("anni-bot-2", (2, -1.5), show-aux: true)
   wire("anni-top-2.0", "anni-bot-2.0", stroke: red)
 
-  cetz.draw.content((3.5, -0.7), $arrow.long.squiggly$)
+  cetz.draw.content((3.5, -0.7), $~~>$)
 
   wire((5, 0.7, -90deg), (6, -2.3, -90deg))
   wire((6, 0.7, -90deg), (5, -2.3, -90deg))
@@ -188,7 +188,7 @@ The six (tersely written) rewrite rules we will be working with for the purpose 
   era("anni-bot-3", (4, -1.5))
   wire("anni-top-3.0", "anni-bot-3.0", stroke: red)
 
-  cetz.draw.content((5, -0.7), $arrow.long.squiggly$)
+  cetz.draw.content((5, -0.7), $~~>$)
 
   cetz.draw.content((6, -0.7), "∅")
 })
@@ -536,14 +536,14 @@ performed. In other sense however, it's optimal.
 == Lévy/Beta-Optimality
 
 When normalizing lambda calculus terms via a traditional term-rewriting system, one might duplicate an unnormalized
-term, thereby duplicating the amount of work required to further reach the fully normalized term. Jean-Jacques
-Lévy defined a "minimum" number of beta-reductions required to normalize any lambda calculus term in his 1978
-PhD thesis, #link("https://pauillac.inria.fr/~levy/pubs/78phd.pdf")[Réductions correctes et optimales dans le
-lambda calcul].  His definition of a minimum was essentially the number of unique beta-reductions required to
-normalize the term. Duplicated reducible expressions (unnormalized beta-reductions) are not double counted. It is
-against this minimum that one can compare different lambda calculus reduction techniques. *With respect to Lévy's
-definition of the minimum number of beta-reductions, the reduction of lambda calculus terms via interaction nets with
-the above encoding is optimal*.
+term, thereby duplicating the amount of work required to further reach the fully normalized term. Jean-Jacques Lévy
+defined a "minimum" number of beta-reductions required to normalize any lambda calculus term in his 1978 PhD thesis,
+#link("https://pauillac.inria.fr/~levy/pubs/78phd.pdf")[Réductions correctes et optimales dans le lambda calcul].
+His definition of a minimum was essentially the number of unique beta-reductions that _can_ appear when normalizing
+a term. Duplicated reducible expressions (unnormalized beta-reductions) are not double counted. It is against this
+minimum that one can compare different lambda calculus reduction techniques. *With respect to Lévy's definition
+of the minimum number of beta-reductions, the reduction of lambda calculus terms via interaction nets with the
+above encoding is optimal*.
 
 The beta-optimality of interaction nets is owed to the fact that abstractions are duplicated _incrementally_. If
 one looks closely at the interaction net reduction of an abstraction being duplicated, they will notice that the

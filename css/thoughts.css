@@ -196,3 +196,8 @@ hr {
   margin-bottom: 2em;
   width: 50%;
 }
+
+.footnotes > div {
+  font-size: 10pt;
+  margin-bottom: 1em;
+}

@@ -29,7 +29,7 @@
 
 In this post we will discuss _polarized interaction systems_. These can be seen as a very simple type system
 on interaction nets that restricts which nets we can consider valid. We'll then use this notion to more clearly
-understand the 2-SIC encoding.  Then, we'll use polarity to understand how we can _readback_ interaction nets as
+understand the 2-SIC encoding.  Then, we'll use polarity to understand how we can _read back_ interaction nets as
 lambda calculus terms. Finally, we'll see that there is a natural extension of lambda calculus by expanding how
 we interpret interaction nets as lambda calculus terms.
 
@@ -39,7 +39,7 @@ we interpret interaction nets as lambda calculus terms.
 
 Previously, we introduced the 2-SIC system as a way to encode and reduce a subset of the lambda calculus. One critical
 point we glossed over is how we translate normalized interaction nets back into lambda calculus terms. This process is
-known as _readback_.
+known as _read back_.
 
 This algorithm is not immediately intuitive because we encode different lambda calculus constructs into the same kind
 of node. For example, consider the following normalized interaction net:
@@ -110,7 +110,7 @@ The formalization of ports either producing or consuming terms is _polarization_
 A _polarized_ interaction system is refinement of an interaction system. For each kind of node,
 we define (possibly multiple) classifications of its ports as either producers or consumers.
 
-In #link("https://franchufranchu.github.io/answers/single-pass-readback/")[Franchu's post on readback], polarization
+In #link("https://franchufranchu.github.io/answers/single-pass-read back/")[Franchu's post on read back], polarization
 is described as a labelling of ports as "positive" or "negative", where "positive" ports are producers and negative
 ports are consumers. While I will also use this terminology here, I also find it very useful to draw polarity
 using arrows, where the direction goes from negative to positive.
@@ -287,7 +287,7 @@ two values.
 
 In a type system for the lambda calculus, if a term is well-typed, intermediate terms found during reduction are
 also well-typed. Ideally, valid polarized nets should also have a similar property: if an initial net is valid,
-all intermediate nets during reduction should also be valid. At a minimum, this can be used to readback nets _during_
+all intermediate nets during reduction should also be valid. At a minimum, this can be used to read back nets _during_
 reduction, and not only _after_ it.
 
 The problem here is that the four polarizations we have detailed above (abstraction, application, erasure, and
@@ -369,56 +369,45 @@ port. Because of the commutation rules, this can be seen as a single term with t
 
 = Extending Lambda Calculus
 
-- What's interesting here is that we can choose to _extend_ lambda calculus with an additional term $*$, the null value.
-  This would be encoded as the positive eraser, and would result in the following new "beta-reduction": $thick (* t) ~~> *$.
-
-- It's a similar situation with duplication: when duplicating an abstraction, say the identity function, we have a
-  positive and negative form of the duplication node. When looking at the dual of the duplication node, it consumes two
-  values and produces one, but these values are symmetric (unlike the application) and thus can be seen as a term with
-  two values, or a superposition. The "new" beta reduction in this case looks like $(f {a,b}) ~~> {(f a),(f b)}wide$ and
-  $wide({f,g} a) ~~> {(f a),(g a)}$
-
-It is not obvious why these two polarizations are necessary when simply looking at nets in the image
-of $map(dot)$. However, intermediate terms during reduction will have nodes in positions where these
-polarizations are necessary.
-
-We have seen that a constructor node ($thin thin triangle.stroked.t$) can represent both an application or
-an abstraction. It is through polarization that we can distinguish between these two, and thus reinterpret an
-interaction net as a lambda calculus term.
-
-= Extending Lambda Calculus
-
-As we saw above, there are two polarizations that are present only in intermediate nets. What if we allowed for these
+As we saw above, there are two polarizations that are only present in intermediate nets. What if we allowed for these
 polarizations to appear in the image of $map(dot)$? That would require us to add some new lambda calculus terms that
 map to null values (positive erasers), and superpositions (dual of duplication).
 
-Null values can be described as a term $*$ with the new beta-reduction rule:
+Null values can be described as a term $*$ with an additional beta-reduction rule:
 
 $
 (* t) ~~> *
 $
 
-This is very similar to a bottom term, $bot$.
+This is very similar to a bottom term $bot$ as it "infects" or "destroys" the computation.
 
-Superpositions are a new term ${f,g}$ with the following new beta-reduction rule #footnote[As mentioned in the previous
-post, the 2-SIC encoding does not soundly evaluate the full set of terms of lambda calculus. Similarly, the extension
-of lambda calculus with superpositions is not fully soundly evaluated by 2-SIC due to the same issue of undesired
-duplication / superposition interactions. Specifically, duplicating a superposition results in each fresh variable
-receiving one argument of the superposition, instead of the superposition itself being duplicated.]:
+Superpositions are a new term ${f g}$ with the following beta-reduction rule#footnote[As mentioned in the previous
+post, the 2-SIC encoding does not soundly evaluate the full set of terms of lambda calculus. Similarly, the
+extension of lambda calculus with superpositions is not fully soundly evaluated by 2-SIC due to the same issue
+of undesired duplication / superposition interactions. Specifically, duplicating a superposition results in each
+fresh variable receiving one argument of the superposition, instead of the superposition itself being duplicated.]:
 
 $
-({f,g} t) ~~> {(f t),(g t)}
+({f g} t) ~~> {(f t) (g t)}
 $
 
-= TODO
-- Adding superpositions to lambda calculus allows one to construct compact / equivalent representations of data that
-  using explicitly shared structure.
-- In my opinion, the direction of an arrow is best seen -- perhaps at least initially -- as the direction of the flow of data.
-- Like in simply-typed lambda calculus, the type system doesn't affect the normalization of the system, it simply restricts
-  what is considered a valid term to normalize.
-- The same node kind can be polarized in multiple ways, however the interactions are independent of the polarization.
-- Notice that the constructor node has two dual polarizations, one for abstractions and one for applications.
-- The duplication node also has a dual polarization, that we see appear when duplicating abstractions.
-- This dual of duplication is known as superposition. Mention HOC. Since there is a "positive" arrow coming out of it,
-  we can interpret that arrow as producing a value.
-- #link("https://franchufranchu.github.io/answers/single-pass-readback/")[franchu post]
+Superpositions are especially interesting as they are like a pair but with some auto-vectorization properties.
+Specifically, applying a superposition of functions to an argument reduces to a superposition of applications.
+Additionally, applying a function to a superposition of arguments is equivalent#footnote[Equivalence is a deep
+subject.  A naive/incomplete definition is: lambda calculus terms $x$ and $y$ are equivalent if substituting one
+for the other in any term results in the same result. This hopefully gives you some intuition of what is intended
+here.] to a superposition of applications:
+
+$
+(f {x y}) approx {(f x) (f y)}
+$
+
+= Conclusion
+
+We've seen how polarity can be used to read back interaction nets as lambda calculus terms, by uniquely identifying
+which lambda calculus constructs correspond to which nodes. We've also seen that there are some additional polarizations
+of nodes that are not present in the image of our 2-SIC translation. These two additional polarizations can be used to
+extend the lambda calculus with some new interesting terms.
+
+I'd like to eventually extend the discussion on superpositions to how they can be used -- along with the beta-optimal
+properties of interaction nets -- to efficiently perform program search.

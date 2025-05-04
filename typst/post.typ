@@ -94,14 +94,18 @@
               tag.hr()
             }
 
-            for note in notes [
-              #tag.a(
-                id: "footnote-" + note.numbering + "-body",
-                href: "#footnote-" + note.numbering + "-number",
-                super(note.numbering)
-              )
-              #note.body
-            ]
+            tag.div(class: "footnotes",
+              for (i, note) in notes.enumerate() {
+                tag.div[
+                  #tag.a(
+                    id: "footnote-" + note.numbering + "-body",
+                    href: "#footnote-" + note.numbering + "-number",
+                    super(str(i + 1))
+                  )
+                  #note.body
+                ]
+              }
+            )
           }
 
         ]

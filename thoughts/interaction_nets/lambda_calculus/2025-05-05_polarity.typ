@@ -44,7 +44,7 @@ known as _read back_.
 This algorithm is not immediately intuitive because we encode different lambda calculus constructs into the same kind
 of node. For example, consider the following normalized interaction net:
 
-#post.canvas(caption: "A Normalized 2-SIC Net", label: "normalized", {
+#post.canvas(caption: "A normalized 2-SIC net", label: "normalized", {
   con("a", (0, 0), show-main: true)
   con("b", (1, -1.5))
   con("c", (0.5, -3))
@@ -64,7 +64,8 @@ is at the head of this net. That is, is node $A$ an abstraction or an applicatio
 
 == Intuition
 
-Ignoring duplications for a moment, let's recall our 2-SIC translation $map(dot)$:
+Ignoring erasures and duplications for a moment, let's recall our 2-SIC translation $map(dot)$ which maps lambda calculus terms
+to 2-SIC nets:
 
 #post.canvas({
   cetz.draw.content((0, 0), $map(lambda x. t) =$)
@@ -91,7 +92,7 @@ Ignoring duplications for a moment, let's recall our 2-SIC translation $map(dot)
   wire("lam.2", (2.5, -2.5, 180deg), (1, 0, 180deg))
 })
 
-From looking at the definition for our translation, can you now tell which lambda calculus term is at the head of
+From looking at the definition of our translation, can you now tell which lambda calculus term is at the head of
 the net in @normalized?
 
 The head of the term in @normalized _has_ to be an abstraction: $lambda x. t$. This is because the term is identified
@@ -291,7 +292,7 @@ all intermediate nets during reduction should also be valid. At a minimum, this 
 reduction, and not only _after_ it.
 
 The problem here is that the four polarizations we have detailed above (abstraction, application, erasure, and
-duplication) are not sufficient to have this property. For example, when erasing the identity function $lambda x. x$:
+duplication) are not sufficient to obtain this property. For example, when erasing the identity function $lambda x. x$:
 
 #post.canvas({
   era("e", (0, 0), angle: -90deg)
@@ -325,7 +326,7 @@ this positive eraser does not appear when translating lambda calculus terms, onl
 
 == Superposition
 
-Duplication nodes have in a similar situation. When duplicating the identity function, the commutation rewrite rule
+Duplication nodes have a similar situation. When duplicating the identity function, the commutation rewrite rule
 necessarily results in two duplication nodes that have opposite polarities:
 
 #post.canvas({
@@ -343,7 +344,7 @@ necessarily results in two duplication nodes that have opposite polarities:
   cetz.draw.content((0, 0), $~~>$, angle: -90deg)
 })
 
-#post.canvas(caption: "Duplicating the identity", {
+#post.canvas(caption: "Duplicating the identity function", {
   con("l1", (0, 0), angle: +90deg, show-main: true, polarities: (+1, -1, -1))
   con("l2", (0, 1.5), angle: +90deg, show-main: true, polarities: (+1, -1, -1))
 
@@ -362,12 +363,15 @@ necessarily results in two duplication nodes that have opposite polarities:
   cetz.draw.content("d2.label", text(white, $?$))
 })
 
-This intermediate term has two duplicator nodes with opposite polarities. When looking at this dual of the duplication
-node, it consumes two values and produces one, but these values are symmetric. This is because both of the consumed
-values go into aux ports, unlike the application where one consumed value goes into an aux port and one into a principle
-port. Because of the commutation rules, this can be seen as a single term with two values, or a superposition.
+This intermediate term has two duplicator connected by their principal port. They therefore must have different
+polarizations. When looking at this dual of the duplication node, it consumes two values and produces one, but
+these values are symmetric. This is because both of the consumed values go into aux ports, unlike the application
+where one consumed value goes into an aux port and one into a principle port. Because of the commutation rules,
+this can be seen as a single term with two values, or a superposition.
 
 = Extending Lambda Calculus
+
+== Null and Superpositions as Terms
 
 As we saw above, there are two polarizations that are only present in intermediate nets. What if we allowed for these
 polarizations to appear in the image of $map(dot)$? That would require us to add some new lambda calculus terms that
@@ -401,6 +405,43 @@ here.] to a superposition of applications:
 $
 (f {x y}) approx {(f x) (f y)}
 $
+
+== Aside: Unscoped Lambdas
+
+Yet another extension -- that doesn't really come out of polarity -- is that of _unscoped lambdas_. I'd like to
+discuss these more deeply at some point, but in short: interaction nets do not require you to connect the wire of
+an abstraction's variable to somewhere in its body. You are free to connect them anywhere else in the net, resulting
+in a sort of "use-once channel" where data can be sent and read. A term like this for example:
+
+#post.canvas(caption: "An unscoped lambda term", {
+  wire = wire.with(polarize: 0.7)
+
+  cetz.draw.content((0, 0), $map((lambda hat(x). * lambda y. hat(x))) =$)
+
+  con("lam1", (3, -1.5))
+  con("lam2", (3.5, 1.5), angle: 180deg)
+  con("app", (3, 0), angle: 180deg)
+  era("era", (4, 2.8), angle: 180deg)
+  era("nul", (3.5, -3))
+
+  cetz.draw.content("app.label", $alpha$)
+  cetz.draw.content("lam1.label", $lambda$)
+  cetz.draw.content("lam2.label", $lambda$)
+  cetz.draw.content("nul.label", $nu$)
+  cetz.draw.content("era.label", $epsilon$)
+
+  wire("app.2", (1.5, 0, 180deg), polarize: 1)
+  wire("lam1.0", "app.0")
+  wire("lam2.0", "app.1", polarize: 0.65)
+  wire("lam2.1", "era.0")
+  wire("nul.0", "lam1.2")
+  wire("lam1.1", (3.5, -4, 0deg), (4.5, 0, 90deg), (4.2, 3.5, 180deg), "lam2.2", polarize: 0.5)
+
+  cetz.draw.content((4.2, 0), $hat(x)$)
+})
+
+where $hat(x)$ is an _unscoped variable_ that is being referenced outside of this body. Can you figure out what this term
+normalizes to? Try normalizing the interaction net and reading back the result.
 
 = Conclusion
 

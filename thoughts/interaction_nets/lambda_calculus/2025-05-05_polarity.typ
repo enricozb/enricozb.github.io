@@ -27,7 +27,7 @@
 
 = Overview
 
-In this post we will discuss _polarized interaction systems_. These can be seen as a very simple type system
+In this post we will introduce _polarized interaction systems_. These can be seen as a very simple type system
 on interaction nets that restricts which nets we can consider valid. We'll then use this notion to more clearly
 understand the 2-SIC encoding.  Then, we'll use polarity to understand how we can _read back_ interaction nets as
 lambda calculus terms. Finally, we'll see that there is a natural extension of lambda calculus by expanding how
@@ -108,12 +108,12 @@ The formalization of ports either producing or consuming terms is _polarization_
 = Polarized Interaction Systems
 
 == Polarizing SIC Nodes
-A _polarized_ interaction system is refinement of an interaction system. For each kind of node,
-we define (possibly multiple) classifications of its ports as either producers or consumers.
+A _polarized_ interaction system is a refinement of an interaction system. For each kind of node, we define
+(possibly multiple) classifications of its ports as either producers or consumers.
 
 In #link("https://franchufranchu.github.io/answers/single-pass-read back/")[Franchu's post on read back], polarization
-is described as a labelling of ports as "positive" or "negative", where "positive" ports are producers and negative
-ports are consumers. While I will also use this terminology here, I also find it very useful to draw polarity
+is described as a labelling of ports as "positive" or "negative", where positive ports are producers and negative
+ports are consumers. While I will also use this terminology here, I find it very useful to draw polarity
 using arrows, where the direction goes from negative to positive.
 
 For each of the three 2-SIC nodes, we will have two possible polarizations:
@@ -144,7 +144,7 @@ Note that these labels are just to identify the polarizations, _there are still 
 
 Some things to note:
 - The rewrite rules are unchanged.
-- Each polarization has a dual (e.g. $thick a <-> lambda, delta <-> sigma$), where the polarization of each wire is
+- Each polarization has a dual (e.g. $thick alpha <-> lambda, delta <-> sigma$), where the polarization of each wire is
   flipped.
 - An outgoing arrow can be seen as producing a value.
 - An incoming arrow can be seen as consuming a value.
@@ -198,6 +198,21 @@ While I've labeled nodes with their polarization symbols ($alpha$, $lambda$, etc
 inspecting the polarization alone, given that the _lone free wire is positive_. This is the essence of reading 2-SIC
 nets back as lambda calculus terms.
 
+== An Algorithm for Readback
+
+Since we _always_ identify terms through an open wire at the positive end, we can always infer the polarizations of
+the nodes in the entire net. This is because if we know the polarity of a single port and the kind of 2-SIC node
+(eraser, constructor, duplication) we are looking at, then we also know the polarization of the entire node. This
+is precisely due to the fact that each kind node has two dual polarizations. If there were more polarizations for
+a given kind of node, we would not necessarily be able to infer the polarization of the entire node knowing only
+a single port's polarity. Knowing a node's polarization then also let's us know what lambda calculus construct the
+node corresponds to.
+
+This algorithm for readback is of course specific to 2-SIC, but can also be applied in other contexts where polarity
+is relevant.
+
+= Understanding the 2-SIC Polarizations
+
 == Abstraction and Application
 
 Let's go through abstraction and application polarizations first, as I believe these to be the most intuitive. In
@@ -213,9 +228,9 @@ we expect two ports with incoming arrows (negative) and one port with an outgoin
 })
 
 The reason for the principal port of the constructor node to receive the function -- as opposed to one of the
-auxiliary ports -- is to create an active pair or reducible expression when $f$ is an abstraction. That is, we want
-the lambda calculus term $(f x)$ to be translated into a reducible expression when a beta-reduction is possible,
-which is when $f$ is an abstraction.
+auxiliary ports -- is to create an active pair or reducible expression when $f$ is an abstraction. That is, we
+want the lambda calculus term $(f x)$ to be translated into an active pair when a beta-reduction is possible,
+which is only when $f$ is an abstraction.
 
 When encoding an application, we connect the single positive wire to the occurence of the abstraction in the net.
 
@@ -282,7 +297,7 @@ And duplications appear when using a variable more than once:
 
 In terms of producers and consumers, erasure is a consumer. It is -- sensibly -- not a value. Duplication, however, is
 both a consumer and a producer. It produces two values, which also makes sense as it consumes its argument to produce
-two values.
+two copies of it.
 
 == Null
 
@@ -299,7 +314,7 @@ duplication) are not sufficient to obtain this property. For example, when erasi
   con("l", (1, 0), angle: +90deg)
 
   wire("l.0", "e.0", polarize: true)
-  wire("l.1", "l.2", polarize: true)
+  wire("l.1", "l.2", polarize: 0.55)
 
   cetz.draw.content("l.label", $lambda$)
   cetz.draw.content("e.label", $epsilon$)
@@ -352,10 +367,10 @@ necessarily results in two duplication nodes that have opposite polarities:
   dup("d2", (2, 0), angle: -90deg)
 
   wire("l1.1", "d2.2", polarize: true)
-  wire("d1.2", "l1.2", polarize: 0.8)
-  wire("l2.1", "d2.1", polarize: 0.25)
+  wire("d1.2", "l1.2", polarize: 0.75)
+  wire("l2.1", "d2.1", polarize: 0.3)
   wire("d1.1", "l2.2", polarize: true)
-  wire("d2.0", "d1.0", polarize: true)
+  wire("d2.0", "d1.0", polarize: 0.55)
 
   cetz.draw.content("l1.label", $lambda$)
   cetz.draw.content("l2.label", $lambda$)
@@ -363,11 +378,11 @@ necessarily results in two duplication nodes that have opposite polarities:
   cetz.draw.content("d2.label", text(white, $?$))
 })
 
-This intermediate term has two duplicator connected by their principal port. They therefore must have different
-polarizations. When looking at this dual of the duplication node, it consumes two values and produces one, but
-these values are symmetric. This is because both of the consumed values go into aux ports, unlike the application
-where one consumed value goes into an aux port and one into a principle port. Because of the commutation rules,
-this can be seen as a single term with two values, or a superposition.
+This intermediate term has two duplication nodes connected via their principal port. They therefore must have
+different polarizations. When looking at this dual of the duplication node, it consumes two values and produces
+one, but the consumed values are symmetric. That is, both of the consumed values go into aux ports, unlike the
+in an application where one consumed value goes into an aux port and one into a principle port. Because of the
+commutation rules, this can be seen as a single term with two values, or a superposition.
 
 = Extending Lambda Calculus
 
@@ -397,10 +412,10 @@ $
 
 Superpositions are especially interesting as they are like a pair but with some auto-vectorization properties.
 Specifically, applying a superposition of functions to an argument reduces to a superposition of applications.
-Additionally, applying a function to a superposition of arguments is equivalent#footnote[Equivalence is a deep
-subject.  A naive/incomplete definition is: lambda calculus terms $x$ and $y$ are equivalent if substituting one
-for the other in any term results in the same result. This hopefully gives you some intuition of what is intended
-here.] to a superposition of applications:
+Additionally, applying a function to a superposition of arguments is equivalent#footnote[Equivalence is a bit
+too nuanced to present in a footnote. A naive/incomplete definition could be: lambda calculus terms $x$ and $y$
+are equivalent if substituting one for the other in any term results in the same result. This hopefully gives you
+some intuition of what is intended here.] to a superposition of applications:
 
 $
 (f {x y}) approx {(f x) (f y)}

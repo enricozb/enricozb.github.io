@@ -27,7 +27,7 @@
           <p>Please read the <a href="2025-04-25_normalization.html">first post</a> if you are unfamiliar with interaction nets.</p>
         </div>
         <h2>Overview</h2>
-        <p>In this post we will discuss <em>polarized interaction systems</em>. These can be seen as a very simple type system on interaction nets that restricts which nets we can consider valid. We'll then use this notion to more clearly understand the 2-SIC encoding. Then, we'll use polarity to understand how we can <em>read back</em> interaction nets as lambda calculus terms. Finally, we'll see that there is a natural extension of lambda calculus by expanding how we interpret interaction nets as lambda calculus terms.</p>
+        <p>In this post we will introduce <em>polarized interaction systems</em>. These can be seen as a very simple type system on interaction nets that restricts which nets we can consider valid. We'll then use this notion to more clearly understand the 2-SIC encoding. Then, we'll use polarity to understand how we can <em>read back</em> interaction nets as lambda calculus terms. Finally, we'll see that there is a natural extension of lambda calculus by expanding how we interpret interaction nets as lambda calculus terms.</p>
         <h2>Readback</h2>
         <h3>Motivation</h3>
         <p>Previously, we introduced the 2-SIC system as a way to encode and reduce a subset of the lambda calculus. One critical point we glossed over is how we translate normalized interaction nets back into lambda calculus terms. This process is known as <em>read back</em>.</p>
@@ -562,8 +562,8 @@
         <p>The formalization of ports either producing or consuming terms is <em>polarization</em>.</p>
         <h2>Polarized Interaction Systems</h2>
         <h3>Polarizing SIC Nodes</h3>
-        <p>A <em>polarized</em> interaction system is refinement of an interaction system. For each kind of node, we define (possibly multiple) classifications of its ports as either producers or consumers.</p>
-        <p>In <a href="https://franchufranchu.github.io/answers/single-pass-read back/">Franchu's post on read back</a>, polarization is described as a labelling of ports as "positive" or "negative", where "positive" ports are producers and negative ports are consumers. While I will also use this terminology here, I also find it very useful to draw polarity using arrows, where the direction goes from negative to positive.</p>
+        <p>A <em>polarized</em> interaction system is a refinement of an interaction system. For each kind of node, we define (possibly multiple) classifications of its ports as either producers or consumers.</p>
+        <p>In <a href="https://franchufranchu.github.io/answers/single-pass-read back/">Franchu's post on read back</a>, polarization is described as a labelling of ports as "positive" or "negative", where positive ports are producers and negative ports are consumers. While I will also use this terminology here, I find it very useful to draw polarity using arrows, where the direction goes from negative to positive.</p>
         <p>For each of the three 2-SIC nodes, we will have two possible polarizations:</p>
         <div class="center">
           <figure>
@@ -873,47 +873,47 @@
         <p>Some things to note:</p>
         <ul>
           <li>The rewrite rules are unchanged.</li>
-          <li>Each polarization has a dual (e.g. <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 66.22611111111111 7.513000000000001" width="66.22611111111111pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
+          <li>Each polarization has a dual (e.g. <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 67.44711111111111 7.513000000000001" width="67.44711111111111pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
         <g transform="translate(3.055555555555556 7.513000000000001)">
             <g class="typst-text" transform="scale(1, -1)">
-                <use xlink:href="#g66D6B49C062CDA8D7F9DE8E3869A4547" x="0" fill="#000000" fill-rule="nonzero"/>
+                <use xlink:href="#g345D07887A3F7E3DFC5B9475941DC4E1" x="0" fill="#000000" fill-rule="nonzero"/>
             </g>
         </g>
-        <g transform="translate(11.930111111111112 7.513000000000001)">
+        <g transform="translate(13.151111111111112 7.513000000000001)">
             <g class="typst-text" transform="scale(1, -1)">
                 <use xlink:href="#gB500AE58D83616BCC756409CFAD369B8" x="0" fill="#000000" fill-rule="nonzero"/>
             </g>
         </g>
-        <g transform="translate(25.985666666666667 7.513000000000001)">
+        <g transform="translate(27.206666666666667 7.513000000000001)">
             <g class="typst-text" transform="scale(1, -1)">
                 <use xlink:href="#gFF25B1CEACF8C2CB526148F5DD331266" x="0" fill="#000000" fill-rule="nonzero"/>
             </g>
         </g>
-        <g transform="translate(32.39866666666667 7.513000000000001)">
+        <g transform="translate(33.61966666666667 7.513000000000001)">
             <g class="typst-text" transform="scale(1, -1)">
                 <use xlink:href="#gD6FEFDDA8A5F50B4F04C153D0E8C1938" x="0" fill="#000000" fill-rule="nonzero"/>
             </g>
         </g>
-        <g transform="translate(37.29 7.513000000000001)">
+        <g transform="translate(38.511 7.513000000000001)">
             <g class="typst-text" transform="scale(1, -1)">
                 <use xlink:href="#g38099741D5872F13C95D3C13DAB38266" x="0" fill="#000000" fill-rule="nonzero"/>
             </g>
         </g>
-        <g transform="translate(45.62555555555556 7.513000000000001)">
+        <g transform="translate(46.84655555555556 7.513000000000001)">
             <g class="typst-text" transform="scale(1, -1)">
                 <use xlink:href="#gB500AE58D83616BCC756409CFAD369B8" x="0" fill="#000000" fill-rule="nonzero"/>
             </g>
         </g>
-        <g transform="translate(59.681111111111115 7.513000000000001)">
+        <g transform="translate(60.90211111111112 7.513000000000001)">
             <g class="typst-text" transform="scale(1, -1)">
                 <use xlink:href="#g623F127414972533198F73B8AF0C5333" x="0" fill="#000000" fill-rule="nonzero"/>
             </g>
         </g>
     </g>
     <defs id="glyph">
-        <symbol id="g66D6B49C062CDA8D7F9DE8E3869A4547" overflow="visible">
-            <path d="M 5.478 1.584 C 5.478 1.683 5.423 1.738 5.302 1.738 C 5.2139997 1.738 5.148 1.661 5.115 1.507 C 4.895 0.638 4.631 0.198 4.334 0.198 C 4.147 0.198 4.048 0.352 4.048 0.65999997 C 4.048 0.803 4.092 1.067 4.191 1.452 L 4.818 3.927 C 4.873 4.136 4.895 4.257 4.895 4.312 C 4.895 4.532 4.774 4.642 4.532 4.642 C 4.301 4.642 4.147 4.5099998 4.07 4.257 C 3.839 4.664 3.509 4.862 3.091 4.862 C 2.376 4.862 1.749 4.499 1.199 3.773 C 0.693 3.091 0.44 2.387 0.44 1.65 C 0.44 0.693 1.001 -0.121 1.925 -0.121 C 2.398 -0.121 2.86 0.132 3.3 0.638 C 3.421 0.22 3.795 -0.121 4.312 -0.121 C 5.071 -0.121 5.302 0.77 5.478 1.584 Z M 3.751 4.114 C 3.85 3.883 3.905 3.729 3.905 3.6299999 C 3.905 3.586 3.894 3.531 3.883 3.454 L 3.3439999 1.342 C 3.3109999 1.221 3.234 1.089 3.135 0.957 C 2.728 0.451 2.332 0.198 1.947 0.198 C 1.518 0.198 1.298 0.528 1.298 1.177 C 1.298 1.441 1.364 1.837 1.496 2.365 C 1.727 3.3 2.057 3.927 2.464 4.268 C 2.684 4.455 2.893 4.5429997 3.102 4.5429997 C 3.399 4.5429997 3.619 4.4 3.751 4.114 Z "/>
+        <symbol id="g345D07887A3F7E3DFC5B9475941DC4E1" overflow="visible">
+            <path d="M 3.41 4.862 C 2.651 4.862 1.969 4.532 1.364 3.883 C 0.759 3.234 0.451 2.519 0.451 1.749 C 0.451 0.671 1.177 -0.121 2.2549999 -0.121 C 3.014 -0.121 3.762 0.176 4.5099998 0.759 C 4.675 0.176 5.016 -0.121 5.522 -0.121 C 5.9179997 -0.121 6.479 0.297 6.479 0.693 C 6.479 0.792 6.424 0.83599997 6.303 0.83599997 C 6.226 0.83599997 6.16 0.792 6.127 0.704 C 6.039 0.473 5.808 0.198 5.555 0.198 C 5.368 0.198 5.269 0.55 5.269 1.265 C 5.269 1.419 5.302 1.54 5.368 1.617 C 5.665 1.98 5.929 2.398 6.138 2.86 C 6.413 3.454 6.578 3.894 6.6219997 4.18 L 6.6219997 4.224 C 6.5889997 4.301 6.523 4.334 6.446 4.334 C 6.391 4.323 6.325 4.235 6.248 4.081 C 6.017 3.289 5.698 2.6069999 5.269 2.046 L 5.269 2.596 C 5.269 3.872 4.631 4.862 3.41 4.862 Z M 4.433 2.321 C 4.433 1.6719999 4.444 1.276 4.455 1.133 C 3.74 0.506 3.014 0.198 2.277 0.198 C 1.65 0.198 1.342 0.583 1.342 1.342 C 1.342 1.98 1.705 3.168 1.958 3.564 C 2.376 4.213 2.86 4.5429997 3.399 4.5429997 C 3.74 4.5429997 3.971 4.411 4.114 4.147 C 4.191 4.015 4.246 3.883 4.301 3.762 C 4.389 3.509 4.433 2.838 4.433 2.321 Z "/>
         </symbol>
         <symbol id="gB500AE58D83616BCC756409CFAD369B8" overflow="visible">
             <path d="M 10.241 2.574 C 10.318 2.6069999 10.3619995 2.673 10.3619995 2.75 C 10.3619995 2.827 10.318 2.893 10.241 2.9259999 C 9.713 3.102 9.218 3.476 8.756 4.048 C 8.448 4.433 8.239 4.884 8.14 5.401 C 8.107 5.544 8.019 5.61 7.876 5.61 C 7.7 5.61 7.612 5.522 7.612 5.346 L 7.612 5.313 L 7.623 5.291 C 7.81 4.345 8.294 3.586 9.097 3.014 L 1.903 3.014 C 2.706 3.586 3.19 4.345 3.377 5.291 L 3.388 5.313 L 3.388 5.346 C 3.388 5.522 3.3 5.61 3.124 5.61 C 2.981 5.61 2.893 5.544 2.86 5.401 C 2.761 4.884 2.552 4.433 2.244 4.048 C 1.782 3.476 1.287 3.102 0.759 2.9259999 C 0.682 2.893 0.638 2.827 0.638 2.75 C 0.638 2.673 0.682 2.6069999 0.759 2.574 C 1.287 2.398 1.782 2.024 2.244 1.452 C 2.552 1.067 2.761 0.616 2.86 0.099 C 2.893 -0.044 2.981 -0.11 3.124 -0.11 C 3.3 -0.11 3.388 -0.022 3.388 0.154 L 3.388 0.187 L 3.377 0.20899999 C 3.19 1.155 2.706 1.914 1.903 2.486 L 9.097 2.486 C 8.294 1.914 7.81 1.155 7.623 0.20899999 L 7.612 0.187 L 7.612 0.154 C 7.612 -0.022 7.7 -0.11 7.876 -0.11 C 8.019 -0.11 8.107 -0.044 8.14 0.099 C 8.239 0.616 8.448 1.067 8.756 1.452 C 9.218 2.024 9.713 2.398 10.241 2.574 Z "/>
@@ -1589,6 +1589,10 @@
     </defs>
 </svg>
 </span>, etc.), these labels can be inferred by inspecting the polarization alone, given that the <em>lone free wire is positive</em>. This is the essence of reading 2-SIC nets back as lambda calculus terms.</p>
+        <h3>An Algorithm for Readback</h3>
+        <p>Since we <em>always</em> identify terms through an open wire at the positive end, we can always infer the polarizations of the nodes in the entire net. This is because if we know the polarity of a single port and the kind of 2-SIC node (eraser, constructor, duplication) we are looking at, then we also know the polarization of the entire node. This is precisely due to the fact that each kind node has two dual polarizations. If there were more polarizations for a given kind of node, we would not necessarily be able to infer the polarization of the entire node knowing only a single port's polarity. Knowing a node's polarization then also let's us know what lambda calculus construct the node corresponds to.</p>
+        <p>This algorithm for readback is of course specific to 2-SIC, but can also be applied in other contexts where polarity is relevant.</p>
+        <h2>Understanding the 2-SIC Polarizations</h2>
         <h3>Abstraction and Application</h3>
         <p>Let's go through abstraction and application polarizations first, as I believe these to be the most intuitive. In lambda calculus, the term <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 21.23 7.513000000000001" width="21.23pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
@@ -1817,7 +1821,7 @@
         </symbol>
     </defs>
 </svg>
-</span> to be translated into a reducible expression when a beta-reduction is possible, which is when <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 6.38 7.513000000000001" width="6.38pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
+</span> to be translated into an active pair when a beta-reduction is possible, which is only when <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 6.38 7.513000000000001" width="6.38pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
         <g transform="translate(0 7.513000000000001)">
             <g class="typst-text" transform="scale(1, -1)">
@@ -2576,7 +2580,7 @@
             <figcaption>Figure 9: Example duplication</figcaption>
           </figure>
         </div>
-        <p>In terms of producers and consumers, erasure is a consumer. It is – sensibly – not a value. Duplication, however, is both a consumer and a producer. It produces two values, which also makes sense as it consumes its argument to produce two values.</p>
+        <p>In terms of producers and consumers, erasure is a consumer. It is – sensibly – not a value. Duplication, however, is both a consumer and a producer. It produces two values, which also makes sense as it consumes its argument to produce two copies of it.</p>
         <h3>Null</h3>
         <p>In a type system for the lambda calculus, if a term is well-typed, intermediate terms found during reduction are also well-typed. Ideally, valid polarized nets should also have a similar property: if an initial net is valid, all intermediate nets during reduction should also be valid. At a minimum, this can be used to read back nets <em>during</em> reduction, and not only <em>after</em> it.</p>
         <p>The problem here is that the four polarizations we have detailed above (abstraction, application, erasure, and duplication) are not sufficient to obtain this property. For example, when erasing the identity function <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 22.054999999999996 7.513000000000001" width="22.054999999999996pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
@@ -2615,7 +2619,7 @@
     </defs>
 </svg>
 </span>:</p>
-        <div class="center"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 64.64241012598424 28.346456692913385" width="64.64241012598424pt" height="28.346456692913385pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
+        <div class="center"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 65.04603716535432 28.346456692913385" width="65.04603716535432pt" height="28.346456692913385pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
         <g transform="translate(0 0)">
             <g class="typst-group">
@@ -2629,8 +2633,8 @@
                     <g transform="translate(51.68776950245661 5.669291338582677)">
                         <path class="typst-shape" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" d="M 0 17.007874 C 14.173228 17.007874 14.173228 0 0 0 "/>
                     </g>
-                    <g transform="translate(59.05178933228346 14.173228346456693)">
-                        <path class="typst-shape" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" d="M 5.590621 3.2659013 L 3.2659013 0 L 0 2.3247194 "/>
+                    <g transform="translate(59.37674582677165 12.901889763779527)">
+                        <path class="typst-shape" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" d="M 5.6692915 2.8346457 L 2.8346457 0 L 0 2.8346457 "/>
                     </g>
                     <g transform="translate(8.066937007874015 11.173228346456693)">
                         <path class="typst-shape" fill="#000000" fill-rule="nonzero" d="M 6 3 C 6 1.344648 4.655352 0 3 0 C 1.344648 0 0 1.344648 0 3 C 0 4.655352 1.344648 6 3 6 C 4.655352 6 6 4.655352 6 3 Z "/>
@@ -2946,7 +2950,7 @@
 </div>
         <div class="center">
           <figure>
-            <svg style="overflow: visible;" class="typst-doc" viewBox="0 0 105.84795531662984 70.86614173228347" width="105.84795531662984pt" height="70.86614173228347pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
+            <svg style="overflow: visible;" class="typst-doc" viewBox="0 0 105.93851532922827 70.86614173228347" width="105.93851532922827pt" height="70.86614173228347pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
         <g transform="translate(0 0)">
             <g class="typst-group">
@@ -2960,14 +2964,14 @@
                     <g transform="translate(35.88733428050377 22.677165354330707)">
                         <path class="typst-shape" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" d="M 32.14416 0 C 17.970934 0 14.173228 25.51181 0 25.51181 "/>
                     </g>
-                    <g transform="translate(43.31221687253535 41.52955541102362)">
-                        <path class="typst-shape" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" d="M 0.14440499 0 L 0 4.0061927 L 4.0061927 4.1505976 "/>
+                    <g transform="translate(44.720620607968414 40.197803187401576)">
+                        <path class="typst-shape" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" d="M 0 0 L 0.17545936 4.004953 L 4.1804123 3.8294933 "/>
                     </g>
                     <g transform="translate(35.88733428050377 22.677165354330707)">
                         <path class="typst-shape" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" d="M 0 0 C 14.173228 0 17.970934 25.51181 32.14416 25.51181 "/>
                     </g>
-                    <g transform="translate(40.926779033165275 22.6940849007874)">
-                        <path class="typst-shape" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" d="M 0 4.530623 L 3.969301 3.969301 L 3.407979 0 "/>
+                    <g transform="translate(42.395934015842435 24.18152391496063)">
+                        <path class="typst-shape" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" d="M 0 4.1505976 L 4.0061927 4.0061927 L 3.8617876 0 "/>
                     </g>
                     <g transform="translate(35.88733428050377 5.669291338582676)">
                         <path class="typst-shape" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" d="M 32.14416 0 C 17.970934 0 14.173228 0 0 0 "/>
@@ -2978,8 +2982,8 @@
                     <g transform="translate(92.58024766633055 14.173228346456693)">
                         <path class="typst-shape" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" d="M 0 42.519684 C 14.173228 42.519684 14.173228 0 0 0 "/>
                     </g>
-                    <g transform="translate(100.19147464891329 35.43307086614173)">
-                        <path class="typst-shape" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" d="M 5.656481 3.0186942 L 3.0186942 0 L 0 2.6377864 "/>
+                    <g transform="translate(100.26922399064559 32.25472440944881)">
+                        <path class="typst-shape" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" d="M 5.6692915 2.8346457 L 2.8346457 0 L 0 2.8346457 "/>
                     </g>
                     <g transform="translate(11.338582677165354 42.51968503937008)">
                         <path class="typst-shape" fill="#ffffff" fill-rule="nonzero" stroke="#000000" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" d="M 24.548752 28.346457 L 24.548752 0 L 0 14.173228 L 24.548752 28.346457 Z "/>
@@ -3105,7 +3109,7 @@
             <figcaption>Figure 11: Duplicating the identity function</figcaption>
           </figure>
         </div>
-        <p>This intermediate term has two duplicator connected by their principal port. They therefore must have different polarizations. When looking at this dual of the duplication node, it consumes two values and produces one, but these values are symmetric. This is because both of the consumed values go into aux ports, unlike the application where one consumed value goes into an aux port and one into a principle port. Because of the commutation rules, this can be seen as a single term with two values, or a superposition.</p>
+        <p>This intermediate term has two duplication nodes connected via their principal port. They therefore must have different polarizations. When looking at this dual of the duplication node, it consumes two values and produces one, but the consumed values are symmetric. That is, both of the consumed values go into aux ports, unlike the in an application where one consumed value goes into an aux port and one into a principle port. Because of the commutation rules, this can be seen as a single term with two values, or a superposition.</p>
         <h2>Extending Lambda Calculus</h2>
         <h3>Null and Superpositions as Terms</h3>
         <p>As we saw above, there are two polarizations that are only present in intermediate nets. What if we allowed for these polarizations to appear in the image of <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 12.144 7.513000000000001" width="12.144pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
@@ -3881,7 +3885,7 @@
         <hr>
         <div class="footnotes">
           <div><a id="footnote-1-body" href="#footnote-1-number">¹</a> As mentioned in the previous post, the 2-SIC encoding does not soundly evaluate the full set of terms of lambda calculus. Similarly, the extension of lambda calculus with superpositions is not fully soundly evaluated by 2-SIC due to the same issue of undesired duplication / superposition interactions. Specifically, duplicating a superposition results in each fresh variable receiving one argument of the superposition, instead of the superposition itself being duplicated.</div>
-          <div><a id="footnote-1-body" href="#footnote-1-number">²</a> Equivalence is a deep subject. A naive/incomplete definition is: lambda calculus terms <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 6.292 7.513000000000001" width="6.292pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
+          <div><a id="footnote-1-body" href="#footnote-1-number">²</a> Equivalence is a bit too nuanced to present in a footnote. A naive/incomplete definition could be: lambda calculus terms <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 6.292 7.513000000000001" width="6.292pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
         <g transform="translate(0 7.513000000000001)">
             <g class="typst-text" transform="scale(1, -1)">

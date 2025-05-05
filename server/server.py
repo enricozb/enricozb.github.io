@@ -110,7 +110,7 @@ def watch_typst(typst_file):
     print("Started typst watch process...")
     for line in process.stdout:
         print(line.strip())
-        if line.strip():  # Any output means file was recompiled
+        if "compiled" in line.strip():
             broadcast_reload()
 
     process.wait()
@@ -126,6 +126,7 @@ if __name__ == "__main__":
 
     try:
         watch_typst(sys.argv[1])
-    except: 
+    except Exception as e:
+        pass
 
     server.shutdown()

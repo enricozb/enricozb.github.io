@@ -455,8 +455,9 @@ in a sort of "use-once channel" where data can be sent and read. A term like thi
   cetz.draw.content((4.2, 0), $hat(x)$)
 })
 
-where $hat(x)$ is an _unscoped variable_ that is being referenced outside of this body. Can you figure out what this term
-normalizes to? Try normalizing the interaction net and reading back the result.
+where $hat(x)$ is an _unscoped variable_ that is being referenced outside of this body. Can you figure out what
+this term normalizes to?#footnote[It does not terminate when evaluated strictly, but normalizes to $*$ if evaluated
+lazily.] Try normalizing the interaction net and reading back the result.
 
 = Conclusion
 

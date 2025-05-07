@@ -141,3 +141,12 @@
   "ports": ((0, calc.sqrt(3)/4), (-0.3, -calc.sqrt(3)/4), (0.3, -calc.sqrt(3)/4)),
   "label": (0, -0.1)
 )
+
+#let reference-node = (
+  "shape": {
+    cetz.draw.stroke(1pt)
+    cetz.draw.rect((-0.3, -0.3), (0.3, 0.3))
+  },
+  "ports": ((0, 0.3),),
+  "label": (0, 0),
+)

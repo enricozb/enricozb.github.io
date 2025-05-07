@@ -111,7 +111,7 @@ The formalization of ports either producing or consuming terms is _polarization_
 A _polarized_ interaction system is a refinement of an interaction system. For each kind of node, we define
 (possibly multiple) classifications of its ports as either producers or consumers.
 
-In #link("https://franchufranchu.github.io/answers/single-pass-read back/")[Franchu's post on read back], polarization
+In #link("https://franchufranchu.github.io/answers/single-pass-readback/")[Franchu's post on read back], polarization
 is described as a labeling of ports as "positive" or "negative", where positive ports are producers and negative
 ports are consumers. While I will also use this terminology here, I find it very useful to draw polarity using arrows,
 where the direction goes from positive to negative. That is, the arrow starts at a producer and ends at a consumer.

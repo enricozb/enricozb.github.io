@@ -563,7 +563,7 @@
         <h2>Polarized Interaction Systems</h2>
         <h3>Polarizing SIC Nodes</h3>
         <p>A <em>polarized</em> interaction system is a refinement of an interaction system. For each kind of node, we define (possibly multiple) classifications of its ports as either producers or consumers.</p>
-        <p>In <a href="https://franchufranchu.github.io/answers/single-pass-read back/">Franchu's post on read back</a>, polarization is described as a labelling of ports as "positive" or "negative", where positive ports are producers and negative ports are consumers. While I will also use this terminology here, I find it very useful to draw polarity using arrows, where the direction goes from negative to positive.</p>
+        <p>In <a href="https://franchufranchu.github.io/answers/single-pass-read back/">Franchu's post on read back</a>, polarization is described as a labeling of ports as "positive" or "negative", where positive ports are producers and negative ports are consumers. While I will also use this terminology here, I find it very useful to draw polarity using arrows, where the direction goes from negative to positive.</p>
         <p>For each of the three 2-SIC nodes, we will have two possible polarizations:</p>
         <div class="center">
           <figure>
@@ -1590,7 +1590,7 @@
 </svg>
 </span>, etc.), these labels can be inferred by inspecting the polarization alone, given that the <em>lone free wire is positive</em>. This is the essence of reading 2-SIC nets back as lambda calculus terms.</p>
         <h3>An Algorithm for Readback</h3>
-        <p>Since we <em>always</em> identify terms through an open wire at the positive end, we can always infer the polarizations of the nodes in the entire net. This is because if we know the polarity of a single port and the kind of 2-SIC node (eraser, constructor, duplication) we are looking at, then we also know the polarization of the entire node. This is precisely due to the fact that each kind node has two dual polarizations. If there were more polarizations for a given kind of node, we would not necessarily be able to infer the polarization of the entire node knowing only a single port's polarity. Knowing a node's polarization then also let's us know what lambda calculus construct the node corresponds to.</p>
+        <p>Since we <em>always</em> identify terms through an open wire at the positive end, we can always infer the polarizations of the nodes in the entire net. This is because if we know the polarity of a single port and the kind of 2-SIC node (eraser, constructor, duplication) we are looking at, then we also know the polarization of the entire node. This is precisely due to the fact that each kind of node has two dual polarizations. If there were more polarizations for a given kind of node, we would not necessarily be able to infer the polarization of the entire node knowing only a single port's polarity. Knowing a node's polarization then also lets us know which lambda calculus construct the node corresponds to.</p>
         <p>This algorithm for readback is of course specific to 2-SIC, but can also be applied in other contexts where polarity is relevant.</p>
         <h2>Understanding the 2-SIC Polarizations</h2>
         <h3>Abstraction and Application</h3>
@@ -3109,7 +3109,7 @@
             <figcaption>Figure 11: Duplicating the identity function</figcaption>
           </figure>
         </div>
-        <p>This intermediate term has two duplication nodes connected via their principal port. They therefore must have different polarizations. When looking at this dual of the duplication node, it consumes two values and produces one, but the consumed values are symmetric. That is, both of the consumed values go into aux ports, unlike the in an application where one consumed value goes into an aux port and one into a principle port. Because of the commutation rules, this can be seen as a single term with two values, or a superposition.</p>
+        <p>This intermediate term has two duplication nodes connected via their principal port. They therefore must have different polarizations. When looking at this dual of the duplication node, it consumes two values and produces one, but the consumed values are symmetric. That is, both of the consumed values go into aux ports, unlike the in an application where one consumed value goes into an aux port and one into a principal port. Because of the commutation rules, this can be seen as a single term with two values, or a superposition.</p>
         <h2>Extending Lambda Calculus</h2>
         <h3>Null and Superpositions as Terms</h3>
         <p>As we saw above, there are two polarizations that are only present in intermediate nets. What if we allowed for these polarizations to appear in the image of <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 12.144 7.513000000000001" width="12.144pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">

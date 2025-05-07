@@ -112,7 +112,7 @@ A _polarized_ interaction system is a refinement of an interaction system. For e
 (possibly multiple) classifications of its ports as either producers or consumers.
 
 In #link("https://franchufranchu.github.io/answers/single-pass-read back/")[Franchu's post on read back], polarization
-is described as a labelling of ports as "positive" or "negative", where positive ports are producers and negative
+is described as a labeling of ports as "positive" or "negative", where positive ports are producers and negative
 ports are consumers. While I will also use this terminology here, I find it very useful to draw polarity
 using arrows, where the direction goes from negative to positive.
 
@@ -203,9 +203,9 @@ nets back as lambda calculus terms.
 Since we _always_ identify terms through an open wire at the positive end, we can always infer the polarizations of
 the nodes in the entire net. This is because if we know the polarity of a single port and the kind of 2-SIC node
 (eraser, constructor, duplication) we are looking at, then we also know the polarization of the entire node. This
-is precisely due to the fact that each kind node has two dual polarizations. If there were more polarizations for
+is precisely due to the fact that each kind of node has two dual polarizations. If there were more polarizations for
 a given kind of node, we would not necessarily be able to infer the polarization of the entire node knowing only
-a single port's polarity. Knowing a node's polarization then also let's us know what lambda calculus construct the
+a single port's polarity. Knowing a node's polarization then also lets us know which lambda calculus construct the
 node corresponds to.
 
 This algorithm for readback is of course specific to 2-SIC, but can also be applied in other contexts where polarity
@@ -381,7 +381,7 @@ necessarily results in two duplication nodes that have opposite polarities:
 This intermediate term has two duplication nodes connected via their principal port. They therefore must have
 different polarizations. When looking at this dual of the duplication node, it consumes two values and produces
 one, but the consumed values are symmetric. That is, both of the consumed values go into aux ports, unlike the
-in an application where one consumed value goes into an aux port and one into a principle port. Because of the
+in an application where one consumed value goes into an aux port and one into a principal port. Because of the
 commutation rules, this can be seen as a single term with two values, or a superposition.
 
 = Extending Lambda Calculus

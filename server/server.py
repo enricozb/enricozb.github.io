@@ -1,5 +1,6 @@
 import http.server
 import os
+import signal
 import socket
 import socketserver
 import subprocess
@@ -9,14 +10,11 @@ import time
 from http import HTTPStatus
 
 PORT = 1234
-
-# HTML injection script
 EVENT_SCRIPT = b'\n<script>new EventSource("/events").addEventListener("reload", () => location.reload())</script></html>'
 
-# Clients waiting for events
 clients = set()
 clients_lock = threading.Lock()
-
+running = True  # Used to stop event stream threads cleanly
 
 class InjectingHandler(http.server.SimpleHTTPRequestHandler):
     def server_bind(self):
@@ -39,7 +37,7 @@ class InjectingHandler(http.server.SimpleHTTPRequestHandler):
                 clients.add(self.wfile)
 
             try:
-                while True:
+                while running:
                     time.sleep(1)
             except (ConnectionResetError, BrokenPipeError):
                 pass
@@ -65,7 +63,6 @@ class InjectingHandler(http.server.SimpleHTTPRequestHandler):
             self.send_header("Content-Length", str(len(content)))
             self.end_headers()
             self.wfile.write(content)
-
             return None
         else:
             return super().send_head()
@@ -84,7 +81,13 @@ def broadcast_reload():
             clients.discard(client)
 
 
+child_process = None
+server_thread = None
+server = None
+
 def watch_typst(typst_file):
+    global child_process
+
     watch_command = [
         "typst",
         "--color=always",
@@ -99,7 +102,7 @@ def watch_typst(typst_file):
         "--no-serve",
     ]
 
-    process = subprocess.Popen(
+    child_process = subprocess.Popen(
         watch_command,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
@@ -108,25 +111,49 @@ def watch_typst(typst_file):
     )
 
     print("Started typst watch process...")
-    for line in process.stdout:
-        print(line.strip())
-        if "compiled" in line.strip():
-            broadcast_reload()
+    try:
+        for line in child_process.stdout:
+            print(line.strip())
+            if "compiled" in line.strip():
+                broadcast_reload()
+    except Exception as e:
+        print(f"Watch process error: {e}")
+    finally:
+        print("Cleaning up typst process...")
+        if child_process.poll() is None:
+            child_process.terminate()
+            child_process.wait()
+        print("Typst process cleaned up.")
 
-    process.wait()
-    print("Typst process exited.")
+
+def handle_exit(sig, frame):
+    global running
+    print("Received signal to exit.")
+    running = False
+
+    if child_process and child_process.poll() is None:
+        print("Terminating child process...")
+        child_process.terminate()
+        child_process.wait()
+
+    if server:
+        print("Shutting down HTTP server...")
+        server.shutdown()
+
+    if server_thread:
+        server_thread.join()
+
+    print("Shutdown complete.")
+    sys.exit(0)
 
 
 if __name__ == "__main__":
+    signal.signal(signal.SIGINT, handle_exit)
+    signal.signal(signal.SIGTERM, handle_exit)
+
     server = socketserver.ThreadingTCPServer(("", PORT), InjectingHandler)
+    server_thread = threading.Thread(target=server.serve_forever)
+    server_thread.start()
 
-    # Thread for HTTP server
-    threading.Thread(target=server.serve_forever, daemon=True).start()
     print(f"HTTP server running at http://localhost:{PORT}")
-
-    try:
-        watch_typst(sys.argv[1])
-    except Exception as e:
-        pass
-
-    server.shutdown()
+    watch_typst(sys.argv[1])

@@ -113,8 +113,8 @@ A _polarized_ interaction system is a refinement of an interaction system. For e
 
 In #link("https://franchufranchu.github.io/answers/single-pass-read back/")[Franchu's post on read back], polarization
 is described as a labeling of ports as "positive" or "negative", where positive ports are producers and negative
-ports are consumers. While I will also use this terminology here, I find it very useful to draw polarity
-using arrows, where the direction goes from negative to positive.
+ports are consumers. While I will also use this terminology here, I find it very useful to draw polarity using arrows,
+where the direction goes from positive to negative. That is, the arrow starts at a producer and ends at a consumer.
 
 For each of the three 2-SIC nodes, we will have two possible polarizations:
 

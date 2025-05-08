@@ -380,9 +380,9 @@ necessarily results in two duplication nodes that have opposite polarities:
 
 This intermediate term has two duplication nodes connected via their principal port. They therefore must have
 different polarizations. When looking at this dual of the duplication node, it consumes two values and produces
-one, but the consumed values are symmetric. That is, both of the consumed values go into aux ports, unlike the
-in an application where one consumed value goes into an aux port and one into a principal port. Because of the
-commutation rules, this can be seen as a single term with two values, or a superposition.
+one, but the consumed values are symmetric. That is, both of the consumed values go into aux ports, unlike in an
+application where one consumed value goes into an aux port and one into a principal port. Because of the commutation
+rules, this can be seen as a single term with two values, or a superposition.
 
 = Extending Lambda Calculus
 

@@ -232,7 +232,7 @@ auxiliary ports -- is to create an active pair or reducible expression when $f$ 
 want the lambda calculus term $(f x)$ to be translated into an active pair when a beta-reduction is possible,
 which is only when $f$ is an abstraction.
 
-When encoding an application, we connect the single positive wire to the occurence of the abstraction in the net.
+When encoding an application, we connect the single positive wire to the occurence of the application in the net.
 
 Dually, an abstraction $lambda x. t$ consumes a term $t$ but it produces _two_, $x$ and $lambda x. t$:
 

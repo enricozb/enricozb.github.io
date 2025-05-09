@@ -158,7 +158,7 @@ Some things to note:
 
 == An Example Polarized Term
 
-Let's look at the polarization of the term discussed in the previous post, $thin thin (lambda f. (f f) lambda x. x)$:
+Let's look at the polarization of the term discussed in the previous post, $thin thin (lambda f. f f) (lambda x. x)$:
 
 #post.canvas(caption: "Example polarized term", {
   // left half
@@ -431,7 +431,7 @@ in a sort of "use-once channel" where data can be sent and read. A term like thi
 #post.canvas(caption: "An unscoped lambda term", {
   wire = wire.with(polarize: 0.7)
 
-  cetz.draw.content((0, 0), $map((lambda hat(x). * lambda y. hat(x))) =$)
+  cetz.draw.content((0, 0), $map((lambda hat(x). *) (lambda y. hat(x)))) =$)
 
   con("lam1", (3, -1.5))
   con("lam2", (3.5, 1.5), angle: 180deg)

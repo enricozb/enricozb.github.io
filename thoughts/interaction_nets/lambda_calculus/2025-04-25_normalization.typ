@@ -333,7 +333,7 @@ There are a few things to digest here:
 == Translating an Example Term
 
 Let's attempt a sample lambda calculus reduction using our 2-SIC translation $map(dot)$, specifically of the term
-$(lambda f. (f f) lambda x. x)$. Using a friendlier function-definition syntax, the term we are interested in is
+$thin (lambda f. f f) (lambda x. x)$. Using a friendlier function-definition syntax, the term we are interested in is
 $thick "apply_self"(id) thin$ where
 
 #post.center(
@@ -345,7 +345,7 @@ $thick "apply_self"(id) thin$ where
 
 We expect the reduction to result in $id$ or $lambda x. x$.
 
-First, we must translate $med (lambda f. (f f) lambda x. x)$. There are two abstractions and one application, thus we need
+First, we must translate $med (lambda f. f f) (lambda x. x)$. There are two abstractions and one application, thus we need
 three constructor nodes. We also use $f$ twice so we will need one duplication node. It's a good exercise to attempt this
 translation yourself! Click below when you're ready to see how I've drawn it:
 

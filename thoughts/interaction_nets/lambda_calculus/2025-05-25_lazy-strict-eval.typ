@@ -28,8 +28,9 @@
 
 There are currently two main algorithms for normalizing interaction nets: lazy evaluation and strict evaluation. We'll
 see that these two algorithms are somewhat at odds with each other. Specifically, strict evaluation is highly
-parallelizable, while lazy evaluation can normalize a larger class of terms. In order to understand this difference,
-we'll have to introduce a new family of interaction systems: $k$-SIC with reference nodes.
+parallelizable and has garbage collection for free, while lazy evaluation can normalize a larger class of
+terms. In order to understand this difference, we'll have to introduce a new family of interaction systems:
+$k$-SIC with reference nodes.
 
 = $k$-SIC + References
 
@@ -90,8 +91,8 @@ And we have the following rewrite rules:
 })
 
 #post.canvas({
-  con("i", (0, 0), angle: 180deg, show-aux: true)
-  con("j", (0, -1.5), show-aux: true)
+  con("j", (0, 0), angle: 180deg, show-aux: true)
+  con("i", (0, -1.5), show-aux: true)
   wire("i.0", "j.0", stroke: red)
 
   cetz.draw.content("i.label", $i$)
@@ -177,7 +178,7 @@ And we have the following rewrite rules:
   cetz.draw.content((5.5, -0.7), $(5)$)
 })
 
-#post.canvas(caption: [$k$-SIC rewrite rules], {
+#post.canvas({
   ref("r", (0, 0), angle: 180deg)
   era("e", (0, -1.5))
   wire("r.0", "e.0", stroke: red)
@@ -192,12 +193,25 @@ And we have the following rewrite rules:
   cetz.draw.content((5.5, -0.7), $(6)$)
 })
 
+#post.canvas(caption: [$k$-SIC rewrite rules], {
+  era("e1", (0, 0), angle: 180deg)
+  era("e2", (0, -1.5))
+  wire("e1.0", "e2.0", stroke: red)
+
+  cetz.draw.content((1.2, -0.7), $~~>$)
+
+  // hidden so the widths of the diagrams are the same
+  cetz.draw.content((-1.5, -0.7), hide($(i = j)$))
+
+  cetz.draw.content((5.5, -0.7), $(7)$)
+})
+
 Some things to note:
 - The dashed circles in rules (3) and (4) represent replacing a reference node $r in cal(R)$ with the net it refers to.
 - Rule (3) can be optimized by tracking whether a constructor node of label $i$ exists in the definition of $r$. If not,
   one can instead annihilate the $i$ node and duplicate the reference node $r$, similar to rule (5). This is commonly
   known as the _DUP-REF optimization_.
-- In an interaction systems with effects, rule (6) may not be correct as there may be effects in the expansion of $r$
+- In a interaction systems with effects, rule (6) may not be correct as there may be effects in the expansion of $r$
   when erasing it.
 
 = Infinite Nets
@@ -205,7 +219,7 @@ Some things to note:
 Recursive -- or mutually recursive -- use of the new reference node allows for the construction of infinite nets. For
 example:
 
-#post.canvas(caption: "An infinite net", {
+#post.canvas(caption: "A lazy infinite net", {
   cetz.draw.content((0, 0), $"foo" :=$)
 
   con("l", (2, 0))
@@ -219,7 +233,7 @@ example:
   cetz.draw.content("r.label", $"foo"$)
 })
 
-Which is equivalent to the infinite net:
+is equivalent to the infinite net:
 
 #post.canvas(caption: "An expanded infinite net", {
   cetz.draw.content((0, 0), $"foo" :=$)
@@ -246,7 +260,7 @@ Which is equivalent to the infinite net:
 })
 
 This is very similar to infinite lists in Haskell, which are possible due to Haskell's laziness.  This reference
-node is a way to introduce laziness into a strict context, as references are only expanded when interacted with.
+node is a way to introduce laziness even in a strict context, as references are only expanded when interacted with.
 
 = Strict Evaluation
 

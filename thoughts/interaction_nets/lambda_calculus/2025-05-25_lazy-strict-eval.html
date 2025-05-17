@@ -27,7 +27,7 @@
           <p>Please read the <a href="2025-04-25_normalization.html">first post</a> if you are unfamiliar with interaction nets, and/or the <a href="2025-05-05_polarity.html">second post</a> for an introduction to polarity.</p>
         </div>
         <h2>Overview</h2>
-        <p>There are currently two main algorithms for normalizing interaction nets: lazy evaluation and strict evaluation. We'll see that these two algorithms are somewhat at odds with each other. Specifically, strict evaluation is highly parallelizable, while lazy evaluation can normalize a larger class of terms. In order to understand this difference, we'll have to introduce a new family of interaction systems: <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 5.896 7.513000000000001" width="5.896pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
+        <p>There are currently two main algorithms for normalizing interaction nets: lazy evaluation and strict evaluation. We'll see that these two algorithms are somewhat at odds with each other. Specifically, strict evaluation is highly parallelizable and has garbage collection for free, while lazy evaluation can normalize a larger class of terms. In order to understand this difference, we'll have to introduce a new family of interaction systems: <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 5.896 7.513000000000001" width="5.896pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
         <g transform="translate(0 7.513000000000001)">
             <g class="typst-text" transform="scale(1, -1)">
@@ -651,7 +651,7 @@
             <g class="typst-group">
                 <g>
                     <g transform="translate(58.36824059492564 33.05268861121243)">
-                        <path class="typst-shape" fill="none" stroke="#ff4136" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" d="M 0 0 C 0 14.173228 0 3.7977052 0 17.970934 "/>
+                        <path class="typst-shape" fill="none" stroke="#ff4136" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" d="M 0 17.970934 C 0 3.7977052 0 14.173228 0 0 "/>
                     </g>
                     <g transform="translate(115.06115398075242 0.9357931245038535)">
                         <path class="typst-shape" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" d="M 0 0 C 0 14.173228 28.346457 70.86614 28.346457 85.03937 "/>
@@ -677,10 +677,10 @@
                     <g transform="translate(66.87217760279965 75.5723736505825)">
                         <path class="typst-shape" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" d="M 0 0 L 0 8.503937 "/>
                     </g>
-                    <g transform="translate(56.47074059492564 14.126667140251882)">
+                    <g transform="translate(56.47074059492564 62.31564351820464)">
                         <path class="typst-shape" fill="none" d="M 0 0 L 3.795 0 L 3.795 7.634 L 0 7.634 L 0 0 Z "/>
                     </g>
-                    <g transform="translate(56.47074054768154 14.126667077259757)">
+                    <g transform="translate(56.47074054768154 62.315643455212516)">
                         <g class="typst-group">
                             <g>
                                 <g transform="translate(0 0)">
@@ -697,10 +697,10 @@
                             </g>
                         </g>
                     </g>
-                    <g transform="translate(56.03074059492563 61.24864351820464)">
+                    <g transform="translate(56.03074059492563 13.059667140251882)">
                         <path class="typst-shape" fill="none" d="M 0 0 L 4.675 0 L 4.675 9.768 L 0 9.768 L 0 0 Z "/>
                     </g>
-                    <g transform="translate(56.03074046894138 61.248643423716445)">
+                    <g transform="translate(56.03074046894138 13.059667045763694)">
                         <g class="typst-group">
                             <g>
                                 <g transform="translate(0 0)">
@@ -1396,9 +1396,7 @@
     </defs>
 </svg>
 </div>
-        <div class="center">
-          <figure>
-            <svg style="overflow: visible;" class="typst-doc" viewBox="0 0 221.30275240594926 54.0236220472441" width="221.30275240594926pt" height="54.0236220472441pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
+        <div class="center"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 221.30275240594926 54.0236220472441" width="221.30275240594926pt" height="54.0236220472441pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
         <g transform="translate(0 0)">
             <g class="typst-group">
@@ -1518,6 +1516,106 @@
         </symbol>
     </defs>
 </svg>
+</div>
+        <div class="center">
+          <figure>
+            <svg style="overflow: visible;" class="typst-doc" viewBox="0 0 221.37425240594928 48.51968503937009" width="221.37425240594928pt" height="48.51968503937009pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
+    <g>
+        <g transform="translate(0 0)">
+            <g class="typst-group">
+                <g>
+                    <g transform="translate(58.36824059492564 3)">
+                        <path class="typst-shape" fill="none" stroke="#ff4136" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" d="M 0 0 C 0 14.173228 0 28.346457 0 42.519684 "/>
+                    </g>
+                    <g transform="translate(55.36824059492563 0)">
+                        <path class="typst-shape" fill="#000000" fill-rule="nonzero" d="M 3 6 C 4.655352 6 6 4.655352 6 3 C 6 1.344648 4.655352 0 3 0 C 1.344648 0 0 1.344648 0 3 C 0 4.655352 1.344648 6 3 6 Z "/>
+                    </g>
+                    <g transform="translate(55.36824059492563 42.51968503937008)">
+                        <path class="typst-shape" fill="#000000" fill-rule="nonzero" d="M 3 0 C 1.344648 0 0 1.344648 0 3 C 0 4.655352 1.344648 6 3 6 C 4.655352 6 6 4.655352 6 3 C 6 1.344648 4.655352 0 3 0 Z "/>
+                    </g>
+                    <g transform="translate(84.3374886264217 19.031019685039368)">
+                        <path class="typst-shape" fill="none" d="M 0 0 L 16.093 0 L 16.093 7.623 L 0 7.623 L 0 0 Z "/>
+                    </g>
+                    <g transform="translate(84.33748859492562 19.031019685039368)">
+                        <g class="typst-group">
+                            <g>
+                                <g transform="translate(0 0)">
+                                    <g class="typst-group">
+                                        <g>
+                                            <g transform="translate(0 7.513000000000001)">
+                                                <g class="typst-text" transform="scale(1, -1)">
+                                                    <use xlink:href="#g706B36763B01C7B60550845E2D4F3EDD" x="0" fill="#000000" fill-rule="nonzero"/>
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                    <g transform="translate(0 17.72201968503937)">
+                        <path class="typst-shape" fill="none" d="M 0 0 L 31.697111 0 L 31.697111 10.241 L 0 10.241 L 0 0 Z "/>
+                    </g>
+                    <g transform="translate(-0.00000011373578393352896 17.72201957480315)">
+                        <g class="typst-group">
+                            <g>
+                                <g transform="translate(0 0)">
+                                    <g class="typst-group">
+                                        <g/>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                    <g transform="translate(207.17325240594926 17.72201968503937)">
+                        <path class="typst-shape" fill="none" d="M 0 0 L 14.201 0 L 14.201 10.241 L 0 10.241 L 0 0 Z "/>
+                    </g>
+                    <g transform="translate(207.17325229571307 17.72201957480315)">
+                        <g class="typst-group">
+                            <g>
+                                <g transform="translate(0 0)">
+                                    <g class="typst-group">
+                                        <g>
+                                            <g transform="translate(0 7.513000000000001)">
+                                                <g class="typst-text" transform="scale(1, -1)">
+                                                    <use xlink:href="#g1ADB937F9D99194E627918235549D0DE" x="0" fill="#000000" fill-rule="nonzero"/>
+                                                </g>
+                                            </g>
+                                            <g transform="translate(4.279 7.513000000000001)">
+                                                <g class="typst-text" transform="scale(1, -1)">
+                                                    <use xlink:href="#g7479499A58DB2E93207D4FF4CCA58AF7" x="0" fill="#000000" fill-rule="nonzero"/>
+                                                </g>
+                                            </g>
+                                            <g transform="translate(9.922 7.513000000000001)">
+                                                <g class="typst-text" transform="scale(1, -1)">
+                                                    <use xlink:href="#gDEFA4A29ABFDF9DA4A1C4B57CC13D61F" x="0" fill="#000000" fill-rule="nonzero"/>
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+    <defs id="glyph">
+        <symbol id="g706B36763B01C7B60550845E2D4F3EDD" overflow="visible">
+            <path d="M 15.356 2.574 C 15.433 2.6069999 15.477 2.673 15.477 2.75 C 15.477 2.827 15.433 2.893 15.356 2.9259999 C 14.817 3.102 14.322 3.476 13.871 4.048 C 13.552 4.433 13.342999 4.884 13.2439995 5.401 C 13.2109995 5.544 13.123 5.61 12.98 5.61 C 12.804 5.61 12.716 5.522 12.716 5.335 L 12.727 5.313 L 12.727 5.302 C 12.914 4.345 13.409 3.586 14.212 3.014 L 12.804 3.014 C 12.661 3.014 12.529 3.113 12.43 3.3109999 C 12.276 3.674 12.166 3.96 12.1 4.147 C 11.901999 4.5429997 11.627 4.741 11.264 4.741 C 10.615 4.741 10.208 4.378 10.065 3.641 C 9.966 2.904 9.9 2.343 9.867 1.969 C 9.779 1.507 9.559 1.276 9.196 1.276 C 8.833 1.276 8.613 1.507 8.525 1.969 C 8.426 2.706 8.36 3.267 8.327 3.641 C 8.184 4.378 7.777 4.741 7.128 4.741 C 6.479 4.741 6.072 4.378 5.929 3.641 C 5.83 2.904 5.764 2.343 5.731 1.969 C 5.643 1.507 5.423 1.276 5.071 1.276 C 4.708 1.276 4.4769998 1.507 4.389 1.969 C 4.29 2.706 4.224 3.267 4.191 3.641 C 4.048 4.378 3.652 4.741 3.003 4.741 C 2.6399999 4.741 2.354 4.5429997 2.156 4.147 C 2.002 3.784 1.892 3.498 1.826 3.3109999 C 1.727 3.113 1.595 3.014 1.452 3.014 L 0.88 3.014 C 0.704 3.014 0.616 2.9259999 0.616 2.75 C 0.616 2.574 0.704 2.486 0.88 2.486 L 1.452 2.486 C 1.8149999 2.486 2.101 2.684 2.299 3.091 C 2.453 3.454 2.563 3.74 2.629 3.927 C 2.728 4.125 2.849 4.224 3.003 4.224 C 3.355 4.224 3.575 3.993 3.6629999 3.531 C 3.762 2.794 3.828 2.233 3.861 1.859 C 4.004 1.122 4.411 0.759 5.071 0.759 C 5.72 0.759 6.116 1.122 6.259 1.859 C 6.358 2.596 6.424 3.157 6.457 3.531 C 6.545 3.993 6.765 4.224 7.128 4.224 C 7.491 4.224 7.711 3.993 7.799 3.531 C 7.898 2.794 7.9639997 2.233 7.9969997 1.859 C 8.14 1.122 8.547 0.759 9.196 0.759 C 9.845 0.759 10.252 1.122 10.3949995 1.859 C 10.4939995 2.596 10.559999 3.157 10.593 3.531 C 10.681 3.993 10.901 4.224 11.264 4.224 C 11.407 4.224 11.528 4.125 11.627 3.927 C 11.913 3.245 12.056 2.486 12.804 2.486 L 14.212 2.486 C 13.409 1.914 12.914 1.155 12.727 0.198 L 12.727 0.187 L 12.716 0.16499999 C 12.716 -0.022 12.804 -0.11 12.98 -0.11 C 13.123 -0.11 13.2109995 -0.044 13.2439995 0.099 C 13.342999 0.616 13.552 1.067 13.871 1.452 C 14.322 2.024 14.817 2.398 15.356 2.574 Z "/>
+        </symbol>
+        <symbol id="g1ADB937F9D99194E627918235549D0DE" overflow="visible">
+            <path d="M 3.498 -2.728 C 3.597 -2.728 3.652 -2.673 3.652 -2.574 C 3.652 -2.541 3.6299999 -2.497 3.597 -2.453 C 3.025 -2.013 2.563 -1.287 2.222 -0.286 C 1.925 0.583 1.771 1.441 1.771 2.288 L 1.771 3.212 C 1.771 4.059 1.925 4.917 2.222 5.786 C 2.563 6.787 3.025 7.513 3.597 7.953 C 3.6299999 7.986 3.652 8.03 3.652 8.074 C 3.652 8.173 3.597 8.228 3.498 8.228 C 3.487 8.228 3.454 8.217 3.421 8.195 C 2.761 7.689 2.211 6.941 1.76 5.94 C 1.331 4.983 1.111 4.081 1.111 3.212 L 1.111 2.288 C 1.111 1.419 1.331 0.517 1.76 -0.44 C 2.211 -1.441 2.761 -2.189 3.421 -2.695 C 3.454 -2.717 3.487 -2.728 3.498 -2.728 Z "/>
+        </symbol>
+        <symbol id="g7479499A58DB2E93207D4FF4CCA58AF7" overflow="visible">
+            <path d="M 5.225 6.644 C 5.302 6.743 5.335 6.886 5.335 7.084 L 2.673 7.084 C 1.914 7.084 1.485 7.128 1.408 7.2269998 C 1.375 7.2599998 1.342 7.337 1.3199999 7.436 L 0.979 7.436 L 0.605 5.104 L 0.968 5.104 C 1.078 5.72 1.166 6.05 1.232 6.105 C 1.265 6.138 1.606 6.16 2.2549999 6.16 L 4.411 6.16 L 3.245 4.5099998 C 2.354 3.245 1.914 1.881 1.914 0.396 C 1.914 -0.033 2.09 -0.242 2.453 -0.242 C 2.816 -0.242 2.992 -0.033 2.992 0.396 L 2.992 0.957 C 2.992 2.629 3.256 3.839 3.773 4.576 Z "/>
+        </symbol>
+        <symbol id="gDEFA4A29ABFDF9DA4A1C4B57CC13D61F" overflow="visible">
+            <path d="M 0.858 -2.695 C 1.518 -2.189 2.068 -1.441 2.519 -0.44 C 2.948 0.517 3.168 1.419 3.168 2.288 L 3.168 3.212 C 3.168 4.081 2.948 4.983 2.519 5.94 C 2.068 6.941 1.518 7.689 0.858 8.195 C 0.825 8.217 0.792 8.228 0.781 8.228 C 0.682 8.228 0.627 8.173 0.627 8.074 C 0.627 8.03 0.649 7.986 0.682 7.953 C 1.254 7.513 1.716 6.787 2.057 5.786 C 2.354 4.917 2.508 4.059 2.508 3.212 L 2.508 2.288 C 2.508 1.441 2.354 0.583 2.057 -0.286 C 1.716 -1.287 1.254 -2.013 0.682 -2.453 C 0.649 -2.497 0.627 -2.541 0.627 -2.574 C 0.627 -2.673 0.682 -2.728 0.781 -2.728 C 0.792 -2.728 0.825 -2.717 0.858 -2.695 Z "/>
+        </symbol>
+    </defs>
+</svg>
 
             <figcaption>Figure 2: <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 5.896 7.513000000000001" width="5.896pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
@@ -1626,7 +1724,7 @@
     </defs>
 </svg>
 </span>, similar to rule (5). This is commonly known as the <em>DUP-REF optimization</em>.</li>
-          <li>In an interaction systems with effects, rule (6) may not be correct as there may be effects in the expansion of <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 5.104 7.513000000000001" width="5.104pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
+          <li>In a interaction systems with effects, rule (6) may not be correct as there may be effects in the expansion of <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 5.104 7.513000000000001" width="5.104pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
         <g transform="translate(0 7.513000000000001)">
             <g class="typst-text" transform="scale(1, -1)">
@@ -1735,10 +1833,10 @@
     </defs>
 </svg>
 
-            <figcaption>Figure 3: An infinite net</figcaption>
+            <figcaption>Figure 3: A lazy infinite net</figcaption>
           </figure>
         </div>
-        <p>Which is equivalent to the infinite net:</p>
+        <p>is equivalent to the infinite net:</p>
         <div class="center">
           <figure>
             <svg style="overflow: visible;" class="typst-doc" viewBox="0 0 160.0295612423447 136.42760617749073" width="160.0295612423447pt" height="136.42760617749073pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
@@ -1855,7 +1953,7 @@
             <figcaption>Figure 4: An expanded infinite net</figcaption>
           </figure>
         </div>
-        <p>This is very similar to infinite lists in Haskell, which are possible due to Haskell's laziness. This reference node is a way to introduce laziness into a strict context, as references are only expanded when interacted with.</p>
+        <p>This is very similar to infinite lists in Haskell, which are possible due to Haskell's laziness. This reference node is a way to introduce laziness even in a strict context, as references are only expanded when interacted with.</p>
         <h2>Strict Evaluation</h2>
         <ul>
           <li>Explain the strict evaluation algorithm with an example pseudocode implementation, and how it can be parallelized.</li>

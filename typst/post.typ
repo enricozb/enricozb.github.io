@@ -30,14 +30,17 @@
 
 #let post(title: none, date: none, content) = [
   #show footnote: it => {
-    if target() == "html" {
-      tag.a(
-        id: "footnote-" + it.numbering + "-number",
-        href: "#footnote-" + it.numbering + "-body",
+    context {
+      let count = counter(footnote).get().at(0)
+      if target() == "html" {
+        tag.a(
+          id: "footnote-" + str(count) + "-number",
+          href: "#footnote-" + str(count) + "-body",
+          it
+        )
+      } else {
         it
-      )
-    } else {
-      it
+      }
     }
   }
 
@@ -98,8 +101,8 @@
               for (i, note) in notes.enumerate() {
                 tag.div[
                   #tag.a(
-                    id: "footnote-" + note.numbering + "-body",
-                    href: "#footnote-" + note.numbering + "-number",
+                    id: "footnote-" + str(i + 1) + "-body",
+                    href: "#footnote-" + str(i + 1) + "-number",
                     super(str(i + 1))
                   )
                   #note.body

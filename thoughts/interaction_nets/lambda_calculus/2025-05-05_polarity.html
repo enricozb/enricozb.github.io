@@ -3385,7 +3385,7 @@
     </defs>
 </svg>
 </figure>
-        <p>Superpositions are especially interesting as they are like a pair but with some auto-vectorization properties. Specifically, applying a superposition of functions to an argument reduces to a superposition of applications. Additionally, applying a function to a superposition of arguments is equivalent<a id="footnote-1-number" href="#footnote-1-body">²</a> to a superposition of applications:</p>
+        <p>Superpositions are especially interesting as they are like a pair but with some auto-vectorization properties. Specifically, applying a superposition of functions to an argument reduces to a superposition of applications. Additionally, applying a function to a superposition of arguments is equivalent<a id="footnote-2-number" href="#footnote-2-body">²</a> to a superposition of applications:</p>
         <figure role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 105.40811111111114 11" width="105.40811111111114pt" height="11pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
         <g transform="translate(0 8.25)">
@@ -3893,14 +3893,14 @@
         </symbol>
     </defs>
 </svg>
-</span> is an <em>unscoped variable</em> that is being referenced outside of this body. Can you figure out what this term normalizes to?<a id="footnote-1-number" href="#footnote-1-body">³</a> Try normalizing the interaction net and reading back the result.</p>
+</span> is an <em>unscoped variable</em> that is being referenced outside of this body. Can you figure out what this term normalizes to?<a id="footnote-3-number" href="#footnote-3-body">³</a> Try normalizing the interaction net and reading back the result.</p>
         <h2>Conclusion</h2>
         <p>We've seen how polarity can be used to read back interaction nets as lambda calculus terms, by uniquely identifying which lambda calculus constructs correspond to which nodes. We've also seen that there are some additional polarizations of nodes that are not present in the image of our 2-SIC translation. These two additional polarizations can be used to extend the lambda calculus with some new interesting terms.</p>
         <p>I'd like to eventually extend the discussion on superpositions to how they can be used – along with the beta-optimal properties of interaction nets – to efficiently perform program search.</p>
         <hr>
         <div class="footnotes">
           <div><a id="footnote-1-body" href="#footnote-1-number">¹</a> As mentioned in the previous post, the 2-SIC encoding does not soundly evaluate the full set of terms of lambda calculus. Similarly, the extension of lambda calculus with superpositions is not fully soundly evaluated by 2-SIC due to the same issue of undesired duplication / superposition interactions. Specifically, duplicating a superposition results in each fresh variable receiving one argument of the superposition, instead of the superposition itself being duplicated.</div>
-          <div><a id="footnote-1-body" href="#footnote-1-number">²</a> Equivalence is a bit too nuanced to present in a footnote. A naive/incomplete definition could be: lambda calculus terms <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 6.292 7.513000000000001" width="6.292pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
+          <div><a id="footnote-2-body" href="#footnote-2-number">²</a> Equivalence is a bit too nuanced to present in a footnote. A naive/incomplete definition could be: lambda calculus terms <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 6.292 7.513000000000001" width="6.292pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
         <g transform="translate(0 7.513000000000001)">
             <g class="typst-text" transform="scale(1, -1)">
@@ -3929,7 +3929,7 @@
     </defs>
 </svg>
 </span> are equivalent if substituting one for the other in any term results in the same result. This hopefully gives you some intuition of what is intended here.</div>
-          <div><a id="footnote-1-body" href="#footnote-1-number">³</a> It does not terminate when evaluated strictly, but normalizes to <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 5.5 7.513000000000001" width="5.5pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
+          <div><a id="footnote-3-body" href="#footnote-3-number">³</a> It does not terminate when evaluated strictly, but normalizes to <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 5.5 7.513000000000001" width="5.5pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
         <g transform="translate(0 7.513000000000001)">
             <g class="typst-text" transform="scale(1, -1)">

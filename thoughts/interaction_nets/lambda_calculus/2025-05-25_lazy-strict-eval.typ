@@ -28,20 +28,22 @@
 
 There are currently two main algorithms for normalizing interaction nets: lazy evaluation and strict evaluation. We'll
 see that these two algorithms are somewhat at odds with each other. Specifically, strict evaluation is highly
-parallelizable and has garbage collection for free, while lazy evaluation can normalize a larger class of
-terms. In order to understand this difference, we'll have to introduce a new family of interaction systems:
-$k$-SIC with reference nodes.
+parallelizable and has garbage collection for free, while lazy evaluation can normalize a larger class of terms. In
+order to understand this difference, we'll have to introduce a new family#footnote[To be more accurate, this
+family of interaction systems is parametrized by the number of binary nodes $k$ and the set of named nets $cal(R)$.
+Additionally, the presented rewrite rules are also a family or schema of rewrite rules. There are actually
+$thick 2^(k+|cal(R)|+1)$ possible kinds of interactions.] of interaction systems: $k$-SIC with reference nodes.
 
 = $k$-SIC + References
 
-$k$-SIC is natural extension of 2-SIC, where we have $k$ different kinds of binary nodes that annihilate when
-they are of the same kind, and commute when they are of different kinds. Additionally, we're going to add a new
-kind of node known as a _reference node_. This is a deferred reference to a named net, which will be copied when
-interacted with. Named nets must have a free wire#footnote[much like how our translations of lambda calculus terms
-would refer to nets through a free wire]. The set of names $cal(R)$ is fixed.
+$k$-SIC is natural extension of 2-SIC, where we have $k$ different kinds (also known as _labels_) of binary nodes
+that annihilate when they are of the same kind, and commute when they are of different kinds. Additionally, we're
+going to add a new kind of node known as a _reference node_. This is a deferred reference to a named net, which
+will be copied when interacted with. Named nets must have a free wire#footnote[Much like how our translations of
+lambda calculus terms would refer to nets through a free wire.]. The set of names $cal(R)$ is fixed.
 
 For the remainder of the post, we'll refer to this interaction system as simply $k$-SIC without explicitly mentioning
-the addition of reference nodes every time.
+the addition of reference (and eraser) nodes every time.
 
 The kinds of nodes now looks like:
 
@@ -53,7 +55,7 @@ The kinds of nodes now looks like:
   cetz.draw.content("c.label", $i$)
   cetz.draw.content("r.label", $r$)
 
-  cetz.draw.content((2, -1.5), $i in {1, .., k}$)
+  cetz.draw.content((2, -1.5), $i in {1, dots, k}$)
 
   cetz.draw.content((4, -1.45), $r in cal(R)$)
 })
@@ -210,7 +212,7 @@ Some things to note:
 - The dashed circles in rules (3) and (4) represent replacing a reference node $r in cal(R)$ with the net it refers to.
 - Rule (3) can be optimized by tracking whether a constructor node of label $i$ exists in the definition of $r$. If not,
   one can instead annihilate the $i$ node and duplicate the reference node $r$, similar to rule (5). This is commonly
-  known as the _DUP-REF optimization_.
+  known as the _DUP-REF optimization_, and prevents expanding a reference node that might be erased.
 - In a interaction systems with effects, rule (6) may not be correct as there may be effects in the expansion of $r$
   when erasing it.
 
@@ -262,7 +264,69 @@ is equivalent to the infinite net:
 This is very similar to infinite lists in Haskell, which are possible due to Haskell's laziness.  This reference
 node is a way to introduce laziness even in a strict context, as references are only expanded when interacted with.
 
+The difficulty in dealing with these nets is that there may be an infinite number of interactions
+required to normalize a net. By strong confluence#footnote[See the strong confluence section in the post on
+#link("2025-04-25_normalization.html")[normalization].], if any reduction path is of infinite length, then
+all are.
+
 = Strict Evaluation
+
+First, we'll describe a strict evaluation algorithm. By strict we mean that every part of the net is normalized, _even
+if it is disconnected from the root port_. This implies that if any portion of the net does not have a normal form --
+because of non-termination -- then the entire net does not have a normal form. For example, a lambda calculus program
+like
+
+$
+& "let" "id" := lambda x. x "in" \
+& "let" "K" := lambda x. lambda y. x "in" \
+& "let" "foo" := lambda x. "foo" "in" \
+& ("K" "id" "foo")
+
+$
+
+Should normalize to $id$, as $K$ simply discards its second argument. However, when encoding this into
+$k$-SIC#footnote[For the purpose of this figure, all constructor nodes have the same kind.], we get the following:
+
+#post.canvas(caption: "A strictly diverging net", {
+  cetz.draw.content((0, 0), $"id" := $, anchor: "east")
+
+  con("c", (1.5, 0), angle: 90deg)
+  wire("c.0", (0.5, 0, 180deg))
+  wire("c.1", "c.2")
+
+  cetz.draw.translate((0, -2))
+
+  cetz.draw.content((0, 0), $"K" := $, anchor: "east")
+
+  con("l1", (1.5, 0), angle: 90deg)
+  con("l2", (3, 0.5), angle: 90deg)
+  era("e", (4, 0), angle: 90deg)
+
+  wire("l1.0", (0.5, 0, 180deg))
+  wire("l2.0", "l1.2")
+  wire("l2.1", "e.0")
+
+  wire("l1.1", (4.5, 0, 90deg), "l2.2")
+
+  cetz.draw.content((-1.5, -0.1), $cal(R) = stretch(brace.l, size: #14em)$, anchor: "east")
+
+  cetz.draw.translate((0, -2))
+
+  cetz.draw.content((0, 0), $"foo" := $, anchor: "east")
+  con("l", (1.5, 0), angle: 90deg)
+  era("e", (2.5, -0.5), angle: 90deg)
+  ref("r", (3, 0.5), angle: 90deg)
+
+  cetz.draw.content("r.label", "foo")
+
+  wire("l.0", (0.5, 0, 180deg))
+  wire("l.1", "e.0")
+  wire("r.0", "l.2")
+
+  cetz.draw.translate((0, -2))
+
+  // TODO(enricozb): draw (K id foo)
+})
 
 - Explain the strict evaluation algorithm with an example pseudocode implementation, and how it can be parallelized.
 - Explain how non-terminating discarded components will cause the entire program to be non-terminating.

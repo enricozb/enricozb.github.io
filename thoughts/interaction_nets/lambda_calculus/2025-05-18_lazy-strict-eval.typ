@@ -439,17 +439,16 @@ as it has an active pair. The intermediate net in @intermediate-net would instea
   wire("d.2", "a.0")
   wire("a.2", (8, 1, 180deg), "l.2")
 
-  ref("id", (3, -2), angle: -90deg)
+  con("id", (3, -2), angle: -90deg)
   wire("id.0", (5, -2), polarize: 1)
-
-  cetz.draw.content("id.label", $id$)
+  wire("id.1", "id.2")
 })
 
 Notice that the net is no longer fully connected. Even though the root free wire is clearly referencing just
-$id$, there are still active pairs in this net. Specifically, the erasure of $Omega$. In that strict interaction
-net settings, erasing a term normalizes it first. Like in lambda calculus, attempting to normalize $Omega$ in
-this $k$-SIC encoding will never terminate. Thus, in a strict setting, normalization of $[|("K" id Omega)|]$
-using $k$-SIC does not terminate.
+$id$, there are still active pairs in this net. Specifically, the erasure of $Omega$. In strict interaction net
+settings, erasing a term normalizes it first. Like in lambda calculus, attempting to normalize $Omega$ in this
+$k$-SIC encoding will never terminate. Thus, in a strict setting, normalization of $[|("K" id Omega)|]$ using
+$k$-SIC does not terminate.
 
 _Reference nodes are therefore a way to introduce laziness into an otherwise strict context_, allowing one to
 erase infinite terms by deferring their expansion.

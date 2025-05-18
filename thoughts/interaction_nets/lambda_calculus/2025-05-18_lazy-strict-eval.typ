@@ -4,7 +4,7 @@
 
 #show: content => post.post(
   title: "Lazy and Strict Evaluation",
-  date: "2025-05-25",
+  date: "2025-05-18",
   content
 )
 

@@ -26,7 +26,7 @@
     cetz.draw.anchor("label", label)
 
     if debug {
-      cetz.draw.content((0, 0), text(red, name), anchor: "mid")
+      cetz.draw.content("label", text(red, name), anchor: "mid")
     }
 
     for (i, (x, y)) in ports.enumerate() {
@@ -60,22 +60,25 @@
 // A wire between two ports. Intermediate points are interpolated through.
 // `start`, `next`, and elements of `..points` can be either ports `"<node>.<port>"`
 // or `(x, y, deg)`.
-#let wire(start, ..points, dash: none, polarize: false, stroke: black) = {
-  let arrow-t = if polarize == true {
-    0.5 * points.pos().len()
+#let wire(start, ..points, dash: none, polarize: false, stroke: black, layer: -1) = {
+  let arrows = if polarize == true {
+    (0.5 * points.pos().len(), )
   } else if type(polarize) == int or type(polarize) == float {
-    polarize * points.pos().len()
+    (polarize * points.pos().len(), )
+  } else if type(polarize) == array {
+    polarize.map(p => p * points.pos().len())
   } else {
-    none
+    ()
   }
 
-  cetz.draw.on-layer(-1, {
+  cetz.draw.on-layer(layer, {
     for (i, point) in points.pos().enumerate() {
       // Compute the point and control for the start of the curve.
       let (p1, c1) = if type(start) == str {
         (start + ".p", start + ".c")
       } else {
-        let (x, y, deg) = start
+        let (x, y, ..deg) = start
+        let deg = deg.at(0, default: 0deg)
         ((x, y), (x + 0.5 * calc.cos(deg), y + 0.5 * calc.sin(deg)))
       }
 
@@ -83,7 +86,8 @@
       let (p2, c2) = if type(point) == str {
         (point + ".p", point + ".c")
       } else {
-        let (x, y, deg) = point
+        let (x, y, ..deg) = point
+        let deg = deg.at(0, default: 0deg)
         ((x, y), (x - 0.5 * calc.cos(deg), y - 0.5 * calc.sin(deg)))
       }
 
@@ -91,16 +95,18 @@
 
       cetz.draw.bezier(p1, p2, c1, c2, stroke: stroke)
 
-      if arrow-t != none and 0 < (arrow-t - i) and (arrow-t - i) <= 1 {
-        let t = arrow-t - i
+      for arrow-t in arrows {
+        if 0 < (arrow-t - i) and (arrow-t - i) <= 1 {
+          let t = arrow-t - i
 
-        cetz.draw.get-ctx(ctx => {
-          let (ctx, p1, p2, c1, c2) = cetz.coordinate.resolve(ctx, p1, p2, c1, c2)
-          let angle = bezier-angle(t - 0.05, p1, p2, c1, c2)
-          let position = bezier-point(t, p1, p2, c1, c2)
-          // cetz.draw.content(position, [#angle])
-          arrow(position, angle)
-        })
+          cetz.draw.get-ctx(ctx => {
+            let (ctx, p1, p2, c1, c2) = cetz.coordinate.resolve(ctx, p1, p2, c1, c2)
+            let angle = bezier-angle(t - 0.05, p1, p2, c1, c2)
+            let position = bezier-point(t, p1, p2, c1, c2)
+            // cetz.draw.content(position, [#angle])
+            arrow(position, angle, stroke: stroke)
+          })
+        }
       }
     }
   })
@@ -149,4 +155,17 @@
   },
   "ports": ((0, 0.3),),
   "label": (0, 0),
+)
+
+#let double-stroked-node = (
+  "shape": {
+    cetz.draw.stroke(1pt)
+    cetz.draw.fill(white)
+    cetz.draw.line((-0.5, -calc.sqrt(3)/4), (0.5, -calc.sqrt(3)/4), (0, calc.sqrt(3)/4), close: true)
+    cetz.draw.scale(0.7, origin: (0, -calc.sqrt(3)/4 * 1/3))
+    cetz.draw.line((-0.5, -calc.sqrt(3)/4), (0.5, -calc.sqrt(3)/4), (0, calc.sqrt(3)/4), close: true)
+    // cetz.draw.circle((0, 0), radius: 1pt)
+  },
+  "ports": ((0, calc.sqrt(3)/4), (-0.4, -calc.sqrt(3)/4), (0.4, -calc.sqrt(3)/4)),
+  "label": (0, -0.1)
 )

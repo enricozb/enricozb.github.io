@@ -1,10 +1,10 @@
 #import "@preview/cetz:0.3.4"
 
-#let arrow(position, angle) = {
+#let arrow(position, angle, stroke: black + 1pt) = {
   cetz.draw.group({
     cetz.draw.translate(position)
     cetz.draw.rotate(angle)
-    cetz.draw.line((-0.1, -0.1), (0, 0), (-0.1, 0.1))
+    cetz.draw.line((-0.1, -0.1), (0, 0), (-0.1, 0.1), stroke: stroke)
   })
 }
 

@@ -217,7 +217,7 @@ Some things to note:
 - Rule (3) can be optimized by tracking whether a constructor node of label $i$ exists in the definition of $r$. If not,
   one can instead annihilate the $i$ node and duplicate the reference node $r$, similar to rule (5). This is commonly
   known as the _DUP-REF optimization_, and prevents expanding a reference node that might be erased.
-- In a interaction systems with effects, rule (6) may not be correct as there may be effects in the expansion of $r$
+- In interaction systems with effects, rule (6) may not be correct as there may be effects in the expansion of $r$
   when erasing it.
 
 = Infinite Nets
@@ -271,7 +271,7 @@ or non-termination. What we will see later on in this post is that this referenc
 a kind of laziness even in strict settings.
 
 The difficulty in dealing with non-terminating nets is that strong confluence#footnote[See the strong confluence
-section in the post on #link("2025-04-25_normalization.html")[normalization].] guarantees if any reduction path
+section in the post on #link("2025-04-25_normalization.html")[normalization].] guarantees that if any reduction path
 is of infinite length, then all reduction paths are.
 
 = Strict Evaluation
@@ -446,13 +446,13 @@ as it has an active pair. The intermediate net in @intermediate-net would instea
 })
 
 Notice that the net is no longer fully connected. Even though the root free wire is clearly referencing just
-$id$, there are still active pairs in this net. Specifically, the erasure of $Omega$. In a strict interaction
+$id$, there are still active pairs in this net. Specifically, the erasure of $Omega$. In that strict interaction
 net settings, erasing a term normalizes it first. Like in lambda calculus, attempting to normalize $Omega$ in
 this $k$-SIC encoding will never terminate. Thus, in a strict setting, normalization of $[|("K" id Omega)|]$
 using $k$-SIC does not terminate.
 
 _Reference nodes are therefore a way to introduce laziness into an otherwise strict context_, allowing one to
-erase infinite terms by defering their expansion.
+erase infinite terms by deferring their expansion.
 
 == Strict Evaluation Algorithm
 
@@ -520,7 +520,7 @@ because these nodes can only be removed/rewritten if their main ports were wired
 Thus, _when starting a net traversal at the root, we enter through main ports and exit through auxiliary ports_. This
 is known as _phase 1_ of the lazy evaluation algorithm.
 
-While walking the net, if we ever enter a node through one of its auxiliary ports, we may no longer in the
+While walking the net, if we ever enter a node through one of its auxiliary ports, we may no longer be in the
 initial tree. However, we may be going back up the tree instead of going down. For example,
 
 #post.canvas(caption: "A walk reentering the initial tree", {
@@ -606,7 +606,7 @@ these terms are not well-formed.].
 
 Since we're walking through nodes connected to the root, disconnected components will not be reduced further. This
 algorithm searches for nodes to contribute to the initial tree, greedily expanding it until no further redexes
-exist. Any node added to the initial tree necessarily contributed to the final normalized term, since once a node is
+exist. Any node added to the initial tree necessarily contributes to the final normalized term, since once a node is
 added to the initial tree it cannot be removed.
 
 == Garbage Collection

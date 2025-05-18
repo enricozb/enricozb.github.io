@@ -1720,7 +1720,7 @@
     </defs>
 </svg>
 </span>, similar to rule (5). This is commonly known as the <em>DUP-REF optimization</em>, and prevents expanding a reference node that might be erased.</li>
-          <li>In a interaction systems with effects, rule (6) may not be correct as there may be effects in the expansion of <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 5.104 7.513000000000001" width="5.104pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
+          <li>In interaction systems with effects, rule (6) may not be correct as there may be effects in the expansion of <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 5.104 7.513000000000001" width="5.104pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
         <g transform="translate(0 7.513000000000001)">
             <g class="typst-text" transform="scale(1, -1)">
@@ -1950,7 +1950,7 @@
           </figure>
         </div>
         <p>This is very similar to infinite lists in Haskell, which are possible due to Haskell's laziness. Now, just like in lambda calculus, one does not need to add an additional construct like references in order to have recursion or non-termination. What we will see later on in this post is that this reference node defers computation, introducing a kind of laziness even in strict settings.</p>
-        <p>The difficulty in dealing with non-terminating nets is that strong confluence<a id="footnote-3-number" href="#footnote-3-body">³</a> guarantees if any reduction path is of infinite length, then all reduction paths are.</p>
+        <p>The difficulty in dealing with non-terminating nets is that strong confluence<a id="footnote-3-number" href="#footnote-3-body">³</a> guarantees that if any reduction path is of infinite length, then all reduction paths are.</p>
         <h2>Strict Evaluation</h2>
         <p>The rewrite rules of interaction nets as described in previous posts and this one emulate a strict evaluation strategy. By strict we mean that every part of the net is normalized, <em>even if it is disconnected from the root free wire</em>. This implies that if any portion of the net does not have a normal form – because of non-termination – then the entire net does not have a normal form. A similar situation exists in lambda calculus. For example, consider the following lambda calculus program:</p>
         <figure role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 126.52811111111113 61.02799999999999" width="126.52811111111113pt" height="61.02799999999999pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
@@ -3512,7 +3512,7 @@
         </symbol>
     </defs>
 </svg>
-</span>. In a strict interaction net settings, erasing a term normalizes it first. Like in lambda calculus, attempting to normalize <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 7.942 7.513000000000001" width="7.942pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
+</span>. In that strict interaction net settings, erasing a term normalizes it first. Like in lambda calculus, attempting to normalize <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 7.942 7.513000000000001" width="7.942pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
         <g transform="translate(0 7.513000000000001)">
             <g class="typst-text" transform="scale(1, -1)">
@@ -3621,7 +3621,7 @@
     </defs>
 </svg>
 </span>-SIC does not terminate.</p>
-        <p><em>Reference nodes are therefore a way to introduce laziness into an otherwise strict context</em>, allowing one to erase infinite terms by defering their expansion.</p>
+        <p><em>Reference nodes are therefore a way to introduce laziness into an otherwise strict context</em>, allowing one to erase infinite terms by deferring their expansion.</p>
         <h3>Strict Evaluation Algorithm</h3>
         <p>An implementation of a strict evaluation algorithm for interaction combinators / <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 5.896 7.513000000000001" width="5.896pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
@@ -3842,7 +3842,7 @@
         </div>
         <p>What's interesting about these initial trees is that, no matter what is downstream of the tree, <em>they will always be present in the normalized term</em>. In some sense, this initial portion of the term is already normalized. This is because these nodes can only be removed/rewritten if their main ports were wired to another main port.</p>
         <p>Thus, <em>when starting a net traversal at the root, we enter through main ports and exit through auxiliary ports</em>. This is known as <em>phase 1</em> of the lazy evaluation algorithm.</p>
-        <p>While walking the net, if we ever enter a node through one of its auxiliary ports, we may no longer in the initial tree. However, we may be going back up the tree instead of going down. For example,</p>
+        <p>While walking the net, if we ever enter a node through one of its auxiliary ports, we may no longer be in the initial tree. However, we may be going back up the tree instead of going down. For example,</p>
         <div class="center">
           <figure>
             <svg style="overflow: visible;" class="typst-doc" viewBox="0 0 42.51968503937008 83.97446456692913" width="42.51968503937008pt" height="83.97446456692913pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
@@ -4123,7 +4123,7 @@
         </div>
         <p>I'm not drawing some of the auxiliary wires in order to minimize noise in an already noisy diagram.</p>
         <p>Once we find a redex, we can reduce it, and restart the walk from the root<a id="footnote-5-number" href="#footnote-5-body">⁵</a>. If there is no redex, the walk will eventually return to the root, assuming that the net does not contain any <em>vicious circles</em><a id="footnote-6-number" href="#footnote-6-body">⁶</a>.</p>
-        <p>Since we're walking through nodes connected to the root, disconnected components will not be reduced further. This algorithm searches for nodes to contribute to the initial tree, greedily expanding it until no further redexes exist. Any node added to the initial tree necessarily contributed to the final normalized term, since once a node is added to the initial tree it cannot be removed.</p>
+        <p>Since we're walking through nodes connected to the root, disconnected components will not be reduced further. This algorithm searches for nodes to contribute to the initial tree, greedily expanding it until no further redexes exist. Any node added to the initial tree necessarily contributes to the final normalized term, since once a node is added to the initial tree it cannot be removed.</p>
         <h3>Garbage Collection</h3>
         <p>One interesting practical drawback of the lazy algorithm is that disconnected components must be garbage collected somehow. In a strict setting, discarding a net by connecting it to an eraser will eventually reclaim all of the memory that was used to store that net. However, if a net becomes disconnected from the root in a lazy setting, we no longer perform interactions on it. Thus, we need some additional code / strategy to periodically detect such components and free their memory. If we devise such a mechanism, we gain an additional benefit that the memory can be freed without performing any interactions, but it will take some additional computation to detect disconnected nets.</p>
         <h3>Parallelism in Lazy Evaluation</h3>

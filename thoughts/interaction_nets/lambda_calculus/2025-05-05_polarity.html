@@ -32,7 +32,7 @@
         <h3>Motivation</h3>
         <p>Previously, we introduced the 2-SIC system as a way to encode and reduce a subset of the lambda calculus. One critical point we glossed over is how we translate normalized interaction nets back into lambda calculus terms. This process is known as <em>read back</em>.</p>
         <p>This algorithm is not immediately intuitive because we encode different lambda calculus constructs into the same kind of node. For example, consider the following normalized interaction net:</p>
-        <div class="center">
+        <div id="normalized" class="center">
           <figure>
             <svg style="overflow: visible;" class="typst-doc" viewBox="0 0 56.69291338582677 124.38037375461263" width="56.69291338582677pt" height="124.38037375461263pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
@@ -518,8 +518,8 @@
             <figcaption>Figure 2: 2-SIC translation (ignoring erasure &amp; duplication)</figcaption>
           </figure>
         </div>
-        <p>From looking at the definition of our translation, can you now tell which lambda calculus term is at the head of the net in Figure 1?</p>
-        <p>The head of the term in Figure 1 <em>has</em> to be an abstraction: <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 19.733999999999998 7.513000000000001" width="19.733999999999998pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
+        <p>From looking at the definition of our translation, can you now tell which lambda calculus term is at the head of the net in <a href="#normalized">Figure 1</a>?</p>
+        <p>The head of the term in <a href="#normalized">Figure 1</a> <em>has</em> to be an abstraction: <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 19.733999999999998 7.513000000000001" width="19.733999999999998pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
         <g transform="translate(0 7.513000000000001)">
             <g class="typst-text" transform="scale(1, -1)">

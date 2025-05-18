@@ -30,8 +30,8 @@
 
 = Overview
 
-There are currently two main algorithms for normalizing interaction nets: lazy evaluation and strict evaluation. We'll
-see that these two algorithms are somewhat at odds with each other. Specifically, strict evaluation is highly
+There are currently two main strategies for normalizing interaction nets: lazy evaluation and strict evaluation. We'll
+see that these two strategies are somewhat at odds with each other. Specifically, strict evaluation is highly
 parallelizable and has garbage collection for free, while lazy evaluation can normalize a larger class of terms. In
 order to understand this difference, we'll have to introduce a new family#footnote[To be more accurate, this
 family of interaction systems is parametrized by the number of binary nodes $k$ and the set of named nets $cal(R)$.
@@ -610,9 +610,9 @@ added to the initial tree it cannot be removed.
 
 == Garbage Collection
 
-One interesting practical consequence of this net traversal algorithm is that disconnected components must be garbage
-collected somehow. In a strict setting, discarding a net by connecting it to an eraser will eventually reclaim all of
-the memory that was used to store that net. However, if a net becomes disconnected from the root in a lazy setting,
+One interesting practical drawback of the lazy algorithm is that disconnected components must be garbage collected
+somehow. In a strict setting, discarding a net by connecting it to an eraser will eventually reclaim all of the
+memory that was used to store that net. However, if a net becomes disconnected from the root in a lazy setting,
 we no longer perform interactions on it. Thus, we need some additional code / strategy to periodically detect such
 components and free their memory. If we devise such a mechanism, we gain an additional benefit that the memory can
 be freed without performing any interactions, but it will take some additional computation to detect disconnected nets.
@@ -622,16 +622,17 @@ be freed without performing any interactions, but it will take some additional c
 One opportunity for parallelism in the lazy evaluation algorithm is in phase 1: when entering through a main port,
 _spawn two threads to continue walking through both auxiliary ports_. Detecting contention here is much more nuanced,
 as two walks can end up at the same redex such as in @example-walk. It is beyond the scope of this post to discuss
-potential parallel lazy algorithms, as a single-threaded one is semantically sufficient.
+potential parallel lazy implementation, as we're looking to focus more on the semantic differences between strict and
+lazy evaluation strategies.
 
 However, it is important to note that *the upper bound on the amount of parallelism (number of concurrent threads) is
 the number of leaves in the initial tree of the final term*. This is because this algorithm can only be parallelized
-during phase 1, and phase 1 the walk over the initial tree. Thus, if the final term is, say, a null eraser $*$, then
-no concurrent threads were possibly spawned during reduction, no matter initial term.
+during phase 1, and phase 1 is the walk over the initial tree. Thus, if the final term is, say, a null eraser $*$,
+then no concurrent threads were possibly spawned during reduction, no matter what initial term was.
 
 This is a heavy consequence of a lazy evaluation strategy for a variety of computations. Numerical computations for
 example that normalize to a single number (in some interaction system with native integers) will not benefit from
-any of the parallel benefits of interaction nets.
+any of the inherent parallelism of interaction nets.
 
 == Semantics of Lazy Evaluation
 
@@ -646,7 +647,7 @@ _If there is a path of beta-reductions that terminates and produces a finite ter
 find it_.
 
 This is not as lazy as a lambda calculus normalization strategy that computes a weak head normal form, as WHNF
-leaves body of abstractions unnormalized. However, it is lazy in a call-by-need sense in that function arguments
+leaves the body of abstractions unnormalized. However, it is lazy in a call-by-need sense in that function arguments
 are normalized only when needed. Thus implying that control flow mechanisms (such as branching) do not require
 any special nodes to short-circuit.
 
@@ -655,5 +656,7 @@ Of course, this algorithm is still Lévy/beta-optimal.
 = Conclusion
 
 We discussed the two most prominent normalization strategies for interaction nets, and discussed their individual
-trade-offs. Additionally, we demonstrated that reference nodes in a strict setting are an intermediate that may
-balance the benefits of both systems.
+trade-offs. Specifically, the strict strategy has garbage collection for free, can easily be parallelized, but
+will not terminate if any subterm does not normalize. The lazy strategy is much more complex to parallelize, but
+can easily handle infinite terms, while still being beta-optimal. Additionally, we demonstrated that reference
+nodes in a strict setting are an intermediate mechanism that may balance the benefits of both normalization strategies.

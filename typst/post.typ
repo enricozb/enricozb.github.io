@@ -3,13 +3,23 @@
 
 #let note(content) = tag.div(class: "note", content)
 
-#let center(content) = tag.div(class: "center", content)
+#let center(..args, content) = tag.div(..args, class: "center", content)
 
 #let canvas(content, caption: none, ..args) = {
+  let fig-label = args.at("label", default: none)
+
+  let center-args = if fig-label != none {
+    (id: fig-label)
+  } else {
+    ()
+  }
+
   center(
+    ..center-args,
     if caption != none [
       #figure(html.frame(cetz.canvas(content)), caption: caption)
-      #if args.at("label", default: none) != none {
+
+      #if fig-label != none {
         label(args.at("label"))
       }
     ] else {
@@ -29,6 +39,14 @@
 ]
 
 #let post(title: none, date: none, content) = [
+  #show ref: it => {
+    if target() == "html" {
+      tag.a(href: "#" + str(it.target), it)
+    } else {
+      it
+    }
+  }
+
   #show footnote: it => {
     context {
       let count = counter(footnote).get().at(0)

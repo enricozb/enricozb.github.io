@@ -28,7 +28,7 @@
           <p>This post and the others would not exist without the always-fruitful conversations with <a href="https://t6.dev/">T6</a>.</p>
         </div>
         <h2>Overview</h2>
-        <p>There are currently two main algorithms for normalizing interaction nets: lazy evaluation and strict evaluation. We'll see that these two algorithms are somewhat at odds with each other. Specifically, strict evaluation is highly parallelizable and has garbage collection for free, while lazy evaluation can normalize a larger class of terms. In order to understand this difference, we'll have to introduce a new family<a id="footnote-1-number" href="#footnote-1-body">¹</a> of interaction systems: <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 5.896 7.513000000000001" width="5.896pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
+        <p>There are currently two main strategies for normalizing interaction nets: lazy evaluation and strict evaluation. We'll see that these two strategies are somewhat at odds with each other. Specifically, strict evaluation is highly parallelizable and has garbage collection for free, while lazy evaluation can normalize a larger class of terms. In order to understand this difference, we'll have to introduce a new family<a id="footnote-1-number" href="#footnote-1-body">¹</a> of interaction systems: <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 5.896 7.513000000000001" width="5.896pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
         <g transform="translate(0 7.513000000000001)">
             <g class="typst-text" transform="scale(1, -1)">
@@ -2882,7 +2882,7 @@
           </figure>
         </div>
         <p>If you step through the reduction, you should reach the following intermediate net within a few rewrites:</p>
-        <div class="center">
+        <div id="intermediate-net" class="center">
           <figure>
             <svg style="overflow: visible;" class="typst-doc" viewBox="0 0 158.74015748031496 167.4094488188976" width="158.74015748031496pt" height="167.4094488188976pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
@@ -3233,7 +3233,7 @@
         </symbol>
     </defs>
 </svg>
-</span> anywhere in the net will require that it is normalized, as it has an active pair. The intermediate net in Figure 6 would instead look like this:</p>
+</span> anywhere in the net will require that it is normalized, as it has an active pair. The intermediate net in <a href="#intermediate-net">Figure 6</a> would instead look like this:</p>
         <div class="center">
           <figure>
             <svg style="overflow: visible;" class="typst-doc" viewBox="0 0 225.32647806683627 93.54330708661418" width="225.32647806683627pt" height="93.54330708661418pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
@@ -3849,7 +3849,7 @@
         </div>
         <p>Thus, <em>during a net traversal, when entering through auxiliary ports, we exit through main ports</em>. Once we first enter through an auxiliary port, we are now in <em>phase 2</em>.</p>
         <p>During phase 2, if we ever enter a main port, we are in a redex:</p>
-        <div class="center">
+        <div id="example-walk" class="center">
           <figure>
             <svg style="overflow: visible;" class="typst-doc" viewBox="0 0 219.2668709451632 153.04536453543307" width="219.2668709451632pt" height="153.04536453543307pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
@@ -4058,10 +4058,10 @@
         <p>Once we find a redex, we can reduce it, and restart the walk from the root<a id="footnote-5-number" href="#footnote-5-body">⁵</a>. If there is no redex, the walk will eventually return to the root, assuming that the net does not contain any <em>vicious circles</em><a id="footnote-6-number" href="#footnote-6-body">⁶</a>.</p>
         <p>Since we're walking through nodes connected to the root, disconnected components will not be reduced further. This algorithm searches for nodes to contribute to the initial tree, greedily expanding it until no further redexes exist. Any node added to the initial tree necessarily contributed to the final normalized term, since once a node is added to the initial tree it cannot be removed.</p>
         <h3>Garbage Collection</h3>
-        <p>One interesting practical consequence of this net traversal algorithm is that disconnected components must be garbage collected somehow. In a strict setting, discarding a net by connecting it to an eraser will eventually reclaim all of the memory that was used to store that net. However, if a net becomes disconnected from the root in a lazy setting, we no longer perform interactions on it. Thus, we need some additional code / strategy to periodically detect such components and free their memory. If we devise such a mechanism, we gain an additional benefit that the memory can be freed without performing any interactions, but it will take some additional computation to detect disconnected nets.</p>
+        <p>One interesting practical drawback of the lazy algorithm is that disconnected components must be garbage collected somehow. In a strict setting, discarding a net by connecting it to an eraser will eventually reclaim all of the memory that was used to store that net. However, if a net becomes disconnected from the root in a lazy setting, we no longer perform interactions on it. Thus, we need some additional code / strategy to periodically detect such components and free their memory. If we devise such a mechanism, we gain an additional benefit that the memory can be freed without performing any interactions, but it will take some additional computation to detect disconnected nets.</p>
         <h3>Parallelism in Lazy Evaluation</h3>
-        <p>One opportunity for parallelism in the lazy evaluation algorithm is in phase 1: when entering through a main port, <em>spawn two threads to continue walking through both auxiliary ports</em>. Detecting contention here is much more nuanced, as two walks can end up at the same redex such as in Figure 11. It is beyond the scope of this post to discuss potential parallel lazy algorithms, as a single-threaded one is semantically sufficient.</p>
-        <p>However, it is important to note that <strong>the upper bound on the amount of parallelism (number of concurrent threads) is the number of leaves in the initial tree of the final term</strong>. This is because this algorithm can only be parallelized during phase 1, and phase 1 the walk over the initial tree. Thus, if the final term is, say, a null eraser <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 5.5 7.513000000000001" width="5.5pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
+        <p>One opportunity for parallelism in the lazy evaluation algorithm is in phase 1: when entering through a main port, <em>spawn two threads to continue walking through both auxiliary ports</em>. Detecting contention here is much more nuanced, as two walks can end up at the same redex such as in <a href="#example-walk">Figure 11</a>. It is beyond the scope of this post to discuss potential parallel lazy implementation, as we're looking to focus more on the semantic differences between strict and lazy evaluation strategies.</p>
+        <p>However, it is important to note that <strong>the upper bound on the amount of parallelism (number of concurrent threads) is the number of leaves in the initial tree of the final term</strong>. This is because this algorithm can only be parallelized during phase 1, and phase 1 is the walk over the initial tree. Thus, if the final term is, say, a null eraser <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 5.5 7.513000000000001" width="5.5pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
         <g transform="translate(0 7.513000000000001)">
             <g class="typst-text" transform="scale(1, -1)">
@@ -4075,15 +4075,15 @@
         </symbol>
     </defs>
 </svg>
-</span>, then no concurrent threads were possibly spawned during reduction, no matter initial term.</p>
-        <p>This is a heavy consequence of a lazy evaluation strategy for a variety of computations. Numerical computations for example that normalize to a single number (in some interaction system with native integers) will not benefit from any of the parallel benefits of interaction nets.</p>
+</span>, then no concurrent threads were possibly spawned during reduction, no matter what initial term was.</p>
+        <p>This is a heavy consequence of a lazy evaluation strategy for a variety of computations. Numerical computations for example that normalize to a single number (in some interaction system with native integers) will not benefit from any of the inherent parallelism of interaction nets.</p>
         <h3>Semantics of Lazy Evaluation</h3>
         <p>One interesting question is: which lambda calculus evaluation strategy does the lazy interaction net evaluation strategy correspond to? It turns out that it is something in between a <a href="https://wiki.haskell.org/index.php?title=Weak_head_normal_form">weak head normal form</a> and a strict normalization. Infinite / non-terminating terms that eventually become disconnected from the root will not result in non-termination of the entire term. However, if the root term is in fact infinite / non-terminating, then normalization will never complete.</p>
         <p><em>If there is a path of beta-reductions that terminates and produces a finite term, the lazy reduction algorithm will find it</em>.</p>
-        <p>This is not as lazy as a lambda calculus normalization strategy that computes a weak head normal form, as WHNF leaves body of abstractions unnormalized. However, it is lazy in a call-by-need sense in that function arguments are normalized only when needed. Thus implying that control flow mechanisms (such as branching) do not require any special nodes to short-circuit.</p>
+        <p>This is not as lazy as a lambda calculus normalization strategy that computes a weak head normal form, as WHNF leaves the body of abstractions unnormalized. However, it is lazy in a call-by-need sense in that function arguments are normalized only when needed. Thus implying that control flow mechanisms (such as branching) do not require any special nodes to short-circuit.</p>
         <p>Of course, this algorithm is still Lévy/beta-optimal.</p>
         <h2>Conclusion</h2>
-        <p>We discussed the two most prominent normalization strategies for interaction nets, and discussed their individual trade-offs. Additionally, we demonstrated that reference nodes in a strict setting are an intermediate that may balance the benefits of both systems.</p>
+        <p>We discussed the two most prominent normalization strategies for interaction nets, and discussed their individual trade-offs. Specifically, the strict strategy has garbage collection for free, can easily be parallelized, but will not terminate if any subterm does not normalize. The lazy strategy is much more complex to parallelize, but can easily handle infinite terms, while still being beta-optimal. Additionally, we demonstrated that reference nodes in a strict setting are an intermediate mechanism that may balance the benefits of both normalization strategies.</p>
         <hr>
         <div class="footnotes">
           <div><a id="footnote-1-body" href="#footnote-1-number">¹</a> To be more accurate, this family of interaction systems is parametrized by the number of binary nodes <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 5.896 7.513000000000001" width="5.896pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">

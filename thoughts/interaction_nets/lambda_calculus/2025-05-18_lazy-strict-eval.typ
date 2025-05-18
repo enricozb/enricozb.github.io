@@ -284,6 +284,7 @@ consider the following lambda calculus program:
 
 $
 & "let" id := lambda x.x "in" \
+& "let" "K" := lambda x. lambda y. x "in" \
 & "let" Omega := (lambda x. x x) (lambda x. x x) "in" \
 & ("K" id Omega)
 $

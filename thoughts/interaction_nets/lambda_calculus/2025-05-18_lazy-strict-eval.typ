@@ -608,6 +608,15 @@ algorithm searches for nodes to contribute to the initial tree, greedily expandi
 exist. Any node added to the initial tree necessarily contributes to the final normalized term, since once a node is
 added to the initial tree it cannot be removed.
 
+== Memory Layout
+
+When implementing a strict evaluator, one can keep a buffer of nodes where a node only stores pointers to its auxiliary
+ports. This is because we have a collection of redexes that we can grab from, and when performing a rewrite we only
+need to manipulate / rewire the auxiliary ports of the two interacting nodes. In the lazy case however, we perform a
+walk over the net and the phase 2 of this walk goes from an aux port to a main port. This means that we must also store
+pointer information in the reverse direction. It is unclear at the moment if there is a unifying memory layout for both
+of these evaluation strategies.
+
 == Garbage Collection
 
 One interesting practical drawback of the lazy algorithm is that disconnected components must be garbage collected
@@ -622,7 +631,7 @@ be freed without performing any interactions, but it will take some additional c
 One opportunity for parallelism in the lazy evaluation algorithm is in phase 1: when entering through a main port,
 _spawn two threads to continue walking through both auxiliary ports_. Detecting contention here is much more nuanced,
 as two walks can end up at the same redex such as in @example-walk. It is beyond the scope of this post to discuss
-potential parallel lazy implementation, as we're looking to focus more on the semantic differences between strict and
+potential parallel lazy implementations, as we're looking to focus more on the semantic differences between strict and
 lazy evaluation strategies.
 
 However, it is important to note that *the upper bound on the amount of parallelism (number of concurrent threads) is
@@ -630,9 +639,9 @@ the number of leaves in the initial tree of the final term*. This is because thi
 during phase 1, and phase 1 is the walk over the initial tree. Thus, if the final term is, say, a null eraser $*$,
 then no concurrent threads were possibly spawned during reduction, no matter what initial term was.
 
-This is a heavy consequence of a lazy evaluation strategy for a variety of computations. Numerical computations for
-example that normalize to a single number (in some interaction system with native integers) will not benefit from
-any of the inherent parallelism of interaction nets.
+This is a heavy consequence of a lazy evaluation strategy for a variety of computations. For example, numerical
+computations that normalize to a single number (in some interaction system with native integers) will not benefit
+from any of the inherent parallelism of interaction nets.
 
 == Semantics of Lazy Evaluation
 

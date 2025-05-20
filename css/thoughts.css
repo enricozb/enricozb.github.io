@@ -198,6 +198,10 @@ hr {
   width: 50%;
 }
 
+.footnote-body {
+  margin-right: 0.5em;
+}
+
 .footnotes > div {
   font-size: 10pt;
   margin-bottom: 1em;

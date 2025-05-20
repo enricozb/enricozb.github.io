@@ -36,7 +36,7 @@ parallelizable and has garbage collection for free, while lazy evaluation can no
 order to understand this difference, we'll have to introduce a new family#footnote[To be more accurate, this
 family of interaction systems is parametrized by the number of binary nodes $k$ and the set of named nets $cal(R)$.
 Additionally, the presented rewrite rules are also a family or schema of rewrite rules. There are actually
-$thick 2^(k+|cal(R)|+1)$ possible kinds of interactions.] of interaction systems: $k$-SIC with reference nodes.
+$binom(k+|cal(R)|+1, 2)$ possible kinds of interactions.] of interaction systems: $k$-SIC with reference nodes.
 
 = $k$-SIC + References
 
@@ -597,7 +597,7 @@ During phase 2, if we ever enter a main port, we are in a redex:
 I'm not drawing some of the auxiliary wires in order to minimize noise in an already noisy diagram.
 
 Once we find a redex, we can reduce it, and restart the walk from the root#footnote[There's an immediate optimization
-here, where one can restart the walk from the previously exited main port, instead of restarting from the root]. If
+here, where one can restart the walk from the previously entered aux port, instead of restarting from the root]. If
 there is no redex, the walk will eventually return to the root, assuming that the net does not contain any _vicious
 circles_#footnote[Vicious circles are nonsensical terms, such as a lambda returning itself as the body. These terms
 are "worse" than non-terminating terms like $Omega$ as they are "normalized" but cannot be read back. In some sense,
@@ -610,12 +610,15 @@ added to the initial tree it cannot be removed.
 
 == Memory Layout
 
-When implementing a strict evaluator, one can keep a buffer of nodes where a node only stores pointers to its auxiliary
-ports. This is because we have a collection of redexes that we can grab from, and when performing a rewrite we only
-need to manipulate / rewire the auxiliary ports of the two interacting nodes. In the lazy case however, we perform a
-walk over the net and the phase 2 of this walk goes from an aux port to a main port. This means that we must also store
-pointer information in the reverse direction. It is unclear at the moment if there is a unifying memory layout for both
-of these evaluation strategies.
+When implementing a strict evaluator, one can keep a buffer of nodes where a node only stores pointers to its
+auxiliary ports. This is because we have a collection of redexes that we can grab from, and when performing a
+rewrite we only need to manipulate / rewire the auxiliary ports of the two interacting nodes. In the lazy case
+however, we perform a walk over the net and the phase 2 of this walk goes from an aux port to a main port. This
+means that we must also store pointer information in the reverse direction#footnote[In the case of normalizing
+interaction combinators solely for the purposes of lambda calculus, it is possible to store only two pointers
+per node. Since we enter through positively polarized wires and exit through negative ones, we need only store
+the negative ports of each combinator. The traversal algorithm then is essentially chasing the value-producing
+wires.]. It is unclear at the moment if there is a unifying memory layout for both of these evaluation strategies.
 
 == Garbage Collection
 

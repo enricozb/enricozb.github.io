@@ -120,8 +120,9 @@
                 tag.div[
                   #tag.a(
                     id: "footnote-" + str(i + 1) + "-body",
+                    class: "footnote-body",
                     href: "#footnote-" + str(i + 1) + "-number",
-                    super(str(i + 1))
+                    str(i + 1)
                   )
                   #note.body
                 ]

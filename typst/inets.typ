@@ -96,12 +96,12 @@
       cetz.draw.bezier(p1, p2, c1, c2, stroke: stroke)
 
       for arrow-t in arrows {
-        if 0 < (arrow-t - i) and (arrow-t - i) <= 1 {
+        if (0 < (arrow-t - i) and (arrow-t - i) <= 1) or (i == 0 and arrow-t == 0) {
           let t = arrow-t - i
 
           cetz.draw.get-ctx(ctx => {
             let (ctx, p1, p2, c1, c2) = cetz.coordinate.resolve(ctx, p1, p2, c1, c2)
-            let angle = bezier-angle(t - 0.05, p1, p2, c1, c2)
+            let angle = bezier-angle(calc.max(t - 0.05, 0), p1, p2, c1, c2)
             let position = bezier-point(t, p1, p2, c1, c2)
             // cetz.draw.content(position, [#angle])
             arrow(position, angle, stroke: stroke)

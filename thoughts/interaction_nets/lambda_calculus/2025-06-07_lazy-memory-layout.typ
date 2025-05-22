@@ -13,7 +13,8 @@
 #post.note[
   After writing the post on #link("2025-05-18_lazy-strict-eval.html")[lazy normalization], I thought I understood enough
   to implement a lazy normalizer. This proved to be false. Using memory efficiently to represent k-SIC interaction nets
-  is not that simple.
+  is not that simple. This blog post is a detailed explanation on a possibly efficient memory layout for polarized
+  k-SIC normalization.
 ]
 
 #let (era, con, dup) = inets.with-kinds(
@@ -31,10 +32,13 @@ Then I'll describe the memory transformations that happen for each interaction.
 
 = Memory Layout
 
-- Heap contains positive ports.
-- A memory address pointing to the heap is like the positive end of a wire.
-- A value on the heap is the negative end of a wire.
+- The heap stores negative ports.
+  - Entries on the heap are double-words (2 × 64 bits)
+  - Addresses are 8-byte aligned, so they can point to an upper or lower word within an entry on the heap.
+  - The exception to this is the second half of a Dup node, which stores an XOR of the pointers to its aux ports.
 - Reversing the arrows shows the direction of pointers.
+  - A pointer into the heap is the end of a polarized wire.
+  - A value on the heap is the negative start a polarized wire.
 
 = Interactions
 
@@ -194,7 +198,7 @@ Problems:
   wire((+2.3, -0.75, +90deg), (1.25, 0, 180deg), (+0.3, -0.85, -86deg), polarize: (0.001, 1))
 
   content((-0.3, -1.2), $delta_1$)
-  content((+0.3, -1.15), $?$)
+  content((+0.3, -1.2), $delta_2$)
 
   content((+1.7, -1.15), `a`)
   content((+2.3, -1.15), `b`)
@@ -207,6 +211,76 @@ Problems:
   ))
 })
 
+== Dup - Sup $thick (i != j)$
+
+#post.canvas({
+  dup("dup", (0, 0), show-aux: true, polarities: (-1, +1, +1))
+  dup("sup", (2, 0), show-aux: true, polarities: (+1, -1, -1))
+  wire("sup.0", "dup.0")
+
+  content("dup.label", text(white, $i$))
+  content("sup.label", text(white, $j$))
+
+  content((-0.3, -1.15), $delta_1$)
+  content((+0.3, -1.15), $delta_2$)
+
+  content((+1.7, -1.15), `a`)
+  content((+2.3, -1.15), `b`)
+
+  content((1, -2), memory(
+    ($delta_1$, [`Dup` $x$]),
+    ($delta_2$, [`Dup` $x$]),
+    ($x$, [`Sup` $y$], [`.` $delta_1 xor delta_2$]),
+    ($y$, `a`, `b`),
+  ), anchor: "north")
+
+  translate((6, 0))
+  content((-2, -2), $~~>$)
+
+  content((-0.3, -1), $delta_1$)
+  content((+0.3, -1), $delta_2$)
+
+  dup("sup1", (1.5, +1.2), angle: 90deg)
+  dup("sup2", (1.5, -0.2), angle: 90deg)
+
+  content("sup1.label", text(white, $j$))
+  content("sup2.label", text(white, $j$))
+
+  wire("sup1.0", (-0.3, -0.7, -90deg), polarize: 1)
+  wire("sup2.0", (+0.3, -0.7, -90deg), polarize: 1)
+
+  dup("dup2", (3.5, +1.2), angle: -90deg)
+  dup("dup1", (3.5, -0.2), angle: -90deg)
+
+  content("dup2.label", text(white, $i$))
+  content("dup1.label", text(white, $i$))
+
+  wire("dup1.2", "sup2.1")
+  wire("dup2.2", "sup2.2", polarize: 0.8)
+
+  wire("dup1.1", "sup1.1", polarize: 0.25)
+  wire("dup2.1", "sup1.2")
+
+  content((5-0.3, -1), `a`)
+  content((5+0.3, -1), `b`)
+
+  wire((5-0.3, -0.7, +90deg), "dup1.0", polarize: 0)
+  wire((5+0.3, -0.7, +90deg), "dup2.0", polarize: 0)
+
+  content((2.5, -2), memory(
+    ($delta_1$, [`Sup` $x$]),
+    ($delta_2$, [`Sup` $y$]),
+    ($x$, [`Dup` $d_2$], [`Dup` $d_1$]),
+    ($y$, [`Dup` $d_2$], [`Dup` $d_1$]),
+    ($d_1$, `b`, [`Var` $x' xor y'$]),
+    ($d_2$, `a`, [`Var` $x xor y$]),
+  ), anchor: "north")
+})
+
+Notes:
+- allocates two new double-wide nodes, which is what we expect.
+- frees nothing, so memory is maximally reused.
+
 == Dup - Lam
 
 #post.canvas({
@@ -218,7 +292,7 @@ Problems:
   content((+0.3, -1.15), $delta_2$)
 
   content((+1.7, -1.15), $?$)
-  content((+2.3, -1.18), `bod`)
+  content((+2.3, -1.15), `bod`)
 
   content((1, -2), memory(
     ($delta_1$, [`Dup` $x$]),
@@ -258,14 +332,72 @@ Problems:
   content((2.5, -2), memory(
     ($delta_1$, [`Lam` $y$]),
     ($delta_2$, [`Lam` $x'$]),
-    ($x$, [`Sup` $hat(w)$], [`Dup` $hat(z)$]),
-    ($y$, [`Dup` $hat(z)$]),
-    ($hat(w)$, [`Var` $delta_1$], [`Var` $delta_2$]),
-    ($hat(z)$, `bod`, [`.` $x' xor y$]),
+    ($x$, [`Sup` $w$], [`Dup` $z$]),
+    ($y$, [`Dup` $z$]),
+    ($w$, [`Var` $delta_1$], [`Var` $delta_2$]),
+    ($z$, `bod`, [`.` $x' xor y$]),
     ($?$, [`Var` $x$]),
   ), anchor: "north")
 })
 
 Notes:
 - allocates two new double-wide nodes, which is what we expect.
+- frees nothing, so memory is maximally reused.
+
+== App - Sup
+
+#post.canvas({
+  con("app", (0, 0), show-aux: true, polarities: (-1, -1, +1))
+  dup("sup", (2, 0), show-aux: true, polarities: (+1, -1, -1))
+  wire("sup.0", "app.0")
+
+  content((-0.3, -1.15), `arg`)
+  content((+0.3, -1.10), $alpha$)
+
+  content((+1.7, -1.15), `a`)
+  content((+2.3, -1.15), `b`)
+
+  content((1, -2), memory(
+    ($alpha$, [`App` $x$]),
+    ($x$, [`Sup` $s$], `arg`),
+    ($s$, `a`, `b`),
+  ), anchor: "north")
+
+  translate((6, 0))
+  content((-2, -2), $~~>$)
+
+  content((-0.3, -1), `arg`)
+  content((+0.3, -0.95), $alpha$)
+
+  dup("dup", (1.5, +1.2), angle: 90deg)
+  dup("sup", (1.5, -0.2), angle: 90deg)
+
+  wire((-0.3, -0.6, 90deg), "dup.0",  polarize: 0)
+  wire("sup.0", (+0.3, -0.7, -90deg), polarize: 1)
+
+  con("app1", (3.5, +1.2), angle: -90deg)
+  con("app2", (3.5, -0.2), angle: -90deg)
+
+  wire("dup.2", "app1.1")
+  wire("dup.1", "app2.1", polarize: 0.25)
+  wire("app1.2", "sup.2", polarize: 0.8)
+  wire("app2.2", "sup.1")
+
+  content((5-0.3, -1), `a`)
+  content((5+0.3, -1), `b`)
+
+  wire((5-0.3, -0.6, 90deg), "app2.0", polarize: 0)
+  wire((5+0.3, -0.6, 90deg), "app1.0", polarize: 0)
+
+  content((2.5, -2), memory(
+    ($alpha$, [`Sup` $s$]),
+    ($s$, [`App` $a_1$], [`App` $a_2$]),
+    ($a_1$, `a`, [`Dup` $x$]),
+    ($a_2$, `b`, [`Dup` $x$]),
+    ($x$, `arg`, [`.` $a_1 xor a_2$]),
+  ), anchor: "north")
+})
+
+Notes:
+- alocates two new double-wide nodes, which is what we expect.
 - frees nothing, so memory is maximally reused.

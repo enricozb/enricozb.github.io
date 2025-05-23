@@ -30,6 +30,10 @@
 I'm going to explain a potential memory layout for lazy normalization and detail the graph traversal using this layout.
 Then I'll describe the memory transformations that happen for each interaction.
 
+= Problems
+- No garbage collection, unclear how to safely erase things.
+- It is impossible to tell which dup node port we are entering through.
+
 = Memory Layout
 
 - The heap stores negative ports.
@@ -46,7 +50,7 @@ Then I'll describe the memory transformations that happen for each interaction.
   #for (addr, ..blocks) in addresses.pos() {
     $
       #addr &: #for block in blocks {
-        [`[` $#block$ `]` ]
+        [ #text(size: 14pt, `[`) $#block$ #text(size: 14pt, `]`) ]
       } \
     $
   }
@@ -60,10 +64,10 @@ $
   wire("nul.0", "app.0")
 
   content((-0.3, -1.2), `arg`)
-  content((+0.3, -1.15), $alpha$)
+  content((+0.3, -1.15), $a$)
 
   content((1, -3), memory(
-    ($alpha$, [`App` $x$]),
+    ($a$, [`App` $x$]),
     ($x$,  `Nul`, `arg`),
   ))
 
@@ -75,10 +79,10 @@ $
   era("nul", (1, -0.4), show-main: true, angle: -180deg, polarities: (+1,))
 
   content((0, -1.2), `arg`)
-  content((1, -1.15), $alpha$)
+  content((1, -1.15), $a$)
 
   content((1, -3), memory(
-    ($alpha$, `Nul`),
+    ($a$, `Nul`),
     ($x$, `FREE`, `arg`),
   ))
 
@@ -98,13 +102,13 @@ Problems:
   era("nul", (2, 0))
   wire("nul.0", "dup.0")
 
-  content((-0.3, -1.15), $delta_1$)
-  content((+0.3, -1.15), $delta_2$)
+  content((-0.3, -1.15), $d_1$)
+  content((+0.3, -1.15), $d_2$)
 
   content((1, -3), memory(
-    ($delta_1$, [`Dup` $x$]),
-    ($delta_2$, [`Dup` $x$]),
-    ($x$, `Nul`, [`.` $delta_1 xor delta_2$]),
+    ($d_1$, [`Dup1` $x$]),
+    ($d_2$, [`Dup2` $x$]),
+    ($x$, `Nul`, [`.` $d_1 xor d_2$]),
   ))
 
   translate((6, 0))
@@ -114,12 +118,12 @@ Problems:
   era("nul", (0, -0.4), show-main: true, angle: -180deg, polarities: (+1,))
   era("nul", (1, -0.4), show-main: true, angle: -180deg, polarities: (+1,))
 
-  content((0, -1.15), $delta_1$)
-  content((1, -1.15), $delta_2$)
+  content((0, -1.15), $d_1$)
+  content((1, -1.15), $d_2$)
 
   content((1, -3), memory(
-    ($delta_1$, `Nul`),
-    ($delta_2$, `Nul`),
+    ($d_1$, `Nul`),
+    ($d_2$, `Nul`),
     ($x$, `FREE`, `FREE`),
   ))
 })
@@ -136,15 +140,15 @@ Problems:
   wire("lam.0", "app.0")
 
   content((-0.3, -1.2), `arg`)
-  content((+0.3, -1.15), $alpha$)
+  content((+0.3, -1.15), $a$)
 
   content((+1.7, -1.15), $z$)
   content((+2.3, -1.2), `bod`)
 
   content((1, -3), memory(
-    ($alpha$, [`App` $x$]),
+    ($a$, [`App` $x$]),
     ($x$, [`Lam` $y$], `arg`),
-    ($y$, [`bod`]),
+    ($y$, [`.` $z$], [`bod`]),
     ($z$, [`Var` $x$]),
   ))
 
@@ -155,21 +159,18 @@ Problems:
   wire((+2.3, -0.75, +90deg), (1.25, 0, 180deg), (+0.3, -0.85, -86deg), polarize: (0.001, 1))
 
   content((-0.3, -1.2), `arg`)
-  content((+0.3, -1.15), $alpha$)
+  content((+0.3, -1.15), $a$)
 
   content((+1.7, -1.15), $z$)
   content((+2.3, -1.2), `bod`)
 
   content((1, -3), memory(
-    ($alpha$, [`bod`]),
-    ($x$, `arg`, `FREE`),
-    ($y$, `FREE`),
-    ($z$, [`Var` $x$]),
+    ($a$, [`bod`]),
+    ($x$, `FREE`, `FREE`),
+    ($y$, `FREE`, `FREE`),
+    ($z$, `arg`),
   ))
 })
-
-Problems:
-  - Creates an indirection through `Var`.
 
 == Dup - Sup $thick (i = j)$
 
@@ -178,16 +179,16 @@ Problems:
   dup("sup", (2, 0), show-aux: true, polarities: (+1, -1, -1))
   wire("sup.0", "dup.0")
 
-  content((-0.3, -1.15), $delta_1$)
-  content((+0.3, -1.15), $delta_2$)
+  content((-0.3, -1.15), $d_1$)
+  content((+0.3, -1.15), $d_2$)
 
   content((+1.7, -1.15), `a`)
   content((+2.3, -1.15), `b`)
 
   content((1, -3), memory(
-    ($delta_1$, [`Dup` $x$]),
-    ($delta_2$, [`Dup` $x$]),
-    ($x$, [`Sup` $y$], [`.` $delta_1 xor delta_2$]),
+    ($d_1$, [`Dup` $x$]),
+    ($d_2$, [`Dup` $x$]),
+    ($x$, [`Sup` $y$], [`.` $d_1 xor d_2$]),
     ($y$, `a`, `b`),
   ))
 
@@ -197,15 +198,15 @@ Problems:
   wire((+1.7, -0.75, +90deg), (0.75, 0, 180deg), (-0.3, -0.85, -86deg), polarize: (0.001, 1))
   wire((+2.3, -0.75, +90deg), (1.25, 0, 180deg), (+0.3, -0.85, -86deg), polarize: (0.001, 1))
 
-  content((-0.3, -1.2), $delta_1$)
-  content((+0.3, -1.2), $delta_2$)
+  content((-0.3, -1.2), $d_1$)
+  content((+0.3, -1.2), $d_2$)
 
   content((+1.7, -1.15), `a`)
   content((+2.3, -1.15), `b`)
 
   content((1, -3), memory(
-    ($delta_1$, `a`),
-    ($delta_2$, `b`),
+    ($d_1$, `a`),
+    ($d_2$, `b`),
     ($x$, `FREE`, `FREE`),
     ($y$, `FREE`, `FREE`),
   ))
@@ -221,24 +222,24 @@ Problems:
   content("dup.label", text(white, $i$))
   content("sup.label", text(white, $j$))
 
-  content((-0.3, -1.15), $delta_1$)
-  content((+0.3, -1.15), $delta_2$)
+  content((-0.3, -1.15), $d_1$)
+  content((+0.3, -1.15), $d_2$)
 
   content((+1.7, -1.15), `a`)
   content((+2.3, -1.15), `b`)
 
   content((1, -2), memory(
-    ($delta_1$, [`Dup` $x$]),
-    ($delta_2$, [`Dup` $x$]),
-    ($x$, [`Sup` $y$], [`.` $delta_1 xor delta_2$]),
+    ($d_1$, $#`Dup1`_i thick x$),
+    ($d_2$, $#`Dup2`_i thick x$),
+    ($x$, $#`Sup`_j thick y$, [`.` $d_1 xor d_2$]),
     ($y$, `a`, `b`),
   ), anchor: "north")
 
   translate((6, 0))
   content((-2, -2), $~~>$)
 
-  content((-0.3, -1), $delta_1$)
-  content((+0.3, -1), $delta_2$)
+  content((-0.3, -1), $d_1$)
+  content((+0.3, -1), $d_2$)
 
   dup("sup1", (1.5, +1.2), angle: 90deg)
   dup("sup2", (1.5, -0.2), angle: 90deg)
@@ -268,12 +269,12 @@ Problems:
   wire((5+0.3, -0.7, +90deg), "dup2.0", polarize: 0)
 
   content((2.5, -2), memory(
-    ($delta_1$, [`Sup` $x$]),
-    ($delta_2$, [`Sup` $y$]),
-    ($x$, [`Dup` $d_2$], [`Dup` $d_1$]),
-    ($y$, [`Dup` $d_2$], [`Dup` $d_1$]),
-    ($d_1$, `b`, [`Var` $x' xor y'$]),
-    ($d_2$, `a`, [`Var` $x xor y$]),
+    ($d_1$, $#`Sup`_j thick x$),
+    ($d_2$, $#`Sup`_j thick y$),
+    ($x$, $#`Dup1`_i thick w$, $#`Dup1`_i thick q$),
+    ($y$, $#`Dup2`_i thick w$, $#`Dup2`_i thick q$),
+    ($w$, `a`, [`.` $x xor y$]),
+    ($q$, `b`, [`.` $x' xor y'$]),
   ), anchor: "north")
 })
 
@@ -288,25 +289,25 @@ Notes:
   con("lam", (2, 0), show-aux: true, polarities: (+1, +1, -1))
   wire("lam.0", "dup.0")
 
-  content((-0.3, -1.15), $delta_1$)
-  content((+0.3, -1.15), $delta_2$)
+  content((-0.3, -1.15), $d_1$)
+  content((+0.3, -1.15), $d_2$)
 
-  content((+1.7, -1.15), $?$)
+  content((+1.7, -1.15), $z$)
   content((+2.3, -1.15), `bod`)
 
   content((1, -2), memory(
-    ($delta_1$, [`Dup` $x$]),
-    ($delta_2$, [`Dup` $x$]),
-    ($x$, [`Lam` $y$], [`.` $delta_1 xor delta_2$]),
-    ($y$, `bod`),
-    ($?$, [`Var` $x$]),
+    ($d_1$, [`Dup1` $x$]),
+    ($d_2$, [`Dup2` $x$]),
+    ($x$, [`Lam` $y$], [`.` $d_1 xor d_2$]),
+    ($y$, [`.` $z$], `bod`),
+    ($z$, [`Var` $x$]),
   ), anchor: "north")
 
   translate((6, 0))
   content((-2, -2), $~~>$)
 
-  content((-0.3, -1), $delta_1$)
-  content((+0.3, -1), $delta_2$)
+  content((-0.3, -1), $d_1$)
+  content((+0.3, -1), $d_2$)
 
   con("lam2", (1.5, +1.2), angle: 90deg)
   con("lam1", (1.5, -0.2), angle: 90deg)
@@ -323,20 +324,20 @@ Notes:
   wire("lam2.1", "sup.1", polarize: 0.25)
   wire("dup.1", "lam2.2")
 
-  content((5-0.3, -1), $?$)
+  content((5-0.3, -1), $z$)
   content((5+0.3, -1), `bod`)
 
   wire("sup.0", (5-0.3, -0.7, -90deg), polarize: 1)
-  wire((5+0.3, -0.6, 105deg), "dup.0", polarize: 0.0001)
+  wire((5+0.3, -0.6, 90deg), "dup.0", polarize: 0)
 
   content((2.5, -2), memory(
-    ($delta_1$, [`Lam` $y$]),
-    ($delta_2$, [`Lam` $x'$]),
-    ($x$, [`Sup` $w$], [`Dup` $z$]),
-    ($y$, [`Dup` $z$]),
-    ($w$, [`Var` $delta_1$], [`Var` $delta_2$]),
-    ($z$, `bod`, [`.` $x' xor y$]),
-    ($?$, [`Var` $x$]),
+    ($d_1$, [`Lam` $x$]),
+    ($d_2$, [`Lam` $y$]),
+    ($x$, [`.` $w$], [`Dup1` $q$]),
+    ($y$, [`.` $w'$], [`Dup2` $q$]),
+    ($z$, [`Sup` $w$]),
+    ($w$, [`Var` $x$], [`Var` $y$]),
+    ($q$, `bod`, [`.` $x' xor y'$]),
   ), anchor: "north")
 })
 
@@ -352,13 +353,13 @@ Notes:
   wire("sup.0", "app.0")
 
   content((-0.3, -1.15), `arg`)
-  content((+0.3, -1.10), $alpha$)
+  content((+0.3, -1.10), $a$)
 
   content((+1.7, -1.15), `a`)
   content((+2.3, -1.15), `b`)
 
   content((1, -2), memory(
-    ($alpha$, [`App` $x$]),
+    ($a$, [`App` $x$]),
     ($x$, [`Sup` $s$], `arg`),
     ($s$, `a`, `b`),
   ), anchor: "north")
@@ -367,7 +368,7 @@ Notes:
   content((-2, -2), $~~>$)
 
   content((-0.3, -1), `arg`)
-  content((+0.3, -0.95), $alpha$)
+  content((+0.3, -0.95), $a$)
 
   dup("dup", (1.5, +1.2), angle: 90deg)
   dup("sup", (1.5, -0.2), angle: 90deg)
@@ -390,11 +391,11 @@ Notes:
   wire((5+0.3, -0.6, 90deg), "app1.0", polarize: 0)
 
   content((2.5, -2), memory(
-    ($alpha$, [`Sup` $s$]),
-    ($s$, [`App` $a_1$], [`App` $a_2$]),
-    ($a_1$, `a`, [`Dup` $x$]),
-    ($a_2$, `b`, [`Dup` $x$]),
+    ($a$, [`Sup` $s$]),
     ($x$, `arg`, [`.` $a_1 xor a_2$]),
+    ($s$, [`App` $a_1$], [`App` $a_2$]),
+    ($a_1$, `a`, [`Dup1` $x$]),
+    ($a_2$, `b`, [`Dup2` $x$]),
   ), anchor: "north")
 })
 

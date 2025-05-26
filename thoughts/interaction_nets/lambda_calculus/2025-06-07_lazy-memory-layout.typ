@@ -52,18 +52,21 @@ as the _heap_. The heap is aligned to the nearest 16 bytes. This is because the 
 
 The allocator has a simple API:
 
-```rust
-type Addr = *const u64
+#post.code(caption: "Allocator API",
+  ```rust
+  /// An address to a _single_ word on the heap.
+  pub struct Addr(*const u64);
 
-// returns a 16-byte aligned address
-alloc_double_word(&mut self) -> Option<Addr>
+  /// Returns a 16-byte aligned address.
+  fn alloc_double_word(&mut self) -> Option<Addr>
 
-// expects an 8-byte aligned address
-free_single_word(&mut self, addr: Addr)
+  /// Expects an 8-byte aligned address.
+  fn free_single_word(&mut self, addr: Addr)
 
-// expects a 16-byte aligned address
-free_double_word(&mut self, addr: Addr)
-```
+  /// Expects a 16-byte aligned address.
+  fn free_double_word(&mut self, addr: Addr)
+  ```
+)
 
 == Memory Reuse
 
@@ -75,11 +78,99 @@ of nets. Specifically, some owned double-word values will keep one half free to 
 
 = In-Memory Representation of Nodes
 
-We will be storing polarized k-SIC nodes. We will refer to different polarizations of nodes using different ports.
+== Ports
+
+We will be storing polarized $k$-SIC nodes. Roughly, every 64-bit value on the heap is some negative port in a
+node. There are some exceptions to this, but this is broadly the case. These 64-bit values can also be seen as
+the terminal side of a polarized wire. The memory layout of these 64-bit values is:
+
+#post.canvas(caption: "Memory layout of a port", {
+  content((0, 0),
+    ```text
+    [ 16-bit label ][ 45-bit address ][ 3-bit tag ]
+    ```,
+    anchor: "north")
+
+  content((1.6, -0.8), $stretch(brace.l, size: #14.5em)$, anchor: "west", angle: 90deg)
+
+  content((1.6, -1.0), "48-bit, 8-byte aligned, user-space address", anchor:"north")
+})
+
+The lowest 3 bits are a `Tag`, and these guide how to interpret the remaining 16 bits. There are 8 tags:
+
+#post.code(caption: "Possible tags",
+  ```rust
+  pub enum Tag {
+    /// A positive eraser.
+    Nul = 1,
+    /// The main port of an application node.
+    App = 2,
+    /// The main port of a lambda node.
+    Lam = 3,
+    /// The first port of a lambda node, the variable.
+    Var = 4,
+    /// An aux port of a duplication node.
+    Dup = 5,
+    /// The main port of a superposition node.
+    Sup = 6,
+  }
+  ```
+)
+
+The first 16-bits are labels used by the duplication and superposition nodes. To be clear, the application and lambda
+nodes are different polarizations of the same kind of node, then there are reference nodes, and finally there are $2^16$
+other kinds of nodes, which are duplications or superpositions depending on the polarization.
+
+The 45-bit address bits are actually a 48-bit user-space pointer into the heap#footnote[This representation explicitly
+relies on the fact that most 64-bit processors do not use the upper 16-bits of addressing space.]. Since these pointers
+are 8-byte aligned, the bottom 3 bits are all 0. Thus, we can store the `Tag` inline with these addresses. Not
+all node tags use these address bits.
+
+Here is a summary of how each tag uses its bits:
+
+#post.code(caption: "Tag-dependent port interpretations",
+  ```text
+  [       ][ dw addr ][ App ]
+  [       ][ dw addr ][ Lam ]
+  [       ][  w addr ][ Var ]
+  [       ][         ][ Nul ]
+  [ 0 | 1 ][ dw addr ][ Dup ]
+  [ label ][ dw addr ][ Sup ]
+  [       ][     idx ][ Ref ]
+  ```
+)
+
+The two kinds of addresses `dw` and `w` double-word-aligned and single-word-aligned, respectively. Unused portions
+are typically 0.  `Ref` nodes interpret their address bits as an index into a global map of references $cal(R)$.
+
+== Nodes
+
+Ports which make use of their address bits expect a specific structure at that address in the heap. We will
+detail each of those now. In the memory layouts that follow, we'll use code-script to represent values on the heap
+(e.g. `fun` or `arg`). Math-script is used to represent memory addresses (e.g. $a$ or $x$).
+
+When displaying these nodes, memory addresses with only a single port next to them are 8-byte aligned addresses, and
+addresses with two ports are 16-byte aligned. For example, consider the diagram
+
+#post.canvas({
+  content((4, 0), memory(
+    ($a$, [`App` $x$]),
+    ($x$,  `fun`, `arg`),
+  ))
+})
+
+Above, $a$ is 8-byte aligned while $x$ is 16-byte aligned. Lastly, an address with an apostrophe is the second
+half of a 16-byte-aligned address. For example, $thick x'$ would refer to `arg` above.
+
+Additionally, if we show a port with a tag of `.`, this implies that the tag is irrelevant or uninterpretable. The
+entire 64-bit value of the port is used opaquely by the node that holds a pointer to it.
+
+Lastly, we use subscripts to refer to the `label` portion of a port. For example, $thick #`[` #`Sup`_i thick x #`]`$
+is a port with the `Sup` tag, label $i$, and an address of $x$.
 
 == Application Node
 
-#post.canvas(caption: "Representation of an application node", {
+#post.canvas(caption: "Layout of an application node", {
   con("app", (0, 0), show-ports: true, polarities: (-1, -1, +1))
 
   content((0, 1.2), `fun`)
@@ -92,28 +183,84 @@ We will be storing polarized k-SIC nodes. We will refer to different polarizatio
   ))
 })
 
-Here we're using code-script to represent values on the heap (e.g. `fun` or `arg`). Math-script is used to represent
-memory addresses (e.g. $a$ or $x$).
+== Lambda Node
 
-= Problems
-- Things cannot be moved freely. For example, a `Var` points to its lambda. Thus, the `lambda` cannot be moved unless
-  the `Var` is updated.
-- No garbage collection, unclear how to safely erase things.
-- Garbage collection has to kind of be done during the interactions, there are special cases that tell us whether
-  something should be erased (e.g a `FREE` variable port in the first half of `Lam` node). The interactions themselves
-  need to handle this.
+#post.canvas(caption: "Layout of a lambda node", {
+  con("lam", (0, 0), show-ports: true, polarities: (+1, +1, -1))
 
-= Memory Layout
+  content((0, 1.2), $ell$)
+  content((-0.3, -1.17), $v$)
+  content((+0.3, -1.2), `bod`)
 
-- The heap stores negative ports.
-  - Entries on the heap are double-words (2 × 64 bits)
-  - Addresses are 8-byte aligned, so they can point to an upper or lower word within an entry on the heap.
-  - The exception to this is the second half of a Dup node, which stores an XOR of the pointers to its aux ports.
-- Reversing the arrows shows the direction of pointers.
-  - A pointer into the heap is the end of a polarized wire.
-  - A value on the heap is the negative start a polarized wire.
+  content((4, 0), memory(
+    ($ell$, [`Lam` $x$]),
+    ($x$,  [`.` $v$], `bod`),
+    ($v$, [`Var` $ell$]),
+  ))
+})
+
+Notice that the variable and lambda ports hold pointers to each other. This is for two reasons:
+1. When the lambda node is interacted with, the variable node is replaced with an appropriate value.
+2. If the variable is moved due to some interaction, we need to propagate the new address of the variable to its parent
+   lambda node.
+
+I think, however, the variable could instead point to the same address that its parent lambda node points to. This would
+remove one indirection.
+
+
+Additionally, if a variable does not occur in a lambda node's body, the variable is implicitly connected to an
+eraser. We represent this by having the first half of $x$ be `FREE`.
+
+== Duplication Node
+
+#post.canvas(caption: "Layout of a duplication node", {
+  dup("dup", (0, 0), show-ports: true, polarities: (-1, +1, +1))
+
+  content("dup.label", text(white, $i$))
+
+  content((0, 1.2), `main`)
+  content((-0.3, -1.2), $d_1$)
+  content((+0.3, -1.2), $d_2$)
+
+  content((4, 0), memory(
+    ($d_1$, $#`Dup`_1 thick x$),
+    ($d_2$, $#`Dup`_2 thick x$),
+    ($x$,  `main`, $#`.`_i thick d_1 xor d_2$),
+  ))
+})
+
+A few things to note here:
+1. We make use of the `label` section of the aux ports of the dup node to store whether it is the first (0) or
+   second (1) aux port.
+2. We store an $xor$ (XOR) of the two addresses of the aux ports of the duplication node. This is so if we have a hold
+   of one of the aux ports, we can find the other by XOR'ing its address with what's stored in $x'$. That is,
+   $thick thick d_1 xor d_2 xor d_1 = d_2 thick$.
+
+== Superposition Node
+
+#post.canvas(caption: "Layout of a superposition node", {
+  dup("sup", (0, 0), show-ports: true, polarities: (+1, -1, -1))
+
+  content("sup.label", text(white, $i$))
+
+  content((0, 1.2), $s$)
+  content((-0.4, -1.17), `fst`)
+  content((+0.4, -1.17), `snd`)
+
+  content((4, 0), memory(
+    ($s$, $#`Sup`_i thick x$),
+    ($x$, `fst`, `snd`),
+  ))
+})
+
+== Root
+
+The root of the net is the single free positive wire that is "held on to" during normalization. This is the very first
+port in the heap, the left half of index 0. The second half of index 0 is always free.
 
 = Interactions
+
+Now we will explain the memory transformations that occur during interactions.
 
 == App - Null
 
@@ -165,8 +312,8 @@ Problems:
   content((+0.3, -1.15), $d_2$)
 
   content((1, -3), memory(
-    ($d_1$, [`Dup1` $x$]),
-    ($d_2$, [`Dup2` $x$]),
+    ($d_1$, $#`Dup`_1 thick x$),
+    ($d_2$, $#`Dup`_2 thick x$),
     ($x$, `Nul`, [`.` $d_1 xor d_2$]),
   ))
 
@@ -186,10 +333,6 @@ Problems:
     ($x$, `FREE`, `FREE`),
   ))
 })
-
-Problems:
-- A dup node cannot be moved. If it is moved, you'll need to update its second port which holds an XOR ptr to go
-  between the two ports.
 
 == App - Lam
 
@@ -292,8 +435,8 @@ Problems:
   content((+2.3, -1.15), `b`)
 
   content((1, -2), memory(
-    ($d_1$, $#`Dup1`_i thick x$),
-    ($d_2$, $#`Dup2`_i thick x$),
+    ($d_1$, $#`Dup`_1 thick x$),
+    ($d_2$, $#`Dup`_2 thick x$),
     ($x$, $#`Sup`_j thick y$, [`.` $d_1 xor d_2$]),
     ($y$, `a`, `b`),
   ), anchor: "north")
@@ -334,8 +477,8 @@ Problems:
   content((2.5, -2), memory(
     ($d_1$, $#`Sup`_j thick x$),
     ($d_2$, $#`Sup`_j thick y$),
-    ($x$, $#`Dup1`_i thick w$, $#`Dup1`_i thick q$),
-    ($y$, $#`Dup2`_i thick w$, $#`Dup2`_i thick q$),
+    ($x$, $#`Dup`_1 thick w$, $#`Dup`_1 thick q$),
+    ($y$, $#`Dup`_2 thick w$, $#`Dup`_2 thick q$),
     ($w$, `a`, [`.` $x xor y$]),
     ($q$, `b`, [`.` $x' xor y'$]),
   ), anchor: "north")
@@ -359,8 +502,8 @@ Notes:
   content((+2.3, -1.15), `bod`)
 
   content((1, -2), memory(
-    ($d_1$, [`Dup1` $x$]),
-    ($d_2$, [`Dup2` $x$]),
+    ($d_1$, $#`Dup`_1 thick x$),
+    ($d_2$, $#`Dup`_2 thick x$),
     ($x$, [`Lam` $y$], [`.` $d_1 xor d_2$]),
     ($y$, [`.` $z$], `bod`),
     ($z$, [`Var` $x$]),
@@ -396,11 +539,11 @@ Notes:
   content((2.5, -2), memory(
     ($d_1$, [`Lam` $x$]),
     ($d_2$, [`Lam` $y$]),
-    ($x$, [`.` $w$], [`Dup1` $q$]),
-    ($y$, [`.` $w'$], [`Dup2` $q$]),
-    ($z$, [`Sup` $w$]),
-    ($w$, [`Var` $x$], [`Var` $y$]),
-    ($q$, `bod`, [`.` $x' xor y'$]),
+    ($x$, [`.` $q$], $#`Dup`_1 thick w$),
+    ($y$, [`.` $q'$], $#`Dup`_2 thick w$),
+    ($z$, [`Sup` $q$]),
+    ($w$, `bod`, [`.` $x' xor y'$]),
+    ($q$, [`Var` $d_1$], [`Var` $d_2$]),
   ), anchor: "north")
 })
 
@@ -423,8 +566,8 @@ Notes:
 
   content((1, -2), memory(
     ($a$, [`App` $x$]),
-    ($x$, [`Sup` $s$], `arg`),
-    ($s$, `a`, `b`),
+    ($x$, [`Sup` $y$], `arg`),
+    ($y$, `a`, `b`),
   ), anchor: "north")
 
   translate((6, 0))
@@ -454,14 +597,22 @@ Notes:
   wire((5+0.3, -0.6, 90deg), "app1.0", polarize: 0)
 
   content((2.5, -2), memory(
-    ($a$, [`Sup` $s$]),
-    ($x$, `arg`, [`.` $a_1 xor a_2$]),
-    ($s$, [`App` $a_1$], [`App` $a_2$]),
-    ($a_1$, `a`, [`Dup1` $x$]),
-    ($a_2$, `b`, [`Dup2` $x$]),
+    ($a$, [`Sup` $x$]),
+    ($x$, [`App` $a_1$], [`App` $a_2$]),
+    ($y$, `arg`, [`.` $a_1 xor a_2$]),
+    ($a_1$, `a`, $#`Dup`_1 thick y$),
+    ($a_2$, `b`, $#`Dup`_2 thick y$),
   ), anchor: "north")
 })
 
 Notes:
 - alocates two new double-wide nodes, which is what we expect.
 - frees nothing, so memory is maximally reused.
+
+= Problems
+- Things cannot be moved freely. For example, a `Var` points to its lambda. Thus, the `lambda` cannot be moved unless
+  the `Var` is updated.
+- No garbage collection, unclear how to safely erase things.
+- Garbage collection has to kind of be done during the interactions, there are special cases that tell us whether
+  something should be erased (e.g a `FREE` variable port in the first half of `Lam` node). The interactions themselves
+  need to handle this.

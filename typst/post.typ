@@ -28,6 +28,12 @@
   )
 }
 
+#let code(code, ..args) = {
+  canvas(..args, {
+    cetz.draw.content((0, 0), code)
+  })
+}
+
 #let spoiler(name, content) = [
   #center[
     #tag.details[

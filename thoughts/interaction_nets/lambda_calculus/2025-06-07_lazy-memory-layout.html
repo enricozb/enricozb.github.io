@@ -2886,7 +2886,7 @@
           <li value="2">If the variable is moved due to some interaction, we need to propagate the new address of the variable to its parent lambda node.</li>
         </ol>
         <p>I think, however, the variable could instead point to the same address that its parent lambda node points to. This would remove one indirection.</p>
-        <p>Additionally, if a variable does not occur in a lambda node's body, the variable is implicitly connected to an eraser. We represent this by having the first half of <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 6.292 7.513000000000001" width="6.292pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
+        <p>If a variable does not occur in a lambda node's body, the variable is implicitly connected to an eraser. We represent this by having the first half of <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 6.292 7.513000000000001" width="6.292pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
         <g transform="translate(0 7.513000000000001)">
             <g class="typst-text" transform="scale(1, -1)">
@@ -2901,6 +2901,45 @@
     </defs>
 </svg>
 </span> be <code>FREE</code>.</p>
+        <p>Additionally, there is space in the port <span role="math"><svg style="overflow: visible;" class="typst-doc" viewBox="0 0 32.306140625000005 7.513000000000001" width="32.306140625000005pt" height="7.513000000000001pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
+    <g>
+        <g transform="translate(0 7.513000000000001)">
+            <g class="typst-text" transform="scale(1, -1)">
+                <use xlink:href="#gF6CEE361A2CAA066C7298294FE9558FD" x="0" fill="#000000" fill-rule="nonzero"/>
+            </g>
+        </g>
+        <g transform="translate(8.950046875000002 7.513000000000001)">
+            <g class="typst-text" transform="scale(1, -1)">
+                <use xlink:href="#g7F226B39A2F43B03D5DB2F80A2CB0F55" x="0" fill="#000000" fill-rule="nonzero"/>
+            </g>
+        </g>
+        <g transform="translate(17.900093750000003 7.513000000000001)">
+            <g class="typst-text" transform="scale(1, -1)">
+                <use xlink:href="#g407485845E5CD225A92A003504B60562" x="0" fill="#000000" fill-rule="nonzero"/>
+            </g>
+        </g>
+        <g transform="translate(27.008093750000004 7.513000000000001)">
+            <g class="typst-text" transform="scale(1, -1)">
+                <use xlink:href="#g9DDA9C2B199B19B58D8A2E7B96625FD5" x="0" fill="#000000" fill-rule="nonzero"/>
+            </g>
+        </g>
+    </g>
+    <defs id="glyph">
+        <symbol id="gF6CEE361A2CAA066C7298294FE9558FD" overflow="visible">
+            <path d="M 1.9894532 6.685938 L 3.8113282 6.685938 L 3.8113282 6.0714846 L 2.7800782 6.0714846 L 2.7800782 -0.5457031 L 3.8113282 -0.5457031 L 3.8113282 -1.1601563 L 1.9894532 -1.1601563 L 1.9894532 6.685938 Z "/>
+        </symbol>
+        <symbol id="g7F226B39A2F43B03D5DB2F80A2CB0F55" overflow="visible">
+            <path d="M 2.101172 1.3105469 L 3.1839845 1.3105469 L 3.1839845 0 L 2.101172 0 L 2.101172 1.3105469 Z "/>
+        </symbol>
+        <symbol id="g407485845E5CD225A92A003504B60562" overflow="visible">
+            <path d="M 4.059 4.301 C 4.059 4.213 4.158 4.07 4.334 3.85 C 4.5099998 3.6299999 4.598 3.377 4.598 3.091 C 4.598 2.772 4.444 2.233 4.125 1.474 C 3.894 0.946 3.366 0.198 2.717 0.198 C 2.211 0.198 1.958 0.495 1.958 1.1 C 1.958 1.529 2.167 2.288 2.585 3.377 C 2.673 3.608 2.717 3.795 2.717 3.927 C 2.717 4.4769998 2.343 4.862 1.793 4.862 C 1.309 4.862 0.924 4.587 0.649 4.037 C 0.429 3.586 0.319 3.3 0.319 3.157 C 0.319 3.058 0.374 3.003 0.495 3.003 C 0.638 3.003 0.65999997 3.069 0.704 3.223 C 0.957 4.103 1.309 4.5429997 1.76 4.5429997 C 1.903 4.5429997 1.98 4.444 1.98 4.235 C 1.98 4.059 1.925 3.817 1.804 3.498 C 1.397 2.409 1.188 1.6719999 1.188 1.265 C 1.188 0.704 1.375 0.319 1.749 0.11 C 2.046 -0.044 2.354 -0.121 2.673 -0.121 C 3.652 -0.121 4.334 0.935 4.62 1.782 C 4.972 2.816 5.148 3.575 5.148 4.059 C 5.148 4.598 4.972 4.862 4.631 4.862 C 4.356 4.862 4.059 4.576 4.059 4.301 Z "/>
+        </symbol>
+        <symbol id="g9DDA9C2B199B19B58D8A2E7B96625FD5" overflow="visible">
+            <path d="M 3.3085938 6.685938 L 3.3085938 -1.1601563 L 1.4867188 -1.1601563 L 1.4867188 -0.5457031 L 2.517969 -0.5457031 L 2.517969 6.0714846 L 1.4867188 6.0714846 L 1.4867188 6.685938 L 3.3085938 6.685938 Z "/>
+        </symbol>
+    </defs>
+</svg>
+</span> to store a label, so we could have labelled lambdas and application nodes as well, to encode data structures.</p>
         <h3>Duplication Node</h3>
         <div class="center">
           <figure>
@@ -9377,6 +9416,14 @@
           <li>Things cannot be moved freely. For example, a <code>Var</code> points to its lambda. Thus, the <code>lambda</code> cannot be moved unless the <code>Var</code> is updated.</li>
           <li>No garbage collection, unclear how to safely erase things.</li>
           <li>Garbage collection has to kind of be done during the interactions, there are special cases that tell us whether something should be erased (e.g a <code>FREE</code> variable port in the first half of <code>Lam</code> node). The interactions themselves need to handle this.</li>
+          <li>
+            <p>If we need 4-bit tags:</p>
+            <ul>
+              <li>Make a var point to the lambda node address, not the lambda node slot, this would make it so that <code>Var</code> ports have a 16-byte aligned addresss.</li>
+              <li>Now all ports have a 16-byte aligned address (except dup nodes' XOR port), so we can have 4-bit tags.</li>
+              <li>We can then reserve the tags <code>0b1111</code> and <code>0b0111</code> to <em>both</em> be the dup nodes XOR port.</li>
+            </ul>
+          </li>
         </ul>
         <hr>
         <div class="footnotes">

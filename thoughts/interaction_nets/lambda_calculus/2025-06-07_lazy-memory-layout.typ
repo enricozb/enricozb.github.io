@@ -207,9 +207,11 @@ Notice that the variable and lambda ports hold pointers to each other. This is f
 I think, however, the variable could instead point to the same address that its parent lambda node points to. This would
 remove one indirection.
 
+If a variable does not occur in a lambda node's body, the variable is implicitly connected to an eraser. We
+represent this by having the first half of $x$ be `FREE`.
 
-Additionally, if a variable does not occur in a lambda node's body, the variable is implicitly connected to an
-eraser. We represent this by having the first half of $x$ be `FREE`.
+Additionally, there is space in the port $#`[` #`.` v #`]`$ to store a label, so we could have labelled lambdas and
+application nodes as well, to encode data structures.
 
 == Duplication Node
 
@@ -616,3 +618,8 @@ Notes:
 - Garbage collection has to kind of be done during the interactions, there are special cases that tell us whether
   something should be erased (e.g a `FREE` variable port in the first half of `Lam` node). The interactions themselves
   need to handle this.
+- If we need 4-bit tags:
+  - Make a var point to the lambda node address, not the lambda node slot, this would make it so that `Var` ports have
+    a 16-byte aligned addresss.
+  - Now all ports have a 16-byte aligned address (except dup nodes' XOR port), so we can have 4-bit tags.
+  - We can then reserve the tags `0b1111` and `0b0111` to _both_ be the dup nodes XOR port.

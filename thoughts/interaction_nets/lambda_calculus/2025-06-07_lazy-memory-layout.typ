@@ -394,9 +394,9 @@ Problems:
   content((+2.3, -1.15), `b`)
 
   content((1, -3), memory(
-    ($d_1$, [`Dup` $x$]),
-    ($d_2$, [`Dup` $x$]),
-    ($x$, [`Sup` $y$], [`.` $d_1 xor d_2$]),
+    ($d_1$, $#`Dup`_1 thick x$),
+    ($d_2$, $#`Dup`_2 thick x$),
+    ($x$, $#`Sup`_i thick y$, $#`.`_i thick d_1 xor d_2$),
     ($y$, `a`, `b`),
   ))
 
@@ -497,6 +497,8 @@ Notes:
   con("lam", (2, 0), show-aux: true, polarities: (+1, +1, -1))
   wire("lam.0", "dup.0")
 
+  content("dup.label", text(white, $i$))
+
   content((-0.3, -1.15), $d_1$)
   content((+0.3, -1.15), $d_2$)
 
@@ -506,7 +508,7 @@ Notes:
   content((1, -2), memory(
     ($d_1$, $#`Dup`_1 thick x$),
     ($d_2$, $#`Dup`_2 thick x$),
-    ($x$, [`Lam` $y$], [`.` $d_1 xor d_2$]),
+    ($x$, [`Lam` $y$], $#`.`_i thick d_1 xor d_2$),
     ($y$, [`.` $z$], `bod`),
     ($z$, [`Var` $x$]),
   ), anchor: "north")
@@ -526,6 +528,9 @@ Notes:
   dup("dup", (3.5, +1.2), angle: -90deg)
   dup("sup", (3.5, -0.2), angle: -90deg)
 
+  content("dup.label", text(white, $i$))
+  content("sup.label", text(white, $i$))
+
   wire("lam1.1", "sup.2")
   wire("dup.2", "lam1.2", polarize: 0.8)
 
@@ -543,8 +548,8 @@ Notes:
     ($d_2$, [`Lam` $y$]),
     ($x$, [`.` $q$], $#`Dup`_1 thick w$),
     ($y$, [`.` $q'$], $#`Dup`_2 thick w$),
-    ($z$, [`Sup` $q$]),
-    ($w$, `bod`, [`.` $x' xor y'$]),
+    ($z$, $#`Sup`_i thick q$),
+    ($w$, `bod`, $#`.`_i thick x' xor y'$),
     ($q$, [`Var` $d_1$], [`Var` $d_2$]),
   ), anchor: "north")
 })
@@ -560,6 +565,8 @@ Notes:
   dup("sup", (2, 0), show-aux: true, polarities: (+1, -1, -1))
   wire("sup.0", "app.0")
 
+  content("sup.label", text(white, $i$))
+
   content((-0.3, -1.15), `arg`)
   content((+0.3, -1.10), $a$)
 
@@ -568,7 +575,7 @@ Notes:
 
   content((1, -2), memory(
     ($a$, [`App` $x$]),
-    ($x$, [`Sup` $y$], `arg`),
+    ($x$, $#`Sup`_i thick y$, `arg`),
     ($y$, `a`, `b`),
   ), anchor: "north")
 
@@ -580,6 +587,9 @@ Notes:
 
   dup("dup", (1.5, +1.2), angle: 90deg)
   dup("sup", (1.5, -0.2), angle: 90deg)
+
+  content("dup.label", text(white, $i$))
+  content("sup.label", text(white, $i$))
 
   wire((-0.3, -0.6, 90deg), "dup.0",  polarize: 0)
   wire("sup.0", (+0.3, -0.7, -90deg), polarize: 1)
@@ -599,9 +609,9 @@ Notes:
   wire((5+0.3, -0.6, 90deg), "app1.0", polarize: 0)
 
   content((2.5, -2), memory(
-    ($a$, [`Sup` $x$]),
+    ($a$, $#`Sup`_i thick x$),
     ($x$, [`App` $a_1$], [`App` $a_2$]),
-    ($y$, `arg`, [`.` $a_1 xor a_2$]),
+    ($y$, `arg`, $#`.`_i thick a_1 xor a_2$),
     ($a_1$, `a`, $#`Dup`_1 thick y$),
     ($a_2$, `b`, $#`Dup`_2 thick y$),
   ), anchor: "north")
@@ -612,6 +622,10 @@ Notes:
 - frees nothing, so memory is maximally reused.
 
 = Problems
+- Single-wire-producing interactions need to be handled specially
+  - applying a function to the identity
+  - annihilating a sup / dup with loops
+- Freeing nodes might not always be safe, there might be a node moved to a location that is then freed...
 - Things cannot be moved freely. For example, a `Var` points to its lambda. Thus, the `lambda` cannot be moved unless
   the `Var` is updated.
 - No garbage collection, unclear how to safely erase things.

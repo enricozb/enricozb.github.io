@@ -17,10 +17,11 @@
   k-SIC normalization.
 ]
 
-#let (era, con, dup) = inets.with-kinds(
+#let (era, con, dup, ref) = inets.with-kinds(
   era: inets.nilary-node,
   con: inets.stroked-node,
   dup: inets.filled-node,
+  ref: inets.reference-node,
 )
 
 #let wire = inets.wire.with(polarize: true)
@@ -72,7 +73,7 @@ The allocator has a simple API:
 
 The allocator uses a #link("https://en.wikipedia.org/wiki/Free_list")[free list] to track free memory regions. This
 attempts to maximise the reuse of memory. If a single word is freed, the allocator checks if its neighboring half is
-also free, if so, the whole 128-bit value is freed. Since only double words can be allocated, a free single word will
+also free. If so, the whole 128-bit value is freed. Since only double words can be allocated, a free single word will
 not be reused unless its neighboring half is also free. _This fact is explicitly relied on by the memory representation
 of nets. Specifically, some owned double-word values will keep one half free to represent a special form of the value_.
 
@@ -81,29 +82,36 @@ of nets. Specifically, some owned double-word values will keep one half free to 
 == Ports
 
 We will be storing polarized $k$-SIC nodes. Roughly, every 64-bit value on the heap is some negative port in a
-node. There are some exceptions to this, but this is broadly the case. These 64-bit values can also be seen as
-the terminal side of a polarized wire. The memory layout of these 64-bit values is:
+node. There are some exceptions to this, but this is broadly the case. These 64-bit values can also be seen as the
+terminal end of a polarized wire. The single-word values store information on what is on the initial end of such
+a wire.
+
+Every double-word value on the heap, except the root at index 0, describes some node. For nodes with two negative
+ports, each word is one of those ports. For nodes with a single negative port, one word is that negative port and
+the other is information on where the other ports are wired to.
+
+The memory layout of thes 64-bit, single-word, values is:
 
 #post.canvas(caption: "Memory layout of a port", {
   content((0, 0),
     ```text
-    [ 16-bit label ][ 45-bit address ][ 3-bit tag ]
+    [ 16-bit label ][ 44-bit address ][ 4-bit tag ]
     ```,
     anchor: "north")
 
   content((1.6, -0.8), $stretch(brace.l, size: #14.5em)$, anchor: "west", angle: 90deg)
 
-  content((1.6, -1.0), "48-bit, 8-byte aligned, user-space address", anchor:"north")
+  content((1.6, -1.0), "48-bit, 16-byte aligned, user-space address", anchor:"north")
 })
 
-The lowest 3 bits are a `Tag`, and these guide how to interpret the remaining 16 bits. There are 8 tags:
+The lowest 4 bits are a `Tag`, and these guide how to interpret the remaining 60 bits. Here are the tags:
 
 #post.code(caption: "Possible tags",
   ```rust
   pub enum Tag {
     /// A positive eraser.
     Nul = 1,
-    /// The main port of an application node.
+    /// The return port of an application node.
     App = 2,
     /// The main port of a lambda node.
     Lam = 3,
@@ -113,30 +121,56 @@ The lowest 3 bits are a `Tag`, and these guide how to interpret the remaining 16
     Dup = 5,
     /// The main port of a superposition node.
     Sup = 6,
+
+    /// An XOR of the addresses of a dup's aux ports.
+    ///
+    /// This variant has two values because addresses to dup aux ports are 8-byte aligned, so only
+    /// the bottom _3_ bits are 0. Thus we cover both cases where the 4th lowest bit may be 0 or 1
+    /// And map them to the same variant.
+    ///
+    /// When creating new DupXor 64-bit values, we, of course, use 0b0000.
+    DupXor = 0b0000 | 0b1000,
+
+    /// The address of a lambda's variable.
+    ///
+    /// Because the label bits of this 64-bit value are unused, we can store whether this addr is
+    /// the upper or lower half, like for the Sup tag. So, unlike the DupXor value, we don't need
+    /// two tags, as we're not storing an 8-byte aligned address in the addr bits.
+    VarAddr = 8,
+
+    /// Reference nodes that map to a named net with a single free positive wire.
+    Ref = 9,
   }
   ```
 )
 
 The first 16-bits are labels used by the duplication and superposition nodes. To be clear, the application and lambda
 nodes are different polarizations of the same kind of node, then there are reference nodes, and finally there are $2^16$
-other kinds of nodes, which are duplications or superpositions depending on the polarization.
+dup/sup nodes.
 
 The 45-bit address bits are actually a 48-bit user-space pointer into the heap#footnote[This representation explicitly
 relies on the fact that most 64-bit processors do not use the upper 16-bits of addressing space.]. Since these pointers
 are 8-byte aligned, the bottom 3 bits are all 0. Thus, we can store the `Tag` inline with these addresses. Not
 all node tags use these address bits.
 
+#post.note[
+  The `Var` could instead store a `dw addr` and use its unused `label` space to store whether its parent lambda node is
+  the first or second half. Then, since we store only `dw addr`s, the bottom four bits could be free, and we could
+  expand the size of `Tag`.
+]
+
 Here is a summary of how each tag uses its bits:
 
 #post.code(caption: "Tag-dependent port interpretations",
   ```text
-  [       ][ dw addr ][ App ]
-  [       ][ dw addr ][ Lam ]
-  [       ][  w addr ][ Var ]
-  [       ][         ][ Nul ]
-  [ 0 | 1 ][ dw addr ][ Dup ]
-  [ label ][ dw addr ][ Sup ]
-  [       ][     idx ][ Ref ]
+  [       ][ dw addr ][ App     ]
+  [       ][ dw addr ][ Lam     ]
+  [       ][ dw addr ][ Var     ]
+  [       ][         ][ Nul     ]
+  [ 0 | 1 ][ dw addr ][ Dup     ]
+  [ label ][ dw addr ][ Sup     ]
+  [ label ][ 45 bits ][ DupXor  ]
+  [ 0 | 1 ][ dw addr ][ VarAddr ]
   ```
 )
 
@@ -194,24 +228,24 @@ is a port with the `Sup` tag, label $i$, and an address of $x$.
 
   content((4, 0), memory(
     ($ell$, [`Lam` $x$]),
-    ($x$,  [`.` $v$], `bod`),
-    ($v$, [`Var` $ell$]),
+    ($x$,  [`VarAddr` $v$], `bod`),
+    ($v$, [`Var` $x$]),
   ))
 })
 
-Notice that the variable and lambda ports hold pointers to each other. This is for two reasons:
-1. When the lambda node is interacted with, the variable node is replaced with an appropriate value.
-2. If the variable is moved due to some interaction, we need to propagate the new address of the variable to its parent
-   lambda node.
+Some important things to note:
 
-I think, however, the variable could instead point to the same address that its parent lambda node points to. This would
-remove one indirection.
+- The variable and lambda ports hold pointers to each other. This is so that when the lambda node is interacted
+  with, the variable node is replaced with an appropriate value.
+- A `Var x` port cannot be moved without updating the `VarAddr` value.
+- If a variable does not occur in a lambda node's body, the variable is implicitly connected to an eraser. We
+  represent this by having the first half of $x$ be `FREE`.
+- If this lambda is the identity function, then $v = x'$. This possibility is critical to keep in mind when
+  interacting.
+- It is nice when reading memory dumps that `Lam x` and `Var x` point to the same address `x`.
 
-If a variable does not occur in a lambda node's body, the variable is implicitly connected to an eraser. We
-represent this by having the first half of $x$ be `FREE`.
-
-Additionally, there is space in the port $#`[` #`.` v #`]`$ to store a label, so we could have labelled lambdas and
-application nodes as well, to encode data structures.
+Lastly, there is space in $thick #`[` #`Lam` x #`]` thick$ and $thick #`[` #`App` x #`]` thick$ ports to
+store a label, so we could have labelled lambdas and application nodes as well, to encode data structures.
 
 == Duplication Node
 
@@ -227,7 +261,7 @@ application nodes as well, to encode data structures.
   content((4, 0), memory(
     ($d_1$, $#`Dup`_1 thick x$),
     ($d_2$, $#`Dup`_2 thick x$),
-    ($x$,  `main`, $#`.`_i thick d_1 xor d_2$),
+    ($x$,  `main`, $#`DupXor`_i thick d_1 xor d_2$),
   ))
 })
 
@@ -254,6 +288,22 @@ A few things to note here:
     ($x$, `fst`, `snd`),
   ))
 })
+
+== Reference Node
+
+#post.canvas(caption: "Layout of a reference node", {
+  ref("ref", (0, 0), show-ports: true, polarities: (+1, -1, -1))
+
+  content("ref.label", $r$)
+
+  content((0, 1), $x$)
+
+  content((4, 0), memory(
+    ($x$, $#`Ref` thick r$),
+  ))
+})
+
+Note that $r$ is not an address, but rather just an index into a global array of named nets.
 
 == Root
 
@@ -340,6 +390,38 @@ Problems:
 
 #post.canvas({
   con("app", (0, 0), show-aux: true, polarities: (-1, -1, +1))
+  con("lam", (2, 0))
+  wire("lam.0", "app.0")
+  wire("lam.1", "lam.2")
+
+  content((-0.3, -1.2), `arg`)
+  content((+0.3, -1.15), $a$)
+
+  content((1, -3), memory(
+    ($a$, [`App` $x$]),
+    ($x$, [`Lam` $y$], `arg`),
+    ($y$, [`.` $y'$], $#`Var` x$),
+  ))
+
+  translate((6, 0))
+  content((-2, -2), $~~>$)
+
+  wire(
+    (-0.3, -0.75, +90deg), (+0.3, -0.85, -90deg),
+  polarize: (0, 1))
+
+  content((-0.3, -1.2), `arg`)
+  content((+0.3, -1.15), $a$)
+
+  content((1, -3), memory(
+    ($a$, `arg`),
+    ($x$, `FREE`, `FREE`),
+    ($y$, `FREE`, `FREE`),
+  ))
+})
+
+#post.canvas({
+  con("app", (0, 0), show-aux: true, polarities: (-1, -1, +1))
   con("lam", (2, 0), show-aux: true, polarities: (+1, +1, -1))
   wire("lam.0", "app.0")
 
@@ -369,7 +451,7 @@ Problems:
   content((+2.3, -1.2), `bod`)
 
   content((1, -3), memory(
-    ($a$, [`bod`]),
+    ($a$, `bod`),
     ($x$, `FREE`, `FREE`),
     ($y$, `FREE`, `FREE`),
     ($z$, `arg`),
@@ -439,7 +521,7 @@ Problems:
   content((1, -2), memory(
     ($d_1$, $#`Dup`_1 thick x$),
     ($d_2$, $#`Dup`_2 thick x$),
-    ($x$, $#`Sup`_j thick y$, [`.` $d_1 xor d_2$]),
+    ($x$, $#`Sup`_j thick y$, $#`.`_i thick d_1 xor d_2$),
     ($y$, `a`, `b`),
   ), anchor: "north")
 
@@ -481,14 +563,17 @@ Problems:
     ($d_2$, $#`Sup`_j thick y$),
     ($x$, $#`Dup`_1 thick w$, $#`Dup`_1 thick q$),
     ($y$, $#`Dup`_2 thick w$, $#`Dup`_2 thick q$),
-    ($w$, `a`, [`.` $x xor y$]),
-    ($q$, `b`, [`.` $x' xor y'$]),
+    ($w$, `a`, $#`.`_i thick x xor y$),
+    ($q$, `b`, $#`.`_i thick x' xor y'$),
   ), anchor: "north")
 })
 
 Notes:
 - allocates two new double-wide nodes, which is what we expect.
 - frees nothing, so memory is maximally reused.
+- it's unclear to me whether it is possible to reach an intermediate net where $thick #`a` = #`Dup`_1 thick x$. If so,
+  there can be memory corruption issues here, given that the interaction is written such that we assume $y$ and $y'$
+  are distinct from both $d_1$ and $d_2$.
 
 == Dup - Lam
 

@@ -26,11 +26,28 @@
 
 #let wire = inets.wire.with(polarize: true)
 
+#let slot(tag, ..args) = {
+  let (addr, label) = if args.pos().len() == 0 {
+    (none, none)
+  } else if args.pos().len() == 1 {
+    (args.pos().at(0), none)
+  } else {
+    (args.pos().at(1), args.pos().at(0))
+  }
+
+  $#text(size: 14pt, `[`) #{tag}_#label thick #addr #text(size: 14pt, `]`)$
+}
+
+
 #let memory(..addresses) = $
   #for (addr, ..blocks) in addresses.pos() {
     $
       #addr &: #for block in blocks {
-        [ #text(size: 14pt, `[`) $#block$ #text(size: 14pt, `]`) ]
+        if type(block) == array {
+          slot(..block)
+        } else {
+          slot(block)
+        }
       } \
     $
   }
@@ -38,9 +55,12 @@ $
 
 = Overview
 
-I'm going to explain a potential memory layout for lazy normalization and detail the graph traversal using this layout.
-The memory layout includes both how nodes and wires are represented, and then the memory transformations that happen
-for each interaction.
+This post explains a link-free#footnote[In most interaction net runtimes, there is a way to explicitly represent
+a wire. Sequences of these wires can form, known as links. These are essentially indirections that can grow as
+the network is reduced. The memory representation detailed in this post makes such chains unrepresentable, and
+thus interactions are always constant time. Whether or not this is practically useful remains to be seen.] memory
+layout for lazy normalization and detail the graph traversal using this layout.  The memory layout includes both
+how nodes and wires are represented, and then the memory transformations that happen for each interaction.
 
 = Allocation
 
@@ -55,16 +75,16 @@ The allocator has a simple API:
 
 #post.code(caption: "Allocator API",
   ```rust
-  /// An address to a _single_ word on the heap.
+  /// An address to a single word on the heap.
   pub struct Addr(*const u64);
 
   /// Returns a 16-byte aligned address.
   fn alloc_double_word(&mut self) -> Option<Addr>
 
-  /// Expects an 8-byte aligned address.
+  /// Frees an 8-byte aligned address.
   fn free_single_word(&mut self, addr: Addr)
 
-  /// Expects a 16-byte aligned address.
+  /// Frees a 16-byte aligned address.
   fn free_double_word(&mut self, addr: Addr)
   ```
 )
@@ -79,10 +99,15 @@ of nets. Specifically, some owned double-word values will keep one half free to 
 
 = In-Memory Representation of Nodes
 
-== Ports
+== Negative Ports (or Positive Wires)
 
-We will be storing polarized $k$-SIC nodes. Roughly, every 64-bit value on the heap is some negative port in a
-node. There are some exceptions to this, but this is broadly the case. These 64-bit values can also be seen as the
+TODO: explain this pls holy crap i don't like this wording, draw some diagrams or something.
+
+We will be storing polarized $k$-SIC nodes. Roughly, every 64-bit value on the heap is a negative port on the net. The
+way I prefer to view this is: they are the other end of the positive end of a wire.
+
+
+There are some exceptions to this, but this is broadly the case. These 64-bit values can also be seen as the
 terminal end of a polarized wire. The single-word values store information on what is on the initial end of such
 a wire.
 
@@ -108,38 +133,43 @@ The lowest 4 bits are a `Tag`, and these guide how to interpret the remaining 60
 
 #post.code(caption: "Possible tags",
   ```rust
+  #[repr(u8)]
   pub enum Tag {
+    /// ========================= positive k-SIC wires =========================
+
     /// A positive eraser.
-    Nul = 1,
+    Nul = 0b0001,
     /// The return port of an application node.
-    App = 2,
+    App = 0b0010,
     /// The main port of a lambda node.
-    Lam = 3,
-    /// The first port of a lambda node, the variable.
-    Var = 4,
+    Lam = 0b0011,
+    /// The first aux port of a lambda node, the variable.
+    Var = 0b0100,
     /// An aux port of a duplication node.
-    Dup = 5,
+    Dup = 0b0101,
     /// The main port of a superposition node.
-    Sup = 6,
+    Sup = 0b0110,
+    /// Reference nodes that map to a net with a single free positive wire.
+    Ref = 0b0111,
+
+    /// ========================= node-specific values =========================
 
     /// An XOR of the addresses of a dup's aux ports.
     ///
-    /// This variant has two values because addresses to dup aux ports are 8-byte aligned, so only
-    /// the bottom _3_ bits are 0. Thus we cover both cases where the 4th lowest bit may be 0 or 1
-    /// And map them to the same variant.
+    /// This has two values because addresses to dup aux ports are 8-byte
+    /// aligned. So, only the bottom 3 bits are 0. We cover both cases where the
+    /// 4th lowest bit may be 0 or 1 And map them to the same variant.
     ///
-    /// When creating new DupXor 64-bit values, we, of course, use 0b0000.
+    /// When creating DupXor values, we use 0b0000 to not affect the 4th bit.
     DupXor = 0b0000 | 0b1000,
 
     /// The address of a lambda's variable.
     ///
-    /// Because the label bits of this 64-bit value are unused, we can store whether this addr is
-    /// the upper or lower half, like for the Sup tag. So, unlike the DupXor value, we don't need
-    /// two tags, as we're not storing an 8-byte aligned address in the addr bits.
-    VarAddr = 8,
-
-    /// Reference nodes that map to a named net with a single free positive wire.
-    Ref = 9,
+    /// Because the label bits of this 64-bit value are unused, we can store
+    /// whether this addr is the upper or lower half, like for the Sup tag. So,
+    /// unlike the DupXor value, we don't need two tags, as we're not storing an
+    /// 8-byte aligned address in the addr bits.
+    VarAddr = 0b1001,
   }
   ```
 )
@@ -148,56 +178,74 @@ The first 16-bits are labels used by the duplication and superposition nodes. To
 nodes are different polarizations of the same kind of node, then there are reference nodes, and finally there are $2^16$
 dup/sup nodes.
 
-The 45-bit address bits are actually a 48-bit user-space pointer into the heap#footnote[This representation explicitly
-relies on the fact that most 64-bit processors do not use the upper 16-bits of addressing space.]. Since these pointers
-are 8-byte aligned, the bottom 3 bits are all 0. Thus, we can store the `Tag` inline with these addresses. Not
-all node tags use these address bits.
-
-#post.note[
-  The `Var` could instead store a `dw addr` and use its unused `label` space to store whether its parent lambda node is
-  the first or second half. Then, since we store only `dw addr`s, the bottom four bits could be free, and we could
-  expand the size of `Tag`.
-]
+The 44-bit addresses are actually a 48-bit user-space pointer into the heap#footnote[This representation
+explicitly relies on the fact that most 64-bit processors do not use the upper 16-bits of addressing space.]. Since
+these pointers are 16-byte aligned, the bottom 4 bits are all 0. Thus, we can store the `Tag` inline with these
+addresses. Not all node tags use these address bits.
 
 Here is a summary of how each tag uses its bits:
 
-#post.code(caption: "Tag-dependent port interpretations",
-  ```text
-  [       ][ dw addr ][ App     ]
-  [       ][ dw addr ][ Lam     ]
-  [       ][ dw addr ][ Var     ]
-  [       ][         ][ Nul     ]
-  [ 0 | 1 ][ dw addr ][ Dup     ]
-  [ label ][ dw addr ][ Sup     ]
-  [ label ][ 45 bits ][ DupXor  ]
-  [ 0 | 1 ][ dw addr ][ VarAddr ]
-  ```
-)
+#post.canvas(caption: "Tag-dependent port interpretations", {
+  content((0, 0),
+    ```text
+    [       ][ dw addr ][     App ]
+    [       ][ dw addr ][     Lam ]
+    [       ][ dw addr ][     Var ]
+    [       ][         ][     Nul ]
+    [ 0 | 1 ][ dw addr ][     Dup ]
+    [ label ][ dw addr ][     Sup ]
+    [       ][   index ][     Ref ]
 
-The two kinds of addresses `dw` and `w` double-word-aligned and single-word-aligned, respectively. Unused portions
-are typically 0.  `Ref` nodes interpret their address bits as an index into a global map of references $cal(R)$.
+    [ label ][  w addr ][  DupXor ]
+    [  half ][ dw addr ][ VarAddr ]
+    ```
+  )
+
+  content((3.2, 0.8), [$stretch(brace.r, size: #8em)$ positive $k$-SIC ports], anchor: "west")
+
+  content((3.2, -1.6), [$stretch(brace.r, size: #2em)$ node-specific values], anchor: "west")
+})
+
+Some additional clarity on the notation:
+  - `dw addr` is a double-word (128-bit) aligned address.
+  - `w addr` is a single-word (64-bit) aligned address.
+    - it is possible to store this only in a `DupXor` port because of the tag values chosen below.
+  - `0 | 1` is a boolean that a `Dup` port uses to know which (first or second) aux port this is.
+  - `index` is an index into a global array $cal(R)$ of references or named nets.
+  - `half` is a boolean indicating whether the `dw addr` points to the first or second half of a double-word.
 
 == Nodes
 
-Ports which make use of their address bits expect a specific structure at that address in the heap. We will
-detail each of those now. In the memory layouts that follow, we'll use code-script to represent values on the heap
-(e.g. `fun` or `arg`). Math-script is used to represent memory addresses (e.g. $a$ or $x$).
+Ports which make use of their address bits expect a specific structure at that address in the heap. We will detail
+each of those structures now. In the memory layouts that follow, we'll use code-script to represent values on the
+heap (e.g. `fun` or `arg`). Math-script is used to represent memory addresses (e.g. $a$ or $x$).
 
 When displaying these nodes, memory addresses with only a single port next to them are 8-byte aligned addresses, and
 addresses with two ports are 16-byte aligned. For example, consider the diagram
 
 #post.canvas({
   content((4, 0), memory(
-    ($a$, [`App` $x$]),
-    ($x$,  `fun`, `arg`),
+    ($a$, (`App`, $x$)),
+    ($x$, `fun`, `arg`),
   ))
 })
 
 Above, $a$ is 8-byte aligned while $x$ is 16-byte aligned. Lastly, an address with an apostrophe is the second
 half of a 16-byte-aligned address. For example, $thick x'$ would refer to `arg` above.
 
-Additionally, if we show a port with a tag of `.`, this implies that the tag is irrelevant or uninterpretable. The
-entire 64-bit value of the port is used opaquely by the node that holds a pointer to it.
+Additionally, if we show a port with a tag of `.`, this implies that the tag is either uninterpretable or can only
+have one value given the context. in the irrelevant case, the entire 64-bit value of the port is used opaquely by
+the node that holds a pointer to it. In the case where the tag can be inferred, this is done to decrease noise in
+the memory diagrams. For example, we will see that in a layout like this
+
+#post.canvas({
+  content((4, 0), memory(
+    ($a$, (`Lam`, $x$)),
+    ($x$, (`.`, $x$), `arg`),
+  ))
+})
+
+The only possibility for the tag in #slot(`.`, $x$) is `VarAddr`.
 
 Lastly, we use subscripts to refer to the `label` portion of a port. For example, $thick #`[` #`Sup`_i thick x #`]`$
 is a port with the `Sup` tag, label $i$, and an address of $x$.
@@ -212,8 +260,8 @@ is a port with the `Sup` tag, label $i$, and an address of $x$.
   content((+0.3, -1.15), $a$)
 
   content((4, 0), memory(
-    ($a$, [`App` $x$]),
-    ($x$,  `fun`, `arg`),
+    ($a$, (`App`, $x$)),
+    ($x$, `fun`, `arg`),
   ))
 })
 
@@ -227,9 +275,9 @@ is a port with the `Sup` tag, label $i$, and an address of $x$.
   content((+0.3, -1.2), `bod`)
 
   content((4, 0), memory(
-    ($ell$, [`Lam` $x$]),
-    ($x$,  [`VarAddr` $v$], `bod`),
-    ($v$, [`Var` $x$]),
+    ($ell$, (`Lam`, $x$)),
+    ($x$,  (`VarAddr`, $v$), `bod`),
+    ($v$, (`Var`, $x$)),
   ))
 })
 
@@ -259,9 +307,9 @@ store a label, so we could have labelled lambdas and application nodes as well, 
   content((+0.3, -1.2), $d_2$)
 
   content((4, 0), memory(
-    ($d_1$, $#`Dup`_1 thick x$),
-    ($d_2$, $#`Dup`_2 thick x$),
-    ($x$,  `main`, $#`DupXor`_i thick d_1 xor d_2$),
+    ($d_1$, (`Dup`, 1, $x$)),
+    ($d_2$, (`Dup`, 2, $x$)),
+    ($x$,  `main`, (`DupXor`, $i$, $d_1 xor d_2$)),
   ))
 })
 
@@ -271,6 +319,8 @@ A few things to note here:
 2. We store an $xor$ (XOR) of the two addresses of the aux ports of the duplication node. This is so if we have a hold
    of one of the aux ports, we can find the other by XOR'ing its address with what's stored in $x'$. That is,
    $thick thick d_1 xor d_2 xor d_1 = d_2 thick$.
+3. If one of the aux ports of this dup node was erased, say $d_1$, then $d_1 = 0$ and the address in the `DupXor`
+   is $d_2$. If both aux ports have been erased, then the address in the `DupXor` port is 0.
 
 == Superposition Node
 
@@ -284,7 +334,7 @@ A few things to note here:
   content((+0.4, -1.17), `snd`)
 
   content((4, 0), memory(
-    ($s$, $#`Sup`_i thick x$),
+    ($s$, (`Sup`, $i$, $x$)),
     ($x$, `fst`, `snd`),
   ))
 })
@@ -299,7 +349,7 @@ A few things to note here:
   content((0, 1), $x$)
 
   content((4, 0), memory(
-    ($x$, $#`Ref` thick r$),
+    ($x$, (`Ref`, $r$)),
   ))
 })
 
@@ -325,8 +375,8 @@ Now we will explain the memory transformations that occur during interactions.
   content((+0.3, -1.15), $a$)
 
   content((1, -3), memory(
-    ($a$, [`App` $x$]),
-    ($x$,  `Nul`, `arg`),
+    ($a$, (`App`, $x$)),
+    ($x$, `Nul`, `arg`),
   ))
 
   translate((6, 0))
@@ -364,9 +414,9 @@ Problems:
   content((+0.3, -1.15), $d_2$)
 
   content((1, -3), memory(
-    ($d_1$, $#`Dup`_1 thick x$),
-    ($d_2$, $#`Dup`_2 thick x$),
-    ($x$, `Nul`, [`.` $d_1 xor d_2$]),
+    ($d_1$, (`Dup`, 1, $x$)),
+    ($d_2$, (`Dup`, 2, $x$)),
+    ($x$, `Nul`, (`.`, $i$, $d_1 xor d_2$)),
   ))
 
   translate((6, 0))
@@ -398,9 +448,9 @@ Problems:
   content((+0.3, -1.15), $a$)
 
   content((1, -3), memory(
-    ($a$, [`App` $x$]),
-    ($x$, [`Lam` $y$], `arg`),
-    ($y$, [`.` $y'$], $#`Var` x$),
+    ($a$, (`App`, $x$)),
+    ($x$, (`Lam`, $y$), `arg`),
+    ($y$, (`.`, $y'$), (`Var`, $x$)),
   ))
 
   translate((6, 0))
@@ -432,10 +482,10 @@ Problems:
   content((+2.3, -1.2), `bod`)
 
   content((1, -3), memory(
-    ($a$, [`App` $x$]),
-    ($x$, [`Lam` $y$], `arg`),
-    ($y$, [`.` $z$], [`bod`]),
-    ($z$, [`Var` $x$]),
+    ($a$, (`App`, $x$)),
+    ($x$, (`Lam`, $y$), `arg`),
+    ($y$, (`.`, $z$), `bod`),
+    ($z$, (`Var`, $x$)),
   ))
 
   translate((6, 0))
@@ -476,9 +526,9 @@ Problems:
   content((+2.3, -1.15), `b`)
 
   content((1, -3), memory(
-    ($d_1$, $#`Dup`_1 thick x$),
-    ($d_2$, $#`Dup`_2 thick x$),
-    ($x$, $#`Sup`_i thick y$, $#`.`_i thick d_1 xor d_2$),
+    ($d_1$, (`Dup`, 1, $x$)),
+    ($d_2$, (`Dup`, 2, $x$)),
+    ($x$, (`Sup`, $i$, $y$), (`.`, $i$, $d_1 xor d_2$)),
     ($y$, `a`, `b`),
   ))
 
@@ -519,9 +569,9 @@ Problems:
   content((+2.3, -1.15), `b`)
 
   content((1, -2), memory(
-    ($d_1$, $#`Dup`_1 thick x$),
-    ($d_2$, $#`Dup`_2 thick x$),
-    ($x$, $#`Sup`_j thick y$, $#`.`_i thick d_1 xor d_2$),
+    ($d_1$, (`Dup`, 1, $x$)),
+    ($d_2$, (`Dup`, 2, $x$)),
+    ($x$, (`Sup`, $j$, $y$), (`.`, $i$, $d_1 xor d_2$)),
     ($y$, `a`, `b`),
   ), anchor: "north")
 
@@ -559,12 +609,12 @@ Problems:
   wire((5+0.3, -0.7, +90deg), "dup2.0", polarize: 0)
 
   content((2.5, -2), memory(
-    ($d_1$, $#`Sup`_j thick x$),
-    ($d_2$, $#`Sup`_j thick y$),
-    ($x$, $#`Dup`_1 thick w$, $#`Dup`_1 thick q$),
-    ($y$, $#`Dup`_2 thick w$, $#`Dup`_2 thick q$),
-    ($w$, `a`, $#`.`_i thick x xor y$),
-    ($q$, `b`, $#`.`_i thick x' xor y'$),
+    ($d_1$, (`Sup`, $j$, $x$)),
+    ($d_2$, (`Sup`, $j$, $y$)),
+    ($x$, (`Dup`, 1, $w$), (`Dup`, 1, $q$)),
+    ($y$, (`Dup`, 2, $w$), (`Dup`, 2, $q$)),
+    ($w$, `a`, (`.`, $i$, $x xor y$)),
+    ($q$, `b`, (`.`, $i$, $x' xor y'$)),
   ), anchor: "north")
 })
 
@@ -591,11 +641,11 @@ Notes:
   content((+2.3, -1.15), `bod`)
 
   content((1, -2), memory(
-    ($d_1$, $#`Dup`_1 thick x$),
-    ($d_2$, $#`Dup`_2 thick x$),
-    ($x$, [`Lam` $y$], $#`.`_i thick d_1 xor d_2$),
-    ($y$, [`.` $z$], `bod`),
-    ($z$, [`Var` $x$]),
+    ($d_1$, (`Dup`, 1, $x$)),
+    ($d_2$, (`Dup`, 2, $x$)),
+    ($x$, (`Lam`, $y$), (`.`, $i$, $d_1 xor d_2$)),
+    ($y$, (`.`, $z$), `bod`),
+    ($z$, (`Var`, $x$)),
   ), anchor: "north")
 
   translate((6, 0))
@@ -629,13 +679,13 @@ Notes:
   wire((5+0.3, -0.6, 90deg), "dup.0", polarize: 0)
 
   content((2.5, -2), memory(
-    ($d_1$, [`Lam` $x$]),
-    ($d_2$, [`Lam` $y$]),
-    ($x$, [`.` $q$], $#`Dup`_1 thick w$),
-    ($y$, [`.` $q'$], $#`Dup`_2 thick w$),
-    ($z$, $#`Sup`_i thick q$),
-    ($w$, `bod`, $#`.`_i thick x' xor y'$),
-    ($q$, [`Var` $d_1$], [`Var` $d_2$]),
+    ($d_1$, (`Lam`, $x$)),
+    ($d_2$, (`Lam`, $y$)),
+    ($x$, (`.`, $q$), (`Dup`, 1, $w$)),
+    ($y$, (`.`, $q'$), (`Dup`, 2, $w$)),
+    ($z$, (`Sup`, $i$, $q$)),
+    ($w$, `bod`, (`.`, $i$, $x' xor y'$)),
+    ($q$, (`Var`, $d_1$), (`Var`, $d_2$)),
   ), anchor: "north")
 })
 
@@ -659,8 +709,8 @@ Notes:
   content((+2.3, -1.15), `b`)
 
   content((1, -2), memory(
-    ($a$, [`App` $x$]),
-    ($x$, $#`Sup`_i thick y$, `arg`),
+    ($a$, (`App`, $x$)),
+    ($x$, (`Sup`, $y$), `arg`),
     ($y$, `a`, `b`),
   ), anchor: "north")
 
@@ -694,11 +744,11 @@ Notes:
   wire((5+0.3, -0.6, 90deg), "app1.0", polarize: 0)
 
   content((2.5, -2), memory(
-    ($a$, $#`Sup`_i thick x$),
-    ($x$, [`App` $a_1$], [`App` $a_2$]),
-    ($y$, `arg`, $#`.`_i thick a_1 xor a_2$),
-    ($a_1$, `a`, $#`Dup`_1 thick y$),
-    ($a_2$, `b`, $#`Dup`_2 thick y$),
+    ($a$, (`Sup`, $i$, $x$)),
+    ($x$, (`App`, $a_1$), (`App`, $a_2$)),
+    ($y$, `arg`, (`.`, $i$, $a_1 xor a_2$)),
+    ($a_1$, `a`, (`Dup`, 1, $y$)),
+    ($a_2$, `b`, (`Dup`, 2, $y$)),
   ), anchor: "north")
 })
 

@@ -12,9 +12,7 @@
 
 #post.note[
   After writing the post on #link("2025-05-18_lazy-strict-eval.html")[lazy normalization], I thought I understood enough
-  to implement a lazy normalizer. This proved to be false. Using memory efficiently to represent k-SIC interaction nets
-  is not that simple. This blog post is a detailed explanation on a possibly efficient memory layout for polarized
-  k-SIC normalization.
+  to implement a lazy normalizer. This proved to be false.
 ]
 
 #let (era, con, dup, ref) = inets.with-kinds(
@@ -59,13 +57,14 @@ This post explains a link-free#footnote[In most interaction net runtimes, there 
 a wire. Sequences of these wires can form, known as links. These are essentially indirections that can grow as
 the network is reduced. The memory representation detailed in this post makes such chains unrepresentable, and
 thus interactions are always constant time. Whether or not this is practically useful remains to be seen.] memory
-layout for lazy normalization and detail the graph traversal using this layout.  The memory layout includes both
+layout for lazy normalization and details the graph traversal using this layout.  The memory layout includes both
 how nodes and wires are represented, and then the memory transformations that happen for each interaction.
 
 = Allocation
 
-While in a sensible system the memory layout shouldn't really be tied to the allocation mechanism, the scheme I'm
-detailing here will have such a coupling. So, I'll need to describe the allocator as well.
+Ideally a VM's memory layout shouldn't care about how the allocator keeps track of free memory, but unfortunately the
+memory representation presented here will have such a coupling. This is because some of the node representations make
+use of free regions in memory to represent special values. So, we'll need to describe the allocator as well.
 
 The allocator first allocates a single memory arena as large as the OS will allow. We'll refer to this region of memory
 as the _heap_. The heap is aligned to the nearest 16 bytes. This is because the allocator deals with double-word
@@ -75,7 +74,7 @@ The allocator has a simple API:
 
 #post.code(caption: "Allocator API",
   ```rust
-  /// An address to a single word on the heap.
+  /// An 8-byte-aligned address.
   pub struct Addr(*const u64);
 
   /// Returns a 16-byte aligned address.
@@ -92,30 +91,26 @@ The allocator has a simple API:
 == Memory Reuse
 
 The allocator uses a #link("https://en.wikipedia.org/wiki/Free_list")[free list] to track free memory regions. This
-attempts to maximise the reuse of memory. If a single word is freed, the allocator checks if its neighboring half is
-also free. If so, the whole 128-bit value is freed. Since only double words can be allocated, a free single word will
-not be reused unless its neighboring half is also free. _This fact is explicitly relied on by the memory representation
-of nets. Specifically, some owned double-word values will keep one half free to represent a special form of the value_.
+attempts to maximise the reuse of memory. If a single word is freed, the allocator checks if its neighboring half
+is also free. If so, the whole 128-bit value is freed. Since double words can only be allocated at 16-byte-aligned
+addresses, a free single word will not be reused unless its neighboring half is also free. _This fact is explicitly
+relied on by the memory representation of nets. Specifically, some owned double-word values will keep one half
+free to represent a special form of the value_.
 
 = In-Memory Representation of Nodes
 
 == Negative Ports (or Positive Wires)
 
-TODO: explain this pls holy crap i don't like this wording, draw some diagrams or something.
-
 We will be storing polarized $k$-SIC nodes. Roughly, every 64-bit value on the heap is a negative port on the net. The
-way I prefer to view this is: they are the other end of the positive end of a wire.
-
-
-There are some exceptions to this, but this is broadly the case. These 64-bit values can also be seen as the
-terminal end of a polarized wire. The single-word values store information on what is on the initial end of such
-a wire.
+way I prefer to view this is: values on the heap tell you what is on the other side of the positive end of a wire.
+There are some exceptions to this, but this is broadly the case.
 
 Every double-word value on the heap, except the root at index 0, describes some node. For nodes with two negative
-ports, each word is one of those ports. For nodes with a single negative port, one word is that negative port and
-the other is information on where the other ports are wired to.
+ports, each word is one of those ports. This is because negative ports are connected to the positive end of a wire.
+The exception noted above occurs for nodes with a single negative port: one word is that negative port and the
+other is some node-dependent information.
 
-The memory layout of thes 64-bit, single-word, values is:
+The memory layout of these 64-bit, single-word, values is:
 
 #post.canvas(caption: "Memory layout of a port", {
   content((0, 0),
@@ -174,14 +169,14 @@ The lowest 4 bits are a `Tag`, and these guide how to interpret the remaining 60
   ```
 )
 
-The first 16-bits are labels used by the duplication and superposition nodes. To be clear, the application and lambda
-nodes are different polarizations of the same kind of node, then there are reference nodes, and finally there are $2^16$
-dup/sup nodes.
+The highest 16-bits are labels used by the duplication and superposition nodes, where each label represents a
+different kind of node. The application/lambda nodes are an additional kind of node, so the $k$ in $k$-SIC here
+is equal to $2^16 + 1$.
 
-The 44-bit addresses are actually a 48-bit user-space pointer into the heap#footnote[This representation
+The 44-bit addresses are actually 48-bit user-space pointers into the heap#footnote[This representation
 explicitly relies on the fact that most 64-bit processors do not use the upper 16-bits of addressing space.]. Since
 these pointers are 16-byte aligned, the bottom 4 bits are all 0. Thus, we can store the `Tag` inline with these
-addresses. Not all node tags use these address bits.
+addresses. Note that not all node tags store an address.
 
 Here is a summary of how each tag uses its bits:
 
@@ -196,7 +191,7 @@ Here is a summary of how each tag uses its bits:
     [ label ][ dw addr ][     Sup ]
     [       ][   index ][     Ref ]
 
-    [ label ][  w addr ][  DupXor ]
+    [ label ][     xor ][  DupXor ]
     [  half ][ dw addr ][ VarAddr ]
     ```
   )
@@ -208,17 +203,22 @@ Here is a summary of how each tag uses its bits:
 
 Some additional clarity on the notation:
   - `dw addr` is a double-word (128-bit) aligned address.
-  - `w addr` is a single-word (64-bit) aligned address.
-    - it is possible to store this only in a `DupXor` port because of the tag values chosen below.
   - `0 | 1` is a boolean that a `Dup` port uses to know which (first or second) aux port this is.
   - `index` is an index into a global array $cal(R)$ of references or named nets.
-  - `half` is a boolean indicating whether the `dw addr` points to the first or second half of a double-word.
+  - `xor` is a 45-bit value (not a typo#footnote[While this space is typically reserved only for 44-bit values, the
+    45th bit is actually stored as part of the `tag`. This is done by having two possible values be interpreted as a
+    `DupXor` tag, `0b0000` and `0b1000`. Notice that the bottom three bits are the same for both of these tags, but
+    the 4th bit can be either one or zero. This 4th bit is the 45th bit of the xor value.]) that is used to determine
+    the location of a dup aux port, given that you know the location of the other one already.
+  - `half` is a boolean indicating whether the `dw addr` points to the first or second half of a double-word#footnote[
+    We could have also done the same two-tag trick as `DupXor` uses to store a 45-bit address. However, `VarAddr` has
+    no label, so this is arguably a better use of the space available.].
 
-== Nodes
+== Notation
 
 Ports which make use of their address bits expect a specific structure at that address in the heap. We will detail
-each of those structures now. In the memory layouts that follow, we'll use code-script to represent values on the
-heap (e.g. `fun` or `arg`). Math-script is used to represent memory addresses (e.g. $a$ or $x$).
+each of those structures now. In the memory layouts that follow, we'll use code-script to represent arbitrary
+values on the heap (e.g. `fun` or `arg`). Math-script is used to represent memory addresses (e.g. $a$ or $x$).
 
 When displaying these nodes, memory addresses with only a single port next to them are 8-byte aligned addresses, and
 addresses with two ports are 16-byte aligned. For example, consider the diagram
@@ -233,10 +233,8 @@ addresses with two ports are 16-byte aligned. For example, consider the diagram
 Above, $a$ is 8-byte aligned while $x$ is 16-byte aligned. Lastly, an address with an apostrophe is the second
 half of a 16-byte-aligned address. For example, $thick x'$ would refer to `arg` above.
 
-Additionally, if we show a port with a tag of `.`, this implies that the tag is either uninterpretable or can only
-have one value given the context. in the irrelevant case, the entire 64-bit value of the port is used opaquely by
-the node that holds a pointer to it. In the case where the tag can be inferred, this is done to decrease noise in
-the memory diagrams. For example, we will see that in a layout like this
+Additionally, if we show a port with a tag of `.`, this implies that only one tag is possible given the context. This
+is made possibe to decrease noise in the memory diagrams. For example, we will see that in an example layout like this
 
 #post.canvas({
   content((4, 0), memory(
@@ -245,7 +243,7 @@ the memory diagrams. For example, we will see that in a layout like this
   ))
 })
 
-The only possibility for the tag in #slot(`.`, $x$) is `VarAddr`.
+The only possibility for the tag in #slot(`.`, $x$) is `VarAddr`, since it is pointed to by a #slot(`Lam`, $x$) node.
 
 Lastly, we use subscripts to refer to the `label` portion of a port. For example, $thick #`[` #`Sup`_i thick x #`]`$
 is a port with the `Sup` tag, label $i$, and an address of $x$.
@@ -287,10 +285,12 @@ Some important things to note:
   with, the variable node is replaced with an appropriate value.
 - A `Var x` port cannot be moved without updating the `VarAddr` value.
 - If a variable does not occur in a lambda node's body, the variable is implicitly connected to an eraser. We
-  represent this by having the first half of $x$ be `FREE`.
-- If this lambda is the identity function, then $v = x'$. This possibility is critical to keep in mind when
-  interacting.
-- It is nice when reading memory dumps that `Lam x` and `Var x` point to the same address `x`.
+  represent this by having $v = 0$, since the root port can never have a `Var`.
+- If this lambda is the identity function, then $v = x'$.
+- Lambda nodes take up a variable amount of memory.
+  - The identity lambda and a lambda that erases its variable both use 3 64-bit values of memory.
+  - Lambda nodes that use their variables and are not an identity take up 4 64-bit values of memory.
+- It is nice when reading memory dumps that #slot(`Lam`, $x$) and #slot(`Var`, $x$) point to the same address `x`.
 
 Lastly, there is space in $thick #`[` #`Lam` x #`]` thick$ and $thick #`[` #`App` x #`]` thick$ ports to
 store a label, so we could have labelled lambdas and application nodes as well, to encode data structures.
@@ -314,13 +314,13 @@ store a label, so we could have labelled lambdas and application nodes as well, 
 })
 
 A few things to note here:
-1. We make use of the `label` section of the aux ports of the dup node to store whether it is the first (0) or
-   second (1) aux port.
-2. We store an $xor$ (XOR) of the two addresses of the aux ports of the duplication node. This is so if we have a hold
-   of one of the aux ports, we can find the other by XOR'ing its address with what's stored in $x'$. That is,
-   $thick thick d_1 xor d_2 xor d_1 = d_2 thick$.
-3. If one of the aux ports of this dup node was erased, say $d_1$, then $d_1 = 0$ and the address in the `DupXor`
-   is $d_2$. If both aux ports have been erased, then the address in the `DupXor` port is 0.
+- We make use of the `label` section of the aux ports of the dup node to store whether it is the first (0) or
+  second (1) aux port.
+- We store an $xor$ (XOR) of the two addresses of the aux ports of the duplication node. This is so if we have a hold
+  of one of the aux ports, we can find the other by XOR'ing its address with what's stored in $x'$. That is,
+  $thick thick d_1 xor d_2 xor d_1 = d_2 thick$.
+- If one of the aux ports of this dup node was erased, say $d_1$, then $d_1 = 0$ and the address in the `DupXor`
+  is $d_2$. If both aux ports have been erased, then the address in the `DupXor` port is 0.
 
 == Superposition Node
 
@@ -399,7 +399,6 @@ Now we will explain the memory transformations that occur during interactions.
 })
 
 Problems:
-- This is missing a way to clear the memory that is held onto by `arg`.
 - Nothing points to `arg` anymore, it's a memory leak.
   - Maybe we need to store a set of positive ports that are "to be erased"?
 
@@ -767,8 +766,3 @@ Notes:
 - Garbage collection has to kind of be done during the interactions, there are special cases that tell us whether
   something should be erased (e.g a `FREE` variable port in the first half of `Lam` node). The interactions themselves
   need to handle this.
-- If we need 4-bit tags:
-  - Make a var point to the lambda node address, not the lambda node slot, this would make it so that `Var` ports have
-    a 16-byte aligned addresss.
-  - Now all ports have a 16-byte aligned address (except dup nodes' XOR port), so we can have 4-bit tags.
-  - We can then reserve the tags `0b1111` and `0b0111` to _both_ be the dup nodes XOR port.

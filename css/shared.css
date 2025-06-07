@@ -45,6 +45,7 @@ body {
   margin: 0 2rem;
 
   font-family: "PT Sans";
+  font-size: 12pt;
 }
 
 body > .footer {
@@ -103,8 +104,8 @@ div.header > div.center > div.subtitle {
 code {
   background-color: var(--lightergray);
   padding: 0 0.2em;
-  font-size: 1.1em;
   border-radius: 5px;
+  font-size: 0.9em;
 }
 
 @media screen and (max-width: 480px) {

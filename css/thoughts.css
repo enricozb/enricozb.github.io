@@ -169,6 +169,7 @@ div.code {
 
 div.code > pre {
   margin: 0;
+  font-size: 10pt;
 }
 
 span[role="math"] > svg {

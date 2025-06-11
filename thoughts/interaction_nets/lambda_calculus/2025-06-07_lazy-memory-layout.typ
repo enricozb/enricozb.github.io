@@ -449,7 +449,7 @@ Problems:
   content((1, -3), memory(
     ($a$, (`App`, $x$)),
     ($x$, (`Lam`, $y$), `arg`),
-    ($y$, (`.`, $y'$), (`Var`, $x$)),
+    ($y$, (`.`, $y'$), (`Var`, $y$)),
   ))
 
   translate((6, 0))
@@ -484,7 +484,7 @@ Problems:
     ($a$, (`App`, $x$)),
     ($x$, (`Lam`, $y$), `arg`),
     ($y$, (`.`, $z$), `bod`),
-    ($z$, (`Var`, $x$)),
+    ($z$, (`Var`, $y$)),
   ))
 
   translate((6, 0))
@@ -709,7 +709,7 @@ Notes:
 
   content((1, -2), memory(
     ($a$, (`App`, $x$)),
-    ($x$, (`Sup`, $y$), `arg`),
+    ($x$, (`Sup`, $i$, $y$), `arg`),
     ($y$, `a`, `b`),
   ), anchor: "north")
 
@@ -754,6 +754,16 @@ Notes:
 Notes:
 - alocates two new double-wide nodes, which is what we expect.
 - frees nothing, so memory is maximally reused.
+
+= Walk Optimization
+When performing #link("2025-05-18_lazy-strict-eval.html")[lazy reduction], we traverse the net in a specific way
+to find active pairs. Once a single active pair is reduced, we restart the walk at the root. We repeat this until
+a walk is performed that came across no active pairs. Since the walk procedure is deterministic, we can optimize
+the restarting step by restarting the walk at the most recently entered aux port after a single active pair reduction.
+In order to do this, we need to maintain a stack of nodes that were entered in phase 2#footnote[this is the same "phase
+2" that was described in the #link("2025-05-18_lazy-strict-eval.html")[lazy reduction post].], and pop from that stack
+during walk restarts. Nodes visited during phase 1 do not need to be tracked, as they cannot ever be interacted with,
+and in some sense are already normalized.
 
 = Problems
 - Single-wire-producing interactions need to be handled specially

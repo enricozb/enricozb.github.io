@@ -53,11 +53,13 @@ $
 
 = Overview
 
-This post explains a link-free#footnote[In most interaction net runtimes, there is a way to explicitly represent
-a wire. Sequences of these wires can form, known as links. These are essentially indirections that can grow as
-the network is reduced. The memory representation detailed in this post makes such chains unrepresentable, and
-thus interactions are always constant time. Whether or not this is practically useful remains to be seen.] memory
-layout for lazy normalization and details the graph traversal using this layout.  The memory layout includes both
+This post explains a chain-free#footnote[In most interaction net runtimes, there is a way to explicitly represent
+a wire. Sequences of these wires can form, which I'll refer to as a _chain_. These are essentially indirections
+that can increase in length as the network is reduced. The memory representation detailed in this post makes such
+chains unrepresentable, and thus interactions are always constant time. Whether or not this is practically useful
+is unclear. There are known algorithms where chain lengths grow logarithmically in the number of interactions, and
+the implementations of the interactions in such a runtime can be much simpler than what is presented here.] memory
+layout for lazy normalization and details the graph traversal using this layout. The memory layout includes both
 how nodes and wires are represented, and then the memory transformations that happen for each interaction.
 
 = Allocation
@@ -684,7 +686,7 @@ Notes:
     ($y$, (`.`, $q'$), (`Dup`, 2, $w$)),
     ($z$, (`Sup`, $i$, $q$)),
     ($w$, `bod`, (`.`, $i$, $x' xor y'$)),
-    ($q$, (`Var`, $d_1$), (`Var`, $d_2$)),
+    ($q$, (`Var`, $x$), (`Var`, $y$)),
   ), anchor: "north")
 })
 

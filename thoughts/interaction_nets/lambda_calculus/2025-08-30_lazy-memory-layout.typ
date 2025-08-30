@@ -5,14 +5,17 @@
 #import cetz.draw: *
 
 #show: content => post.post(
-  title: "Lazy Normalization - Memory Layout",
-  date: "2025-06-07",
+  title: "Lazy Normalization - Memory Layout (WIP)",
+  date: "2025-08-30",
   content
 )
 
 #post.note[
-  After writing the post on #link("2025-05-18_lazy-strict-eval.html")[lazy normalization], I thought I understood enough
-  to implement a lazy normalizer. This proved to be false.
+  After writing the post on #link("2025-05-18_lazy-strict-eval.html")[lazy normalization], I thought I understood
+  enough to implement a lazy normalizer. This proved to be false.
+
+  This post is a work in progress. It's contents may change. If/when I'm satisfied with it, I'll remove this
+message and the "WIP" above.
 ]
 
 #let (era, con, dup, ref) = inets.with-kinds(
@@ -762,7 +765,7 @@ When performing #link("2025-05-18_lazy-strict-eval.html")[lazy reduction], we tr
 to find active pairs. Once a single active pair is reduced, we restart the walk at the root. We repeat this until
 a walk is performed that came across no active pairs. Since the walk procedure is deterministic, we can optimize
 the restarting step by restarting the walk at the most recently entered aux port after a single active pair reduction.
-In order to do this, we need to maintain a stack of nodes that were entered in phase 2#footnote[this is the same "phase
+In order to do this, we need to maintain a stack of nodes that were entered in phase 2#footnote[This is the same "phase
 2" that was described in the #link("2025-05-18_lazy-strict-eval.html")[lazy reduction post].], and pop from that stack
 during walk restarts. Nodes visited during phase 1 do not need to be tracked, as they cannot ever be interacted with,
 and in some sense are already normalized.

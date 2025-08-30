@@ -16,13 +16,16 @@
         <div><a href="/thoughts">thoughts</a></div>
       </div>
       <div class="center">
-        <div class="title">Lazy Normalization - Memory Layout</div>
-        <div class="subtitle">2025-06-07</div>
+        <div class="title">Lazy Normalization - Memory Layout (WIP)</div>
+        <div class="subtitle">2025-08-30</div>
       </div>
     </div>
     <div class="main">
       <div class="text">
-        <div class="note">After writing the post on <a href="2025-05-18_lazy-strict-eval.html">lazy normalization</a>, I thought I understood enough to implement a lazy normalizer. This proved to be false.</div>
+        <div class="note">
+          <p>After writing the post on <a href="2025-05-18_lazy-strict-eval.html">lazy normalization</a>, I thought I understood enough to implement a lazy normalizer. This proved to be false.</p>
+          <p>This post is a work in progress. It's contents may change. If/when I'm satisfied with it, I'll remove this message and the "WIP" above.</p>
+        </div>
         <h2>Overview</h2>
         <p>This post explains a chain-free<a id="footnote-1-number" href="#footnote-1-body">¹</a> memory layout for lazy normalization and details the graph traversal using this layout. The memory layout includes both how nodes and wires are represented, and then the memory transformations that happen for each interaction.</p>
         <h2>Allocation</h2>
@@ -12483,7 +12486,7 @@
           <div><a id="footnote-2-body" class="footnote-body" href="#footnote-2-number">2</a> This representation explicitly relies on the fact that most 64-bit processors do not use the upper 16-bits of addressing space.</div>
           <div><a id="footnote-3-body" class="footnote-body" href="#footnote-3-number">3</a> While this space is typically reserved only for 44-bit values, the 45th bit is actually stored as part of the <code>tag</code>. This is done by having two possible values be interpreted as a <code>DupXor</code> tag, <code>0b0000</code> and <code>0b1000</code>. Notice that the bottom three bits are the same for both of these tags, but the 4th bit can be either one or zero. This 4th bit is the 45th bit of the xor value.</div>
           <div><a id="footnote-4-body" class="footnote-body" href="#footnote-4-number">4</a> We could have also done the same two-tag trick as <code>DupXor</code> uses to store a 45-bit address. However, <code>VarAddr</code> has no label, so this is arguably a better use of the space available.</div>
-          <div><a id="footnote-5-body" class="footnote-body" href="#footnote-5-number">5</a> this is the same "phase 2" that was described in the <a href="2025-05-18_lazy-strict-eval.html">lazy reduction post</a>.</div>
+          <div><a id="footnote-5-body" class="footnote-body" href="#footnote-5-number">5</a> This is the same "phase 2" that was described in the <a href="2025-05-18_lazy-strict-eval.html">lazy reduction post</a>.</div>
         </div>
       </div>
     </div>

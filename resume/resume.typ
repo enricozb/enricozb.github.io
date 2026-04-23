@@ -46,20 +46,26 @@
     #section[Education]
 
     #item("California Institute of Technology", "", "(2019)")[
-      B.S. Computer Science -- Machine Learning Track
+      B.S. Computer Science -- Machine Learning
     ]
   ],
     [
     #section[Contact]
 
-    +1 (561) 926-1163, #link("mailto:enricozb@gmail.com")[enricozb\@gmail.com], \
-    #link("https://ezb.io")[ezb.io], #link("https://github.com/enricozb")[github.com/enricozb]
+    #link("mailto:enricozb@gmail.com")[enricozb\@gmail.com] \
+    #link("https://ezb.io")[ezb.io]
   ],
 )
 
 #section[Work Experience]
 
-#item([Higher Order Company $dot$ Senior SWE], "[Rust, C, Haskell, Agda, CUDA, HVM]", "(Jan 2024 - Present)")[
+#item([#link("https://tendrils.co/")[Tendrils Compute] $dot$ Founding Engineer], "[Rust, Vine]", "(Dec 2025 - Present)")[
+  Working on the #link("https://vine.dev")[Vine] programming language compiler and tooling to power
+  a novel generation of general-purpose processors. Created the #link("https://vine.run/")[Vine Playground].
+]
+
+
+#item([#link("https://higherorderco.com/")[Higher Order Company] $dot$ Senior SWE], "[Rust, C, Haskell, Agda, CUDA, HVM]", "(Jul 2024 - Oct 2025)")[
   Helped create #link("https://github.com/HigherOrderCO/HVM3/tree/main/src")[HVM2/3] -- The
   fastest symmetric interaction combinator runtime. Designed and implemented IO features
   for HVM's CUDA runtime. This is being used as the backbone of HOC's new superposed
@@ -70,13 +76,19 @@
   implementation of a multi-threaded interaction net evaluator that transpiled to CPU and GPU runtimes.
 ]
 
-#item("Freelance / Consultant", "[Rust, Python, Django, Docker]", "(Jan 2023 - Jan 2024)")[
-  Contracted at multiple companies (#link("https://ctfd.io/")[CTFd],
-  #link("https://www.semasoftware.com/")[Sema Software], #link("https://taqtile.com/")[Taqtile])
-  working on a variety of custom software, feature development, codebase maintenance, and customer support.
+#item([#link("https://pareto.ai/")[Pareto] $dot$ Senior SWE], "[Python, Typescript, Django]", "(Jul 2023 - Jul 2024)")[
+  Designed and implemented a flexible workflow orchestration tool to quickly define and iterate on
+  client projects, which currently supports \$6M+ of annual revenue and enabled \$2M in new
+  contracts.
 ]
 
-#item([FOSSA $dot$ SWE], "[Typescript, PostgreSQL, Rust, AWS, GCP]", "(Oct 2020 - Jan 2023)")[
+// #item("Freelance / Consultant", "[Rust, Python, Django, Docker]", "(Jan 2023 - Jan 2024)")[
+//   Contracted at multiple companies (#link("https://ctfd.io/")[CTFd],
+//   #link("https://www.semasoftware.com/")[Sema Software], #link("https://taqtile.com/")[Taqtile])
+//   working on a variety of custom software, feature development, codebase maintenance, and customer support.
+// ]
+
+#item([#link("https://fossa.com/")[FOSSA] $dot$ SWE], "[Typescript, Rust, PostgreSQL, AWS, GCP]", "(Oct 2020 - Jan 2023)")[
   Redesigned a portion of the DB schema leading to 50x faster API response times for the slowest
   endpoints. Designed a migration that updated 50 million rows to the new structure with
   zero-downtime. Led a team of 5 engineers to implement APIs for new search, filtering, and bulk action features enabled by the faster DB.
@@ -86,20 +98,21 @@
   changes, algorithmic improvements, and cache pre-warming.
 ]
 
-#item([Google $dot$ SWE], "[C++, BigQuery, Python, Flume]", "(Aug 2019 - Sep 2020)")[
-  Worked on the Interactive Questions team under Search. Improved
-  the freshness of answers, created an automatic pipeline to initialize and
-  monitor data, and built a cache system to speed up pipeline reruns.
+#item([Google $dot$ SWE], "[C++, Python, BigQuery, Flume]", "(Aug 2019 - Sep 2020)")[
+  Worked on the Interactive Questions team, whose main feature triggered on
+  #link("https://www.google.com/search?q=how+to+take+a+screenshot")[queries which have a concrete
+  answer after a minor mutation]. Improved the freshness of answers, created an automatic pipeline
+  to initialize and monitor data, and built a cache system to speed up pipeline reruns.
 ]
 
-#item([Van Valen Lab $dot$ Researcher], "[PyTorch, Kubernetes]", "(Sep 2018 - Jun 2019)")[
-  Greatly increased (\~65% $arrow$ \~95%) the cell tracking model accuracy on detecting
-  divisions through improvements in data augmentation. Created a now patented data curating tool
-  #link("https://github.com/vanvalenlab/deepcell-label")[(DeepCell Label)]
-  to enable intuitive manual corrections of incorrect inferences. Designed a more efficient file format for inference data for
-  #link("https://deepcell-kiosk.readthedocs.io/en/master/")[DeepCell
-  Kiosk].
-]
+// #item([Van Valen Lab $dot$ Researcher], "[PyTorch, Kubernetes]", "(Sep 2018 - Jun 2019)")[
+//   Greatly increased (\~65% $arrow$ \~95%) the cell tracking model accuracy on detecting
+//   divisions through improvements in data augmentation. Created a now patented data curating tool
+//   #link("https://github.com/vanvalenlab/deepcell-label")[(DeepCell Label)]
+//   to enable intuitive manual corrections of incorrect inferences. Designed a more efficient file format for inference data for
+//   #link("https://deepcell-kiosk.readthedocs.io/en/master/")[DeepCell
+//   Kiosk].
+// ]
 
 // #item("Mitsubishi SWE Intern", "[Python, OpenCV, Embedded]", "(Summer 2018)")[
 //   In Osaka, Japan. Worked on the systems division to create the infrastructure
@@ -108,8 +121,12 @@
 //   sensors (AWR1642), camera, and driving data.
 // ]
 
+#v(0.5em)
+#align(center)[$ast.triple$]
+#v(-0.5em)
+
 #section[Publications & Presentations]
-- #link("https://typst.app/project/p79cg7xe4PUNxioVSgF6rL")[HVM2: Interaction Combinator Evaluator] -- #link("https://www.youtube.com/live/7zZNwLgQCLc?t=28169s")[Video], #link("https://typst.app/project/rFmfnTGooKKbY31rNIu0fq")[Slides]. #date[(ICFP / FProPer 2024)]
+- #link("https://typst.app/project/r14yFdjhkiimGZl1xhttpN")[HVM2: Interaction Combinator Evaluator] -- #link("https://www.youtube.com/live/7zZNwLgQCLc?t=28169s")[Video], #link("https://typst.app/project/rFmfnTGooKKbY31rNIu0fq")[Slides]. #date[(ICFP / FProPer 2024)]
 - #link("https://www.nature.com/articles/s41592-020-01023-0")[DeepCell: scaling deep learning–enabled cellular image analysis with Kubernetes]. #date[(Nature Methods 2021)]
 - #link("https://www.biorxiv.org/content/10.1101/803205v1")[Accurate tracking and lineage construction in live-cell imaging experiments with deep learning]. #date[(bioRxiv 2019)]
 
@@ -138,6 +155,6 @@
   ]
 
   #subsection[Competent][
-    Lean, Agda, Haskell, Golang, OCaml, Bash, Swift, C++, C
+    Lean, Agda, Haskell, OCaml, Golang, C
   ]
 ]
